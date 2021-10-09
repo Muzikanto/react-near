@@ -1,4 +1,4 @@
-import { useNearContract, useNearWallet, useNear, useNearUser } from './hooks';
+import { useNearContract, useNearWallet, useNear, useNearUser, useNearAccount } from './hooks';
 import NearProvider, { NearEnvironment, NearContext } from './NearProvider';
 import getNearConfig from './config';
 import { getNearError } from './utils';
@@ -13,4 +13,5 @@ export {
    getNearConfig,
    NearContext,
    getNearError,
+   useNearAccount,
 };

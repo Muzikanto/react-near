@@ -1,5 +1,5 @@
 import React from 'react';
-import { Near, WalletConnection, Contract } from 'near-api-js';
+import { Near, WalletConnection, Contract, Account } from 'near-api-js';
 import { NearContext } from './NearProvider';
 import { formatNearAmount } from 'near-api-js/lib/utils/format';
 
@@ -16,6 +16,13 @@ const useNearWallet = (): WalletConnection | null => {
 
    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
    return wallet as WalletConnection | null;
+};
+
+const useNearAccount = (): Account | null => {
+   const { wallet } = React.useContext(NearContext);
+
+   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+   return wallet ? wallet.account() : null;
 };
 
 export const useNearContract = (
@@ -71,4 +78,4 @@ const useNearUser = (contract: Contract | null) => {
    };
 };
 
-export { useNear, useNearWallet, useNearUser };
+export { useNear, useNearWallet, useNearUser, useNearAccount };
