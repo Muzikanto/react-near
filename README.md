@@ -37,7 +37,7 @@ any component in the application.
 
 ```js
 import React, { useEffect } from 'react'
-import { useNear, useNearWallet, useNearContract } from 'near-react-hooks';
+import { useNear, useNearWallet, useNearContract } from 'react-near';
 
 export default function App() {
   const near = useNear()
