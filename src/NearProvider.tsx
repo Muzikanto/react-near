@@ -16,7 +16,7 @@ export interface NearContextType {
    account?: Account;
 }
 
-export type NearProviderProps = ConnectConfig & {
+export type NearProviderProps = Partial<ConnectConfig> & {
    environment?: NearEnvironment;
 };
 

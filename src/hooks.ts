@@ -3,38 +3,38 @@ import { Near, WalletConnection, Contract, Account } from 'near-api-js';
 import { NearContext } from './NearProvider';
 import { formatNearAmount } from 'near-api-js/lib/utils/format';
 
-const useNear = (): Near | null => {
+function useNear(): Near | null {
    const { near } = React.useContext(NearContext);
    const state = near as Near | null;
 
    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
    return state;
-};
+}
 
-const useNearWallet = (): WalletConnection | null => {
+function useNearWallet(): WalletConnection | null {
    const { wallet } = React.useContext(NearContext);
 
    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
    return wallet as WalletConnection | null;
-};
+}
 
-const useNearAccount = (): Account | null => {
+function useNearAccount(): Account | null {
    const { wallet } = React.useContext(NearContext);
 
    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
    return wallet ? wallet.account() : null;
-};
+}
 
-export const useNearContract = (
+function useNearContract(
    contractId: string,
    contractMethods: { viewMethods: string[]; changeMethods: string[] },
-): Contract | null => {
+): Contract | null {
    const wallet = useNearWallet();
 
    return wallet ? new Contract(wallet.account(), contractId, contractMethods) : null;
-};
+}
 
-const useNearUser = (contract: Contract | null) => {
+function useNearUser(contract: Contract | null) {
    const { wallet, account } = React.useContext(NearContext);
 
    const signedIn = wallet && wallet.isSignedIn();
@@ -76,6 +76,6 @@ const useNearUser = (contract: Contract | null) => {
       connect,
       disconnect,
    };
-};
+}
 
-export { useNear, useNearWallet, useNearUser, useNearAccount };
+export { useNear, useNearWallet, useNearUser, useNearAccount, useNearContract };
