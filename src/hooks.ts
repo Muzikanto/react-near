@@ -56,6 +56,10 @@ const useNearUser = (contract: Contract | null) => {
    const address: string | null = wallet ? wallet.getAccountId() : null;
    const isConnected = Boolean(signedIn && account);
 
+   React.useEffect(() => {
+      refreshBalance().then();
+   }, []);
+
    return {
       isConnected,
       address,
