@@ -1,0 +1,61 @@
+{
+   "name": "react-near",
+   "version": "1.0.0",
+   "description": "",
+   "main": "index.js",
+   "maintainers": [
+      {
+         "name": "Maxim Schiriy"
+      }
+   ],
+   "scripts": {
+      "start": "start-storybook -p 6006",
+      "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js",
+      "build": "tsc -b",
+      "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",
+      "prepublish": "npm run build && npm run test",
+      "postpublish": "npm run clean",
+      "test": "jest",
+      "test:info": "jest --coverage",
+      "pretty": "pretty-quick --staged"
+   },
+   "husky": {
+      "hooks": {
+         "pre-commit": "npm run clean && npm run pretty",
+         "pre-push": "npm test",
+         "...": "..."
+      }
+   },
+   "homepage": "https://github.com/Muzikanto/react-near/wiki",
+   "keywords": [
+      "react",
+      "near",
+      "blockchain",
+      "typescript"
+   ],
+   "repository": {
+      "url": "https://github.com/Muzikanto/react-near"
+   },
+   "bugs": {
+      "url": "https://github.com/Muzikanto/react-near/issues"
+   },
+   "author": "Muzikanto",
+   "license": "ISC",
+   "peerDependencies": {
+      "@types/react": "^17.0.27",
+      "react": "^17.0.2"
+   },
+   "dependencies": {
+      "near-api-js": "^0.43.1"
+   },
+   "devDependencies": {
+      "@storybook/react": "^6.3.10",
+      "@types/react-dom": "^17.0.9",
+      "husky": "^7.0.2",
+      "prettier": "^2.4.1",
+      "pretty-quick": "^3.1.1",
+      "react": "^17.0.2",
+      "react-dom": "^17.0.2",
+      "typescript": "^4.4.3"
+   }
+}
