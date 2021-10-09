@@ -1,7 +1,12 @@
 import React from 'react';
-import { Near, WalletConnection, Contract, Account } from 'near-api-js';
+import { Near, WalletConnection, Contract, Account, utils } from 'near-api-js';
 import { NearContext } from './NearProvider';
 import { formatNearAmount } from 'near-api-js/lib/utils/format';
+import { NEAR_GAS } from './config';
+
+export type NearContract = Contract & {
+   fCall: <T>(methodName: string, args: { [key: string]: any }, price: number) => Promise<T>;
+};
 
 function useNear(): Near | null {
    const { near } = React.useContext(NearContext);
@@ -28,10 +33,33 @@ function useNearAccount(): Account | null {
 function useNearContract(
    contractId: string,
    contractMethods: { viewMethods: string[]; changeMethods: string[] },
-): Contract | null {
+): NearContract | null {
+   const account = useNearAccount();
    const wallet = useNearWallet();
+   const contract = wallet ? new Contract(wallet.account(), contractId, contractMethods) : null;
 
-   return wallet ? new Contract(wallet.account(), contractId, contractMethods) : null;
+   if (contract) {
+      // @ts-ignore
+      contract.fCall = function (
+         methodName: string,
+         args: { [key: string]: any } = {},
+         nears?: number,
+      ) {
+         if (account) {
+            return account.functionCall(
+               contractId,
+               methodName,
+               args,
+               NEAR_GAS,
+               nears ? (utils.format.parseNearAmount(nears.toString()) as any) : undefined,
+            ) as any;
+         }
+
+         return Promise.reject('Account not connected');
+      };
+   }
+
+   return wallet ? (contract as NearContract) : null;
 }
 
 function useNearUser(contract: Contract | null) {

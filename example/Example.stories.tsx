@@ -32,7 +32,7 @@ function App() {
                </span>
                <button
                   onClick={() => {
-                     contract.mint();
+                     contract.fCall('mint', {}, 10); // attach 10 NEAR
                      user.refreshBalance();
                   }}
                >
