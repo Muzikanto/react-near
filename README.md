@@ -17,7 +17,7 @@ Then wrap your application with the `NearProvider` passing it an environment:
 ```tsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { NearProvider, NearEnvironment } from 'near-react-hooks';
+import { NearProvider, NearEnvironment } from 'react-near';
 import App from './App';
 
 ReactDOM.render(
