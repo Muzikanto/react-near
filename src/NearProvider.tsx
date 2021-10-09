@@ -27,7 +27,7 @@ const NearProvider: React.FC<NearProviderProps> = ({
    children,
    ...props
 }) => {
-   const config: ConnectConfig = React.useMemo(() => {
+   const config: ConnectConfig | null = React.useMemo(() => {
       if (typeof window === 'undefined') {
          return null;
       }
@@ -43,18 +43,20 @@ const NearProvider: React.FC<NearProviderProps> = ({
    const [wallet, setWallet] = React.useState<WalletConnection>();
 
    React.useEffect(() => {
-      const setup = async function (): Promise<void> {
-         const nearInstance = await connect(config);
-         const walletInstance = new WalletConnection(nearInstance, null);
+      if (config && typeof window !== 'undefined') {
+         const setup = async function (): Promise<void> {
+            const nearInstance = await connect(config);
+            const walletInstance = new WalletConnection(nearInstance, null);
 
-         setNear(nearInstance);
-         setWallet(walletInstance);
-      };
+            setNear(nearInstance);
+            setWallet(walletInstance);
+         };
 
-      setup().catch((err) => {
-         console.error(err);
-      });
-   }, []);
+         setup().catch((err) => {
+            console.error(err);
+         });
+      }
+   }, [config]);
 
    return (
       <NearContext.Provider

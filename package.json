@@ -1,8 +1,9 @@
 {
    "name": "react-near",
-   "version": "1.0.0",
+   "version": "1.0.3",
    "description": "",
    "main": "index.js",
+   "typings": "./index.d.ts",
    "maintainers": [
       {
          "name": "Maxim Schiriy"
@@ -13,7 +14,7 @@
       "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js",
       "build": "tsc -b",
       "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",
-      "prepublish": "npm run build && npm run test",
+      "prepublish": "npm run build",
       "postpublish": "npm run clean",
       "test": "jest",
       "test:info": "jest --coverage",
@@ -22,7 +23,6 @@
    "husky": {
       "hooks": {
          "pre-commit": "npm run clean && npm run pretty",
-         "pre-push": "npm test",
          "...": "..."
       }
    },

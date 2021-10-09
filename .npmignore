@@ -4,3 +4,5 @@ node_modules
 .storybook
 .idea
 .prettierrc
+src
+tsconfig.json
