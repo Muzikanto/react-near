@@ -1,6 +1,6 @@
 # NEAR React
 
-Use react context and hooks to configure and interact with NEAR.
+Use react context and hooks to configure and interact with NEAR. (Worked with SSR Render)
 
 [Reference Docs](https://mehtaphysical.github.io/near-react-hooks)
 
@@ -10,22 +10,22 @@ You'll need to install the package from npm `npm i near-react-hooks near-api-js`
 
 Then wrap your application with the `NearProvider` passing it an environment:
 
-* `mainnet`
-* `testnet`
-* `betanet`
+-  `mainnet`
+-  `testnet`
+-  `betanet`
 
-```js
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { NearProvider, NearEnvironment } from 'near-react-hooks'
-import App from './App'
+```tsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { NearProvider, NearEnvironment } from 'near-react-hooks';
+import App from './App';
 
 ReactDOM.render(
-  <NearProvider environment={NearEnvironment.TestNet}>
-    <App />
-  </NearProvider>,
-  document.querySelector('#root')
-)
+   <NearProvider environment={NearEnvironment.TestNet}>
+      <App />
+   </NearProvider>,
+   document.querySelector('#root'),
+);
 ```
 
 You can more finely tune the NEAR configuration by passing additional props
@@ -35,24 +35,51 @@ Once the application is wrapped with the `NearProvider` your can access the
 NEAR connection, the NEAR wallet, and NEAR contract using react hooks from
 any component in the application.
 
-```js
-import React, { useEffect } from 'react'
-import { useNear, useNearWallet, useNearContract } from 'react-near';
+```tsx
+import React from 'react';
+import {
+   useNear,
+   useNearAccount,
+   useNearContract,
+   useNearUser,
+   useNearWallet,
+   NearEnvironment,
+} from 'react-near';
 
-export default function App() {
-  const near = useNear()
-  const wallet = useNearWallet()
-  const contract = useNearContract('dev-123457824879', {
-    viewMethods: ['getCount'],
-    changeMethods: ['decrement', 'increment']
-  })
+function App() {
+   const near = useNear();
+   const wallet = useNearWallet();
+   const account = useNearAccount();
+   const contract = useNearContract('dev-123456789', {
+      viewMethods: ['mint'],
+      changeMethods: [],
+   });
+   const user = useNearUser(contract);
 
-  useEffect(() => {
-    if(!wallet.isSignedIn()) wallet.requestSignIn();
-  }, []);
+   return (
+      <div>
+         {!user.isConnected ? (
+            <div>
+               <button onClick={() => user.connect('NEAR Example title')}>connect</button>
+            </div>
+         ) : (
+            <div>
+               <span>
+                  {user.address} {user.balance} NEAR
+               </span>
+               <button
+                  onClick={() => {
+                     contract.mint();
+                     user.refreshBalance();
+                  }}
+               >
+                  mint
+               </button>
 
-  if(!wallet.isSignedIn()) return null;
-  
-  return <h1>{wallet.getAccountId()}</h1>;
+               <button onClick={() => user.disconnect()}>disconnect</button>
+            </div>
+         )}
+      </div>
+   );
 }
 ```

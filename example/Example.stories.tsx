@@ -1,5 +1,5 @@
 import NearProvider, { NearEnvironment } from '../src/NearProvider';
-import { useNear, useNearContract, useNearUser, useNearWallet } from '../src/hooks';
+import { useNear, useNearAccount, useNearContract, useNearUser, useNearWallet } from '../src/hooks';
 import React from 'react';
 
 export default {
@@ -12,8 +12,9 @@ export default {
 function App() {
    const near = useNear();
    const wallet = useNearWallet();
-   const contract = useNearContract('cow-nft.testnet', {
-      viewMethods: ['name'],
+   const account = useNearAccount();
+   const contract = useNearContract('dev-123456789', {
+      viewMethods: ['mint'],
       changeMethods: [],
    });
    const user = useNearUser(contract);
@@ -26,6 +27,18 @@ function App() {
             </div>
          ) : (
             <div>
+               <span>
+                  {user.address} {user.balance} NEAR
+               </span>
+               <button
+                  onClick={() => {
+                     contract.mint();
+                     user.refreshBalance();
+                  }}
+               >
+                  mint
+               </button>
+
                <button onClick={() => user.disconnect()}>disconnect</button>
             </div>
          )}
