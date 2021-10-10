@@ -93,7 +93,7 @@ function useNearUser(contract: Contract | null) {
 
    React.useEffect(() => {
       refreshBalance().then();
-   }, []);
+   }, [account]);
 
    return {
       isConnected,
