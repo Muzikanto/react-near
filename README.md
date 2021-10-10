@@ -2,11 +2,11 @@
 
 Use react context and hooks to configure and interact with NEAR. (Worked with SSR Render)
 
-[Reference Docs](https://mehtaphysical.github.io/near-react-hooks)
+[Reference Docs](https://mehtaphysical.github.io/react-near)
 
 ## Setup
 
-You'll need to install the package from npm `npm i near-react-hooks near-api-js`.
+You'll need to install the package from npm `npm i react-near near-api-js`.
 
 Then wrap your application with the `NearProvider` passing it an environment:
 
