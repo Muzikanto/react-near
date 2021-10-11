@@ -92,7 +92,28 @@ function useNearUser(contract: Contract | null) {
    const isConnected = Boolean(signedIn && account);
 
    React.useEffect(() => {
-      refreshBalance().then();
+      if (account) {
+         refreshBalance()
+            .then()
+            .catch((e) => {
+               const m = e.message;
+
+               if (
+                  m.startsWith('[-32000] Server error: account') &&
+                  m.endsWith('does not exist while viewing')
+               ) {
+                  for (let i = 0; i < localStorage.length; i++) {
+                     const key = localStorage.key(i);
+
+                     if (key && key.startsWith('near-api')) {
+                        localStorage.removeItem(key);
+                     }
+                  }
+
+                  disconnect().then();
+               }
+            });
+      }
    }, [account]);
 
    return {
