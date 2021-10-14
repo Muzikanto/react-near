@@ -62,7 +62,7 @@ function useNearContract(
    return wallet ? (contract as NearContract) : null;
 }
 
-function useNearUser(contract: Contract | null) {
+function useNearUser(contractId: string) {
    const { wallet, account } = React.useContext(NearContext);
 
    const signedIn = wallet && wallet.isSignedIn();
@@ -77,8 +77,8 @@ function useNearUser(contract: Contract | null) {
       }
    };
    const connect = async (title?: string, successUrl?: string, failureUrl?: string) => {
-      if (wallet && contract) {
-         await wallet.requestSignIn(contract.contractId, title, successUrl, failureUrl);
+      if (wallet) {
+         await wallet.requestSignIn(contractId, title, successUrl, failureUrl);
       }
    };
    const refreshBalance = async () => {
