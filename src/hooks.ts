@@ -36,7 +36,10 @@ function useNearContract(
 ): NearContract | null {
    const account = useNearAccount();
    const wallet = useNearWallet();
-   const contract = wallet ? new Contract(wallet.account(), contractId, contractMethods) : null;
+   const contract = React.useMemo(
+      () => (wallet ? new Contract(wallet.account(), contractId, contractMethods) : null),
+      [wallet],
+   );
 
    if (contract) {
       // @ts-ignore
