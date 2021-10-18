@@ -1,7 +1,8 @@
-export function getNearError(e: any): string {
+export function getNearError(e: any) {
    try {
-      return e.kind.ExecutionError.split(', filename')[0];
-   } catch (err) {
-      return e.message;
+      return String(e).split('panic_msg: "')[1].split('" }')[0];
+   } catch (e2) {
+      // @ts-ignore
+      return e.message || String(e);
    }
 }
