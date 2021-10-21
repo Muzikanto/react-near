@@ -1,18 +1,35 @@
-import { useNearContract, useNearWallet, useNear, useNearUser, useNearAccount } from './hooks';
+import {
+   useNearContract,
+   useNearWallet,
+   useNear,
+   useNearUser,
+   useNearAccount,
+   useNearMutation,
+   useNearQuery,
+   NearQueryOptions,
+   NearMutationOptions,
+} from './hooks';
 import NearProvider, { NearEnvironment, NearContext } from './NearProvider';
 import getNearConfig, { NEAR_GAS } from './config';
 import { getNearError } from './utils';
 
 export {
-   NEAR_GAS,
    useNear,
    useNearWallet,
    useNearUser,
    useNearContract,
+   useNearAccount,
+   //
+   NEAR_GAS,
+   NearContext,
+   //
    NearProvider,
    NearEnvironment,
    getNearConfig,
-   NearContext,
    getNearError,
-   useNearAccount,
+   //
+   useNearQuery,
+   NearQueryOptions,
+   useNearMutation,
+   NearMutationOptions,
 };

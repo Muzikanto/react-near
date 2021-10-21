@@ -43,7 +43,11 @@ import {
    useNearContract,
    useNearUser,
    useNearWallet,
+   useNearQuery,
+   useNearMutation,
    NearEnvironment,
+   NEAR_GAS,
+   DefaultContractMetadata,
 } from 'react-near';
 
 function App() {
@@ -56,6 +60,15 @@ function App() {
    });
    const user = useNearUser(contract);
 
+   const { data: metadata, loading: loadingMetadata, refetch: refetchMetadata } = useNearQuery(
+        contract, 'nft_metadata', 
+        { onCompleted: console.log, onError: console.log }
+   );
+   const [nftMint, { data: nftMintResult, loading: nftMintLoading }] = useNearMutation(
+        contract, 'nft_mint', 
+        { gas: NEAR_GAS, onCompleted: console.log, onError: console.log }
+   ); // data extends of DefaultContractMetadata interface
+
    return (
       <div>
          {!user.isConnected ? (
@@ -67,9 +80,10 @@ function App() {
                <span>
                   {user.address} {user.balance} NEAR
                </span>
+               <span>{loadingMetadata ? 'loading...': metadata.name}</span>
                <button
                   onClick={() => {
-                     contract.mint();
+                     nftMint();
                      user.refreshBalance();
                   }}
                >

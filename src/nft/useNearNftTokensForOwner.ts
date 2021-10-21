@@ -1,0 +1,27 @@
+import { Contract } from 'near-api-js';
+import { NearQueryOptions, useNearQuery } from '../hooks';
+import { DefaultToken } from './index';
+
+export type UseNftCollectionQueryInput = { account_id: string; fromIndex?: number; limit?: number };
+
+function useNearNftTokensForOwner<
+   Res extends DefaultToken[] = DefaultToken[],
+   Req extends UseNftCollectionQueryInput = UseNftCollectionQueryInput,
+>(
+   contract: Contract,
+   {
+      variables: { fromIndex = 0, limit = 100, ...variables } = {} as any,
+      ...opts
+   }: NearQueryOptions<Res, Req> = {},
+) {
+   return useNearQuery<Res, Req>(contract, 'nft_tokens_for_owner', {
+      ...opts,
+      variables: {
+         from_index: fromIndex.toString(),
+         limit,
+         ...variables,
+      } as any,
+   });
+}
+
+export default useNearNftTokensForOwner;
