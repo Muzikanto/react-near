@@ -55,8 +55,8 @@ function App() {
    const wallet = useNearWallet();
    const account = useNearAccount();
    const contract = useNearContract('dev-123456789', {
-      viewMethods: ['mint'],
-      changeMethods: [],
+      viewMethods: ['nft_metadata'],
+      changeMethods: ['nft_mint'],
    });
    const user = useNearUser(contract);
 
@@ -67,7 +67,7 @@ function App() {
    const [nftMint, { data: nftMintResult, loading: nftMintLoading }] = useNearMutation(
         contract, 'nft_mint', 
         { gas: NEAR_GAS, onCompleted: console.log, onError: console.log }
-   ); // data extends of DefaultContractMetadata interface
+   ); // data object extends of DefaultContractMetadata interface
 
    return (
       <div>
