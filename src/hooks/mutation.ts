@@ -12,7 +12,7 @@ export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = 
 };
 
 function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
-   contract: Contract,
+   contract: Contract | null,
    methodName: string,
    opts: NearMutationOptions<Res, Req> = {},
 ) {

@@ -9,7 +9,7 @@ function useNearNft(
       changeMethods: string[];
    } = defaultMethods,
 ) {
-   const contract: any = useNearContract(contractName, {
+   const contract = useNearContract(contractName, {
       viewMethods: [
          'nft_metadata',
          'nft_tokens_for_owner',
