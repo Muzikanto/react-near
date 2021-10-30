@@ -101,7 +101,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
     }
   }, [contract, methodName, opts.skip]);
 
-  return { loading, data, refetch: (args?: Req) => callMethod(args, true) };
+  return { loading, data, refetch: (args?: Req) => callMethod(args, false) };
 }
 
 export default useNearQuery;
