@@ -23,7 +23,6 @@ function useNearUser(contractId: string) {
     }
   };
   const refreshBalance = async () => {
-    console.log(1);
     if (account) {
       const balanceV = +formatNearAmount((await account.getAccountBalance()).available, 2);
 

@@ -5,108 +5,109 @@ import { NEAR_GAS } from '../config';
 import useNearContractProvided from '../core/contract-provided';
 
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
-  onError?: (err: Error) => void;
-  onCompleted?: (res: Res) => void;
-  debug?: boolean;
-  gas?: number;
+   onError?: (err: Error) => void;
+   onCompleted?: (res: Res) => void;
+   debug?: boolean;
+   gas?: number;
 };
 
 function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
-  methodName: string,
-  opts: NearMutationOptions<Res, Req> = {}
+   methodName: string,
+   opts: NearMutationOptions<Res, Req> = {},
 ) {
-  const contract = useNearContractProvided();
-  const account = useNearAccount();
+   const contract = useNearContractProvided();
+   const account = useNearAccount();
 
-  const [loading, setLoading] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<Res | null>(null);
+   const [state, setState] = React.useState<{ loading: boolean; data: Res | undefined }>({
+      loading: false,
+      data: undefined,
+   });
 
-  const callMethod = async (args: Req, attachedDeposit?: number) => {
-    if (!account) {
-      const err = new Error('Not found contract account');
+   const callMethod = async (args: Req, attachedDeposit?: number) => {
+      if (!account) {
+         const err = new Error('Not found contract account');
 
-      if (opts.debug) {
-        console.log(`NEAR #${methodName} Error!`, err);
-      }
-      if (opts.onError) {
-        opts.onError(err);
-      }
+         if (opts.debug) {
+            console.log(`NEAR #${methodName} Error!`, err);
+         }
+         if (opts.onError) {
+            opts.onError(err);
+         }
 
-      return Promise.reject(err);
-    }
-
-    if (!contract) {
-      const err = new Error('Not found contract state');
-
-      if (opts.debug) {
-        console.log(`NEAR #${methodName} Error!`, err);
-      }
-      if (opts.onError) {
-        opts.onError(err);
+         return Promise.reject(err);
       }
 
-      return Promise.reject(err);
-    }
+      if (!contract) {
+         const err = new Error('Not found contract state');
 
-    if (!(contract as any)[methodName]) {
-      const err = new Error('Not found contract method');
+         if (opts.debug) {
+            console.log(`NEAR #${methodName} Error!`, err);
+         }
+         if (opts.onError) {
+            opts.onError(err);
+         }
 
-      if (opts.onError) {
-        opts.onError(err);
-      }
-      if (opts.debug) {
-        console.log(`NEAR #${methodName} Error!`, err);
-      }
-
-      return Promise.reject(err);
-    }
-
-    setLoading(true);
-
-    try {
-      let res: any;
-
-      if (attachedDeposit || opts.gas) {
-        res = await account.functionCall(
-          contract.contractId,
-          methodName,
-          args,
-          (opts.gas || NEAR_GAS) as any,
-          (attachedDeposit ? parseNearAmount(attachedDeposit.toString()) : undefined) as any
-        );
-      } else {
-        // @ts-ignore
-        res = await contract[methodName](args);
+         return Promise.reject(err);
       }
 
-      if (opts.debug) {
-        console.log(`NEAR #${methodName}`, res);
+      if (!(contract as any)[methodName]) {
+         const err = new Error('Not found contract method');
+
+         if (opts.onError) {
+            opts.onError(err);
+         }
+         if (opts.debug) {
+            console.log(`NEAR #${methodName} Error!`, err);
+         }
+
+         return Promise.reject(err);
       }
 
-      setData(res);
+      setState({ ...state, loading: true });
 
-      if (opts.onCompleted) {
-        opts.onCompleted(res);
+      try {
+         let res: any;
+
+         if (attachedDeposit || opts.gas) {
+            res = await account.functionCall(
+               contract.contractId,
+               methodName,
+               args,
+               (opts.gas || NEAR_GAS) as any,
+               (attachedDeposit ? parseNearAmount(attachedDeposit.toString()) : undefined) as any,
+            );
+         } else {
+            // @ts-ignore
+            res = await contract[methodName](args);
+         }
+
+         if (opts.debug) {
+            console.log(`NEAR #${methodName}`, res);
+         }
+
+         if (opts.onCompleted) {
+            opts.onCompleted(res);
+         }
+
+         setState({ data: res, loading: false });
+
+         return res;
+      } catch (e) {
+         setState({ ...state, loading: false });
+
+         if (opts.debug) {
+            console.log(`NEAR #${methodName} Error!`, e);
+         }
+
+         if (opts.onError) {
+            opts.onError(e as Error);
+         }
+
+         throw e;
       }
+   };
 
-      setLoading(false);
-      return res;
-    } catch (e) {
-      setLoading(false);
-
-      if (opts.debug) {
-        console.log(`NEAR #${methodName} Error!`, e);
-      }
-
-      if (opts.onError) {
-        opts.onError(e as Error);
-      }
-
-      throw e;
-    }
-  };
-
-  return [callMethod, { loading, data }] as const;
+   return [callMethod, { loading: state.loading, data: state.data }] as const;
 }
 
 export default useNearMutation;
