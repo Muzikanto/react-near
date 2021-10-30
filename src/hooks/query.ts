@@ -41,14 +41,14 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
          if (useCache) {
             if (cacheState) {
-               if (state.data !== cacheState) {
+               if (JSON.stringify(state.data) !== JSON.stringify(cacheState)) {
                   setState({ data: cacheState, loading: false });
                }
 
                return cacheState as Res;
             }
             if (isFetched) {
-               return undefined;
+               return Promise.reject();
             }
          }
 
