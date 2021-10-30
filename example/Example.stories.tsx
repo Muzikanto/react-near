@@ -1,37 +1,22 @@
-import NearProvider, { NearEnvironment } from './src/NearProvider';
 import {
-   useNear,
-   useNearAccount,
+   NearProvider,
+   NearEnvironment,
    useNearContract,
    useNearMutation,
    useNearQuery,
    useNearUser,
-   useNearWallet,
-} from './src/hooks';
+   NearContractProvider,
+} from '../src/';
 import React from 'react';
 
 const contractId = 'cow-nft.testnet';
 
-function App() {
-   const near = useNear();
-   const wallet = useNearWallet();
-   const account = useNearAccount();
-   const contract = useNearContract(contractId, {
-      viewMethods: ['nft_tokens_for_owner'],
-      changeMethods: [],
-   });
+function Page() {
    const user = useNearUser(contractId);
 
-   const [mint] = useNearMutation<{ id: string }, { address: string }>(contract, 'mint', {});
-   const { data: collection } = useNearQuery<
-      { id: string },
-      { from_index: string; account_id: string }
-   >(contract, 'nft_tokens_for_owner', {
-      skip: !user.address,
-      variables: { from_index: '0', account_id: user.address as string },
-   });
+   const [mint] = useNearMutation<{ id: string }, { address: string }>('mint', {});
 
-   const [showCollection, setShowCollection] = React.useState(false);
+   const [showMeta, setShowMeta] = React.useState(false);
 
    return (
       <div>
@@ -57,8 +42,8 @@ function App() {
                </button>
 
                <button onClick={() => user.disconnect()}>disconnect</button>
-               <button onClick={() => setShowCollection(!showCollection)}>toggle</button>
-               {showCollection && <Collection />}
+               <button onClick={() => setShowMeta(!showMeta)}>toggle</button>
+               {showMeta && <Collection />}
             </div>
          )}
       </div>
@@ -66,29 +51,34 @@ function App() {
 }
 
 function Collection() {
-   const user = useNearUser(contractId);
+   const { data: metadata } = useNearQuery<{ id: string }, {}>('nft_metadata', {
+      variables: {},
+   });
+
+   return <div>{JSON.stringify(metadata)}</div>;
+}
+
+// provide near contract
+function WrappedContract() {
    const contract = useNearContract(contractId, {
-      viewMethods: ['nft_tokens_for_owner'],
+      viewMethods: ['nft_tokens_for_owner', 'nft_metadata'],
       changeMethods: [],
    });
 
-   const { data: collection } = useNearQuery<
-      { id: string },
-      { from_index: string; account_id: string }
-   >(contract, 'nft_tokens_for_owner', {
-      skip: !user.address,
-      variables: { from_index: '0', account_id: user.address as string },
-   });
-
-   return <div>test</div>;
+   return (
+      <NearContractProvider contract={contract}>
+         <Page />
+      </NearContractProvider>
+   );
 }
 
-export function Example() {
+// provide near state
+function WrappedNear() {
    return (
       <NearProvider networkId={NearEnvironment.TestNet}>
-         <App />
+         <WrappedContract />
       </NearProvider>
    );
 }
 
-export default Example;
+export default WrappedNear;

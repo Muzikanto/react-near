@@ -1,6 +1,6 @@
-import { Contract } from 'near-api-js';
 import React from 'react';
 import nearClient from '../core/client';
+import useNearContractProvided from '../core/contract-provided';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
   variables?: Req;
@@ -8,29 +8,41 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
   onCompleted?: (res: Res) => void;
   skip?: boolean;
   debug?: boolean;
+  useCache?: boolean;
 };
 
 function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
-  contract: Contract | null,
   methodName: string,
   opts: NearQueryOptions<Res, Req> = {}
 ) {
+  const contract = useNearContractProvided();
+
   const [loading, setLoading] = React.useState<boolean>(false);
   const [data, setData] = React.useState<Res | null>(null);
 
-  const callMethod = async (args?: Req, useCache = true) => {
+  const callMethod = async (args?: Req, useCache?: boolean) => {
     if (contract) {
       if (!(contract as any)[methodName]) {
+        const err = new Error('Not found contract method');
+
         if (opts.onError) {
-          opts.onError(new Error('Not found contract method'));
+          opts.onError(err);
         }
-        return Promise.reject('Not found contract method');
+        if (opts.debug) {
+          console.log(`NEAR #${methodName} Error!`, err);
+        }
+        return Promise.reject(err);
       }
 
       const requestId = nearClient.encodeRequest(methodName, args || opts.variables || {});
-      const cacheState = nearClient.get(requestId, 'QUERY');
+      const cacheState = nearClient.get(requestId, 'QUERY') as Res;
 
-      if (useCache && cacheState) {
+      if (
+        (typeof useCache === 'undefined' ? (typeof opts.useCache === 'undefined' ? true : opts.useCache) : useCache) &&
+        cacheState
+      ) {
+        setData(cacheState);
+
         return cacheState as Res;
       }
 
@@ -50,12 +62,16 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
           opts.onCompleted(res);
         }
 
-        nearClient.set(requestId, res, "QUERY");
+        nearClient.set(requestId, res, 'QUERY');
 
         setLoading(false);
         return res;
       } catch (e) {
         setLoading(false);
+
+        if (opts.debug) {
+          console.log(`NEAR #${methodName} Error!`, e);
+        }
 
         if (opts.onError) {
           opts.onError(e as Error);
@@ -65,10 +81,16 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
     }
 
+    const err = new Error('Contract is not provided');
+
     if (opts.onError) {
-      opts.onError(new Error('Not found contract state'));
+      opts.onError(err);
     }
-    return Promise.reject('Not found contract state');
+    if (opts.debug) {
+      console.log(`NEAR #${methodName} Error!`, err);
+    }
+
+    return Promise.reject(err);
   };
 
   React.useEffect(() => {
@@ -77,7 +99,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
         .then()
         .catch();
     }
-  }, [contract, opts.skip]);
+  }, [contract, methodName, opts.skip]);
 
   return { loading, data, refetch: (args?: Req) => callMethod(args, true) };
 }
