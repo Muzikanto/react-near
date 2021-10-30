@@ -6,7 +6,7 @@ function useNearNftMetadata<
    Res extends DefaultContractMetadata = DefaultContractMetadata,
    Req = {},
 >(contract: Contract, opts: NearQueryOptions<Res, Req> = {}) {
-   return useNearQuery<Res, Req>(contract, 'nft_metadata', opts);
+   return useNearQuery<Res, Req>('nft_metadata', opts);
 }
 
 export default useNearNftMetadata;

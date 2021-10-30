@@ -15,11 +15,6 @@ Then wrap your application with the `NearProvider` passing it an environment:
 -  `betanet`
 
 ```tsx
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { NearProvider, NearEnvironment } from 'react-near';
-import App from './App';
-
 ReactDOM.render(
    <NearProvider environment={NearEnvironment.TestNet}>
       <App />
@@ -35,39 +30,33 @@ Once the application is wrapped with the `NearProvider` your can access the
 NEAR connection, the NEAR wallet, and NEAR contract using react hooks from
 any component in the application.
 
+Wrap Page (or App)
+
 ```tsx
-import React from 'react';
-import {
-   useNear,
-   useNearAccount,
-   useNearContract,
-   useNearUser,
-   useNearWallet,
-   useNearQuery,
-   useNearMutation,
-   NearEnvironment,
-   NEAR_GAS,
-   DefaultContractMetadata,
-} from 'react-near';
-
-function App() {
-   const near = useNear();
-   const wallet = useNearWallet();
-   const account = useNearAccount();
+function WrappedContract() {
    const contract = useNearContract('dev-123456789', {
-      viewMethods: ['nft_metadata'],
-      changeMethods: ['nft_mint'],
+      viewMethods: ['nft_tokens_for_owner', 'nft_metadata'],
+      changeMethods: [],
    });
-   const user = useNearUser(contract);
 
-   const { data: metadata, loading: loadingMetadata, refetch: refetchMetadata } = useNearQuery(
-        contract, 'nft_metadata', 
-        { onCompleted: console.log, onError: console.log }
+   return (
+      <NearContractProvider contract={contract}>
+         <Page />
+      </NearContractProvider>
    );
-   const [nftMint, { data: nftMintResult, loading: nftMintLoading }] = useNearMutation(
-        contract, 'nft_mint', 
-        { gas: NEAR_GAS, onCompleted: console.log, onError: console.log }
-   ); // data object extends of DefaultContractMetadata interface
+}
+```
+
+```tsx
+function Page() {
+   const user = useNearUser(contractId);
+
+   const { data: metadata } = useNearQuery<{ id: string }, {}>('nft_metadata', {
+      variables: {},
+   });
+   const [mint] = useNearMutation<{ id: string }, { address: string }>('mint', {});
+
+   const [showMeta, setShowMeta] = React.useState(false);
 
    return (
       <div>
@@ -80,17 +69,22 @@ function App() {
                <span>
                   {user.address} {user.balance} NEAR
                </span>
-               <span>{loadingMetadata ? 'loading...': metadata.name}</span>
+               <div>Metadata: {JSON.stringify(metadata)}</div>
                <button
                   onClick={() => {
-                     nftMint();
-                     user.refreshBalance();
+                     if (user.address) {
+                        mint({ address: user.address }).then(() => {
+                           user.refreshBalance().then();
+                        });
+                     }
                   }}
                >
                   mint
                </button>
 
                <button onClick={() => user.disconnect()}>disconnect</button>
+               <button onClick={() => setShowMeta(!showMeta)}>toggle</button>
+               {showMeta && <Collection />}
             </div>
          )}
       </div>

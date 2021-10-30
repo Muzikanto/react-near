@@ -14,7 +14,7 @@ function useNearNftTokensForOwner<
       ...opts
    }: NearQueryOptions<Res, Req> = {},
 ) {
-   return useNearQuery<Res, Req>(contract, 'nft_tokens_for_owner', {
+   return useNearQuery<Res, Req>('nft_tokens_for_owner', {
       ...opts,
       variables: {
          from_index: fromIndex.toString(),

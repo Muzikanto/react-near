@@ -5,7 +5,7 @@ function useNearNftTotalSupply<Res extends number = number, Req = {}>(
    contract: Contract,
    { onCompleted, ...opts }: NearQueryOptions<Res, Req> = {},
 ) {
-   const { data, ...query } = useNearQuery<Res, Req>(contract, 'nft_total_supply', {
+   const { data, ...query } = useNearQuery<Res, Req>('nft_total_supply', {
       ...opts,
       onCompleted: (res) => {
          if (onCompleted) {
