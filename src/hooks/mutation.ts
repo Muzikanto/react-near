@@ -18,10 +18,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    const contract = useNearContractProvided();
    const account = useNearAccount();
 
-   const [state, setState] = React.useState<{ loading: boolean; data: Res | undefined }>({
-      loading: false,
-      data: undefined,
-   });
+   const [state, setState] = React.useState<Res | undefined>(undefined);
 
    const callMethod = async (args: Req, attachedDeposit?: number): Promise<Res> => {
       if (!account) {
@@ -63,8 +60,6 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
          return Promise.reject(err);
       }
 
-      setState({ ...state, loading: true });
-
       try {
          let res: any;
 
@@ -89,12 +84,10 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             opts.onCompleted(res);
          }
 
-         setState({ data: res, loading: false });
+         setState(res);
 
          return res;
       } catch (e) {
-         setState({ ...state, loading: false });
-
          if (opts.debug) {
             console.log(`NEAR #${methodName} Error!`, e);
          }
@@ -107,7 +100,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       }
    };
 
-   return [callMethod, { loading: state.loading, data: state.data }] as const;
+   return [callMethod, { data: state }] as const;
 }
 
 export default useNearMutation;

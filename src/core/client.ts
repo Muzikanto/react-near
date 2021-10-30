@@ -1,4 +1,11 @@
-const nearClient = (() => {
+export type NearClient = {
+   cache: { [key: string]: any };
+   set: (key: string, value: any, rootId?: string) => void;
+   get: (key: string, rootId?: string) => any;
+   encodeRequest: (methodName: string, args: { [key: string]: any }) => string;
+};
+
+const getNearClient = (): NearClient => {
    const cache: { [key: string]: any } = {};
 
    const set = <T>(key: string, value: T, rootId?: string) => {
@@ -32,11 +39,6 @@ const nearClient = (() => {
       get,
       encodeRequest,
    };
-})();
+};
 
-if (typeof window !== 'undefined') {
-   // @ts-ignore
-   window.__NEAR_CLIENT__ = nearClient;
-}
-
-export default nearClient;
+export default getNearClient;

@@ -1,5 +1,5 @@
 import React from 'react';
-import nearClient from '../core/client';
+import { NearContext } from '../NearProvider';
 import useNearContractProvided from '../core/contract-provided';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
@@ -14,12 +14,10 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    methodName: string,
    opts: NearQueryOptions<Res, Req> = {},
 ) {
+   const { client } = React.useContext(NearContext);
    const contract = useNearContractProvided();
 
-   const [state, setState] = React.useState<{ loading: boolean; data: Res | undefined }>({
-      loading: false,
-      data: undefined,
-   });
+   const [state, setState] = React.useState<Res | undefined>(undefined);
 
    const callMethod = async (args?: Req, useCache: boolean = true) => {
       if (contract) {
@@ -35,14 +33,14 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             return Promise.reject(err);
          }
 
-         const requestId = nearClient.encodeRequest(methodName, args || opts.variables || {});
-         const cacheState = nearClient.get(requestId, 'QUERY') as Res | null;
-         const isFetched = nearClient.get(requestId, 'FETCHED') as boolean | null;
+         const requestId = client.encodeRequest(methodName, args || opts.variables || {});
+         const cacheState = client.get(requestId, 'QUERY') as Res | null;
+         const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
 
          if (useCache) {
             if (cacheState) {
-               if (JSON.stringify(state.data) !== JSON.stringify(cacheState)) {
-                  setState({ data: cacheState, loading: false });
+               if (JSON.stringify(state) !== JSON.stringify(cacheState)) {
+                  setState(cacheState);
                }
 
                return cacheState as Res;
@@ -64,14 +62,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                opts.onCompleted(res);
             }
 
-            nearClient.set(requestId, res, 'QUERY');
-            nearClient.set(requestId, true, 'FETCHED');
+            client.set(requestId, res, 'QUERY');
+            client.set(requestId, true, 'FETCHED');
 
-            setState({ data: res, loading: false });
+            setState(res);
             return res;
          } catch (e) {
-            setState({ ...state, loading: false });
-
             if (opts.debug) {
                console.log(`NEAR #${methodName} Error!`, e);
             }
@@ -98,15 +94,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
    React.useEffect(() => {
       if (contract && !opts.skip) {
-         setState({ ...state, loading: true });
-
          callMethod().then().catch();
       }
    }, [contract, methodName, opts.skip]);
 
    return {
-      loading: state.loading,
-      data: state.data,
+      data: state,
       refetch: (args?: Req) => callMethod(args, false),
    };
 }

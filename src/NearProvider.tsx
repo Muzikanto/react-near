@@ -1,6 +1,7 @@
 import React from 'react';
 import { Near, ConnectConfig, WalletConnection, connect, keyStores, Account } from 'near-api-js';
 import getNearConfig from './config';
+import getNearClient, { NearClient } from './core/client';
 
 export enum NearEnvironment {
    MainNet = 'mainnet',
@@ -14,19 +15,21 @@ export interface NearContextType {
    near?: Near;
    wallet?: WalletConnection;
    account?: Account;
+   client: NearClient;
 }
 
 export type NearProviderProps = Partial<ConnectConfig> & {
    environment?: NearEnvironment;
 };
 
-export const NearContext = React.createContext<NearContextType>({});
+export const NearContext = React.createContext<NearContextType>({ client: null as any });
 
 const NearProvider: React.FC<NearProviderProps> = ({
    environment = NearEnvironment.TestNet,
    children,
    ...props
 }) => {
+   const client = React.useMemo(() => getNearClient(), []);
    const config: ConnectConfig | null = React.useMemo(() => {
       if (typeof window === 'undefined') {
          return null;
@@ -60,7 +63,7 @@ const NearProvider: React.FC<NearProviderProps> = ({
 
    return (
       <NearContext.Provider
-         value={{ near, wallet, account: wallet ? wallet.account() : undefined }}
+         value={{ near, wallet, account: wallet ? wallet.account() : undefined, client }}
       >
          {children}
       </NearContext.Provider>
