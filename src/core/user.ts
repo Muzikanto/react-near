@@ -1,10 +1,9 @@
 import React from 'react';
 import { NearContext } from '../NearProvider';
 import { formatNearAmount } from 'near-api-js/lib/utils/format';
-import nearClient from './client';
 
 function useNearUser(contractId: string) {
-  const { wallet, account } = React.useContext(NearContext);
+  const { wallet, account, client } = React.useContext(NearContext);
 
   const signedIn = wallet && wallet.isSignedIn();
   // const [account, setAccount] = React.useState<Account | null>(null);
@@ -27,14 +26,14 @@ function useNearUser(contractId: string) {
       const balanceV = +formatNearAmount((await account.getAccountBalance()).available, 2);
 
       setBalance(balanceV);
-      nearClient.set(account.accountId, balanceV, 'USER');
+      client.set(account.accountId, balanceV, 'USER');
     }
   };
   const address: string | null = wallet ? wallet.getAccountId() : null;
   const isConnected = Boolean(signedIn && account);
 
   React.useEffect(() => {
-    if (account && typeof nearClient.get(account.accountId, 'USER') === 'undefined') {
+    if (account && typeof client.get(account.accountId, 'USER') === 'undefined') {
       refreshBalance()
         .then()
         .catch(e => {
