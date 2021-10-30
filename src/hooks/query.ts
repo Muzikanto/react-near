@@ -76,7 +76,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                opts.onError(e as Error);
             }
 
-            throw e;
+            return Promise.reject(e);
          }
       }
 
