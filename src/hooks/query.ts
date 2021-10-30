@@ -20,76 +20,78 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const [state, setState] = React.useState<Res | undefined>(undefined);
 
    const callMethod = async (args?: Req, useCache: boolean = true) => {
-      if (contract) {
-         if (!(contract as any)[methodName]) {
-            const err = new Error('Not found contract method');
+      return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
+         if (contract) {
+            if (!(contract as any)[methodName]) {
+               const err = new Error('Not found contract method');
 
-            if (opts.onError) {
-               opts.onError(err);
+               if (opts.onError) {
+                  opts.onError(err);
+               }
+               if (opts.debug) {
+                  console.log(`NEAR #${methodName} Error!`, err);
+               }
+               return reject(err);
             }
-            if (opts.debug) {
-               console.log(`NEAR #${methodName} Error!`, err);
+
+            const requestId = client.encodeRequest(methodName, args || opts.variables || {});
+            const cacheState = client.get(requestId, 'QUERY') as Res | null;
+            const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
+
+            if (useCache) {
+               if (cacheState) {
+                  if (JSON.stringify(state) !== JSON.stringify(cacheState)) {
+                     setState(cacheState);
+                  }
+
+                  return resolve(cacheState as Res);
+               }
+               if (isFetched) {
+                  return;
+               }
             }
-            return Promise.reject(err);
-         }
 
-         const requestId = client.encodeRequest(methodName, args || opts.variables || {});
-         const cacheState = client.get(requestId, 'QUERY') as Res | null;
-         const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
+            try {
+               // @ts-ignore
+               const res = await contract[methodName](args || opts.variables);
 
-         if (useCache) {
-            if (cacheState) {
-               if (JSON.stringify(state) !== JSON.stringify(cacheState)) {
-                  setState(cacheState);
+               if (opts.debug) {
+                  console.log(`NEAR #${methodName}`, res);
                }
 
-               return cacheState as Res;
-            }
-            if (isFetched) {
-               return Promise.reject();
+               if (opts.onCompleted) {
+                  opts.onCompleted(res);
+               }
+
+               client.set(requestId, res, 'QUERY');
+               client.set(requestId, true, 'FETCHED');
+
+               setState(res);
+               return resolve(res);
+            } catch (e) {
+               if (opts.debug) {
+                  console.log(`NEAR #${methodName} Error!`, e);
+               }
+
+               if (opts.onError) {
+                  opts.onError(e as Error);
+               }
+
+               return reject(e);
             }
          }
 
-         try {
-            // @ts-ignore
-            const res = await contract[methodName](args || opts.variables);
+         const err = new Error('Contract is not provided');
 
-            if (opts.debug) {
-               console.log(`NEAR #${methodName}`, res);
-            }
-
-            if (opts.onCompleted) {
-               opts.onCompleted(res);
-            }
-
-            client.set(requestId, res, 'QUERY');
-            client.set(requestId, true, 'FETCHED');
-
-            setState(res);
-            return res;
-         } catch (e) {
-            if (opts.debug) {
-               console.log(`NEAR #${methodName} Error!`, e);
-            }
-
-            if (opts.onError) {
-               opts.onError(e as Error);
-            }
-
-            return Promise.reject(e);
+         if (opts.onError) {
+            opts.onError(err);
          }
-      }
+         if (opts.debug) {
+            console.log(`NEAR #${methodName} Error!`, err);
+         }
 
-      const err = new Error('Contract is not provided');
-
-      if (opts.onError) {
-         opts.onError(err);
-      }
-      if (opts.debug) {
-         console.log(`NEAR #${methodName} Error!`, err);
-      }
-
-      return Promise.reject(err);
+         return reject(err);
+      });
    };
 
    React.useEffect(() => {

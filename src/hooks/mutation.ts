@@ -21,83 +21,87 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    const [state, setState] = React.useState<Res | undefined>(undefined);
 
    const callMethod = async (args: Req, attachedDeposit?: number): Promise<Res> => {
-      if (!account) {
-         const err = new Error('Not found contract account');
+      return new Promise(async (resolve: (res: Res) => void, reject) => {
+         if (!account) {
+            const err = new Error('Not found contract account');
 
-         if (opts.debug) {
-            console.log(`NEAR #${methodName} Error!`, err);
-         }
-         if (opts.onError) {
-            opts.onError(err);
-         }
+            if (opts.debug) {
+               console.log(`NEAR #${methodName} Error!`, err);
+            }
+            if (opts.onError) {
+               opts.onError(err);
+            }
 
-         return Promise.reject(err);
-      }
-
-      if (!contract) {
-         const err = new Error('Not found contract state');
-
-         if (opts.debug) {
-            console.log(`NEAR #${methodName} Error!`, err);
-         }
-         if (opts.onError) {
-            opts.onError(err);
+            return reject(err);
          }
 
-         return Promise.reject(err);
-      }
+         if (!contract) {
+            const err = new Error('Not found contract state');
 
-      if (!(contract as any)[methodName]) {
-         const err = new Error('Not found contract method');
+            if (opts.debug) {
+               console.log(`NEAR #${methodName} Error!`, err);
+            }
+            if (opts.onError) {
+               opts.onError(err);
+            }
 
-         if (opts.onError) {
-            opts.onError(err);
-         }
-         if (opts.debug) {
-            console.log(`NEAR #${methodName} Error!`, err);
-         }
-
-         return Promise.reject(err);
-      }
-
-      try {
-         let res: any;
-
-         if (attachedDeposit || opts.gas) {
-            res = await account.functionCall(
-               contract.contractId,
-               methodName,
-               args,
-               (opts.gas || NEAR_GAS) as any,
-               (attachedDeposit ? parseNearAmount(attachedDeposit.toString()) : undefined) as any,
-            );
-         } else {
-            // @ts-ignore
-            res = await contract[methodName](args);
+            return reject(err);
          }
 
-         if (opts.debug) {
-            console.log(`NEAR #${methodName}`, res);
+         if (!(contract as any)[methodName]) {
+            const err = new Error('Not found contract method');
+
+            if (opts.onError) {
+               opts.onError(err);
+            }
+            if (opts.debug) {
+               console.log(`NEAR #${methodName} Error!`, err);
+            }
+
+            return reject(err);
          }
 
-         if (opts.onCompleted) {
-            opts.onCompleted(res);
+         try {
+            let res: any;
+
+            if (attachedDeposit || opts.gas) {
+               res = await account.functionCall(
+                  contract.contractId,
+                  methodName,
+                  args,
+                  (opts.gas || NEAR_GAS) as any,
+                  (attachedDeposit
+                     ? parseNearAmount(attachedDeposit.toString())
+                     : undefined) as any,
+               );
+            } else {
+               // @ts-ignore
+               res = await contract[methodName](args);
+            }
+
+            if (opts.debug) {
+               console.log(`NEAR #${methodName}`, res);
+            }
+
+            if (opts.onCompleted) {
+               opts.onCompleted(res);
+            }
+
+            setState(res);
+
+            return resolve(res);
+         } catch (e) {
+            if (opts.debug) {
+               console.log(`NEAR #${methodName} Error!`, e);
+            }
+
+            if (opts.onError) {
+               opts.onError(e as Error);
+            }
+
+            return reject(e);
          }
-
-         setState(res);
-
-         return res;
-      } catch (e) {
-         if (opts.debug) {
-            console.log(`NEAR #${methodName} Error!`, e);
-         }
-
-         if (opts.onError) {
-            opts.onError(e as Error);
-         }
-
-         throw e;
-      }
+      });
    };
 
    return [callMethod, { data: state }] as const;
