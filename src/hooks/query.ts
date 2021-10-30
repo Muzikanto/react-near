@@ -8,7 +8,6 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
    onCompleted?: (res: Res) => void;
    skip?: boolean;
    debug?: boolean;
-   useCache?: boolean;
 };
 
 function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
@@ -22,7 +21,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
    });
 
-   const callMethod = async (args?: Req, useCache?: boolean) => {
+   const callMethod = async (args?: Req, useCache: boolean = true) => {
       if (contract) {
          if (!(contract as any)[methodName]) {
             const err = new Error('Not found contract method');
@@ -37,21 +36,20 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          }
 
          const requestId = nearClient.encodeRequest(methodName, args || opts.variables || {});
-         const cacheState = nearClient.get(requestId, 'QUERY') as Res;
+         const cacheState = nearClient.get(requestId, 'QUERY') as Res | null;
+         const isFetched = nearClient.get(requestId, 'FETCHED') as boolean | null;
 
-         if (
-            (typeof useCache === 'undefined'
-               ? typeof opts.useCache === 'undefined'
-                  ? true
-                  : opts.useCache
-               : useCache) &&
-            cacheState
-         ) {
-            if (state.data !== cacheState) {
-               setState({ data: cacheState, loading: false });
+         if (useCache) {
+            if (cacheState) {
+               if (state.data !== cacheState) {
+                  setState({ data: cacheState, loading: false });
+               }
+
+               return cacheState as Res;
             }
-
-            return cacheState as Res;
+            if (isFetched) {
+               return undefined;
+            }
          }
 
          try {
@@ -67,6 +65,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             }
 
             nearClient.set(requestId, res, 'QUERY');
+            nearClient.set(requestId, true, 'FETCHED');
 
             setState({ data: res, loading: false });
             return res;
