@@ -58,6 +58,9 @@ const NearProvider: React.FC<NearProviderProps> = ({
          setup().catch((err) => {
             console.error(err);
          });
+
+         // @ts-ignore
+         window.__NEAR_CLIENT__ = client;
       }
    }, []);
 
