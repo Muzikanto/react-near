@@ -23,7 +23,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
    });
 
-   const callMethod = async (args: Req, attachedDeposit?: number) => {
+   const callMethod = async (args: Req, attachedDeposit?: number): Promise<Res> => {
       if (!account) {
          const err = new Error('Not found contract account');
 
