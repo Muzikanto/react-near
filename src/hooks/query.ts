@@ -96,7 +96,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
    React.useEffect(() => {
       if (contract && !opts.skip) {
-         callMethod().then().catch();
+         callMethod().then().catch(() => {});
       }
    }, [contract, methodName, opts.skip]);
 
