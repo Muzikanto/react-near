@@ -18,7 +18,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
   const contract = useNearContractProvided();
 
   const [loading, setLoading] = React.useState<boolean>(false);
-  const [data, setData] = React.useState<Res | null>(null);
+  const [data, setData] = React.useState<Res | undefined>(undefined);
 
   const callMethod = async (args?: Req, useCache?: boolean) => {
     if (contract) {
