@@ -25,7 +25,9 @@ const getNearClient = (): NearClient => {
          cache[key] = value;
       }
 
-      watchers[rootId][key].forEach((watcher) => watcher(value));
+      if (watchers[rootId] && watchers[rootId][key]) {
+         watchers[rootId][key].forEach((watcher) => watcher(value));
+      }
    };
 
    const get = <T>(key: string, rootId: string = 'ROOT'): T | null => {

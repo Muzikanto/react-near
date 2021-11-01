@@ -22,6 +22,7 @@ import NearContractProvider, {
 } from './NearContractProvider';
 import getNearConfig, { NEAR_GAS } from './config';
 import { getNearError } from './utils';
+import useNearContractProvided from './core/contract-provided';
 
 export {
    useNear,
@@ -37,6 +38,7 @@ export {
    NearContextType,
    NearProviderProps,
    //
+   useNearContractProvided,
    NearContractProvider,
    NearContractContext,
    NearContractContextType,
