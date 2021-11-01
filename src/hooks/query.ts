@@ -106,7 +106,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
          const watcher = function (v: any) {
             if (JSON.stringify(v) !== JSON.stringify(state)) {
-               setState({ ...v });
+               setState(v);
             }
          };
 
