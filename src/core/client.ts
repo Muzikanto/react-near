@@ -63,8 +63,10 @@ const getNearClient = (): NearClient => {
       encodeRequest,
    };
 
-   // @ts-ignore
-   window.__NEAR_CLIENT__ = client;
+   if (typeof window !== 'undefined') {
+      // @ts-ignore
+      window.__NEAR_CLIENT__ = client;
+   }
 
    return client;
 };
