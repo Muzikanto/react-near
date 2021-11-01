@@ -16,6 +16,7 @@ export interface NearContextType {
    wallet?: WalletConnection;
    account?: Account;
    client: NearClient;
+   loading?: boolean;
 }
 
 export type NearProviderProps = Partial<ConnectConfig> & {
@@ -42,8 +43,15 @@ const NearProvider: React.FC<NearProviderProps> = ({
       };
    }, [props, environment]);
 
-   const [near, setNear] = React.useState<Near>();
-   const [wallet, setWallet] = React.useState<WalletConnection>();
+   const [state, setState] = React.useState<{
+      near: Near | undefined;
+      wallet: WalletConnection | undefined;
+      loading: boolean;
+   }>({
+      near: undefined,
+      wallet: undefined,
+      loading: false,
+   });
 
    React.useEffect(() => {
       if (config && typeof window !== 'undefined') {
@@ -51,10 +59,10 @@ const NearProvider: React.FC<NearProviderProps> = ({
             const nearInstance = await connect(config);
             const walletInstance = new WalletConnection(nearInstance, null);
 
-            setNear(nearInstance);
-            setWallet(walletInstance);
+            setState({ loading: false, wallet: walletInstance, near: nearInstance });
          };
 
+         setState({ loading: true, wallet: undefined, near: undefined });
          setup()
             .then()
             .catch((err) => {
@@ -65,7 +73,13 @@ const NearProvider: React.FC<NearProviderProps> = ({
 
    return (
       <NearContext.Provider
-         value={{ near, wallet, account: wallet ? wallet.account() : undefined, client }}
+         value={{
+            near: state.near,
+            wallet: state.wallet,
+            account: state.wallet ? state.wallet.account() : undefined,
+            client,
+            loading: state.loading,
+         }}
       >
          {children}
       </NearContext.Provider>
