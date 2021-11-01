@@ -55,12 +55,11 @@ const NearProvider: React.FC<NearProviderProps> = ({
             setWallet(walletInstance);
          };
 
-         setup().catch((err) => {
-            console.error(err);
-         });
-
-         // @ts-ignore
-         window.__NEAR_CLIENT__ = client;
+         setup()
+            .then()
+            .catch((err) => {
+               console.error('NEAR Error!', err);
+            });
       }
    }, []);
 

@@ -66,7 +66,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                client.set(requestId, res, 'QUERY');
                client.set(requestId, true, 'FETCHED');
 
-               setState(res);
+               // setState(res);
                return resolve(res);
             } catch (e) {
                if (opts.debug) {
@@ -96,9 +96,20 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
    React.useEffect(() => {
       if (contract && !opts.skip) {
-         callMethod().then().catch(() => {});
+         callMethod()
+            .then()
+            .catch(() => {});
       }
    }, [contract, methodName, opts.skip]);
+   // React.useEffect(() => {
+   //    return client.subscribe(
+   //       client.encodeRequest(methodName, opts.variables || {}),
+   //       (v) => {
+   //          setState(v);
+   //       },
+   //       'QUERY',
+   //    );
+   // }, [opts.variables, methodName]);
 
    return {
       data: state,
