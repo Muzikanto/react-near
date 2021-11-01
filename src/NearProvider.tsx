@@ -50,7 +50,7 @@ const NearProvider: React.FC<NearProviderProps> = ({
    }>({
       near: undefined,
       wallet: undefined,
-      loading: false,
+      loading: true,
    });
 
    React.useEffect(() => {
@@ -62,7 +62,6 @@ const NearProvider: React.FC<NearProviderProps> = ({
             setState({ loading: false, wallet: walletInstance, near: nearInstance });
          };
 
-         setState({ loading: true, wallet: undefined, near: undefined });
          setup()
             .then()
             .catch((err) => {
