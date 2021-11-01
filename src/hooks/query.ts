@@ -1,6 +1,6 @@
 import React from 'react';
-import { NearContext } from '../NearProvider';
 import useNearContractProvided from '../core/contract-provided';
+import { NearContext } from '../NearProvider';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
    variables?: Req;
@@ -18,15 +18,27 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const contract = useNearContractProvided();
 
    const [state, setState] = React.useState<Res | undefined>(undefined);
-   const [loading, setLoading] = React.useState<boolean>(false);
+   const [loading, setLoading] = React.useState<boolean>(Boolean(!opts.skip));
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
       const requestId = client.encodeRequest(methodName, args || opts.variables || {});
       const cacheState = client.get(requestId, 'QUERY') as Res | null;
       const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
 
-      if ((contract as any)[methodName] && (useCache ? !cacheState : false)) {
-         client.set(requestId, true, 'LOADING');
+      if (contract && (contract as any)[methodName] && (useCache ? !cacheState : false)) {
+         if (useCache) {
+            if (cacheState) {
+               // setState(cacheState);
+               client.set(requestId, cacheState, 'QUERY');
+
+               return Promise.resolve(cacheState) as Promise<Res>;
+            }
+            if (isFetched) {
+               return Promise.resolve(undefined);
+            }
+
+            client.set(requestId, true, 'LOADING');
+         }
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
@@ -41,15 +53,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   console.log(`NEAR #${methodName} Error!`, err);
                }
                return reject(err);
-            }
-
-            if (useCache) {
-               if (cacheState) {
-                  return resolve(cacheState as Res);
-               }
-               if (isFetched) {
-                  return;
-               }
             }
 
             try {
@@ -98,34 +101,50 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    };
 
    React.useEffect(() => {
+      if (!opts.skip) {
+         const requestId = client.encodeRequest(methodName, opts.variables || {});
+
+         const watcher = function (v: any) {
+            if (JSON.stringify(v) !== JSON.stringify(state)) {
+               setState({ ...v });
+            }
+         };
+
+         const unWatch = client.subscribe(requestId, watcher, 'QUERY');
+
+         return () => {
+            unWatch();
+         };
+      }
+
+      return () => {};
+   }, [client, opts.variables, methodName, state, opts.skip]);
+   React.useEffect(() => {
+      if (!opts.skip) {
+         const requestId = client.encodeRequest(methodName, opts.variables || {});
+         const watcher = function (v: any) {
+            if (v !== loading) {
+               setLoading(v);
+            }
+         };
+
+         const unWatch = client.subscribe(requestId, watcher, 'LOADING');
+
+         return () => {
+            unWatch();
+         };
+      }
+
+      return () => {};
+   }, [client, opts.variables, methodName, loading, opts.skip]);
+
+   React.useEffect(() => {
       if (contract && !opts.skip) {
          callMethod()
             .then()
             .catch(() => {});
       }
    }, [contract, methodName, opts.skip]);
-   React.useEffect(() => {
-      return client.subscribe(
-         client.encodeRequest(methodName, opts.variables || {}),
-         (v) => {
-            if (JSON.stringify(v) !== JSON.stringify(state)) {
-               setState(v);
-            }
-         },
-         'QUERY',
-      );
-   }, [opts.variables, methodName, state]);
-   React.useEffect(() => {
-      return client.subscribe(
-         client.encodeRequest(methodName, opts.variables || {}),
-         (v) => {
-            if (loading !== v) {
-               setLoading(v);
-            }
-         },
-         'LOADING',
-      );
-   }, [opts.variables, methodName, loading]);
 
    return {
       data: state,
