@@ -57,12 +57,13 @@ const getNearClient = (): NearClient => {
       return `${methodName}(${JSON.stringify(args)})`;
    };
 
-   const client: NearClient = {
+   const client: NearClient & { watchers: any } = {
       subscribe,
       cache,
       set,
       get,
       encodeRequest,
+      watchers,
    };
 
    if (typeof window !== 'undefined') {
