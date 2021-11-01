@@ -18,8 +18,17 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const contract = useNearContractProvided();
 
    const [state, setState] = React.useState<Res | undefined>(undefined);
+   const [loading, setLoading] = React.useState<boolean>(false);
 
-   const callMethod = async (args?: Req, useCache: boolean = true) => {
+   const callMethod = (args?: Req, useCache: boolean = true) => {
+      const requestId = client.encodeRequest(methodName, args || opts.variables || {});
+      const cacheState = client.get(requestId, 'QUERY') as Res | null;
+      const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
+
+      if ((contract as any)[methodName] && (useCache ? !cacheState : false)) {
+         client.set(requestId, true, 'LOADING');
+      }
+
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
          if (contract) {
             if (!(contract as any)[methodName]) {
@@ -34,16 +43,8 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                return reject(err);
             }
 
-            const requestId = client.encodeRequest(methodName, args || opts.variables || {});
-            const cacheState = client.get(requestId, 'QUERY') as Res | null;
-            const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
-
             if (useCache) {
                if (cacheState) {
-                  if (JSON.stringify(state) !== JSON.stringify(cacheState)) {
-                     setState(cacheState);
-                  }
-
                   return resolve(cacheState as Res);
                }
                if (isFetched) {
@@ -65,17 +66,19 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
                client.set(requestId, res, 'QUERY');
                client.set(requestId, true, 'FETCHED');
+               client.set(requestId, false, 'LOADING');
 
-               // setState(res);
                return resolve(res);
             } catch (e) {
                if (opts.debug) {
-                  console.log(`NEAR #${methodName} Error!`, e);
+                  console.log(`NEAR #${methodName} Error!`, { ...opts.variables }, e);
                }
 
                if (opts.onError) {
                   opts.onError(e as Error);
                }
+
+               client.set(requestId, false, 'LOADING');
 
                return reject(e);
             }
@@ -101,18 +104,32 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             .catch(() => {});
       }
    }, [contract, methodName, opts.skip]);
-   // React.useEffect(() => {
-   //    return client.subscribe(
-   //       client.encodeRequest(methodName, opts.variables || {}),
-   //       (v) => {
-   //          setState(v);
-   //       },
-   //       'QUERY',
-   //    );
-   // }, [opts.variables, methodName]);
+   React.useEffect(() => {
+      return client.subscribe(
+         client.encodeRequest(methodName, opts.variables || {}),
+         (v) => {
+            if (JSON.stringify(v) !== JSON.stringify(state)) {
+               setState(v);
+            }
+         },
+         'QUERY',
+      );
+   }, [opts.variables, methodName, state]);
+   React.useEffect(() => {
+      return client.subscribe(
+         client.encodeRequest(methodName, opts.variables || {}),
+         (v) => {
+            if (loading !== v) {
+               setLoading(v);
+            }
+         },
+         'LOADING',
+      );
+   }, [opts.variables, methodName, loading]);
 
    return {
       data: state,
+      loading,
       refetch: (args?: Req) => callMethod(args, false),
    };
 }
