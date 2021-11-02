@@ -1,18 +1,17 @@
 # NEAR React
 
-Use react context and hooks to configure and interact with NEAR. (Worked with SSR Render)
+Inspired by graphql (for the frontend) I decided to do the same for near.
 
-[Reference Docs](https://mehtaphysical.github.io/react-near)
+- provider Near, NearWallet, NearAccount and NearContract to the App
+- use useNearQuery and useNearMutation for fetch data
+- all fetched data are cached
+- use basic functions to query for data (useNearNft, useNearNftMetadata, useNearNftTokensForOwner and others)
 
 ## Setup
 
 You'll need to install the package from npm `npm i react-near near-api-js`.
 
-Then wrap your application with the `NearProvider` passing it an environment:
-
--  `mainnet`
--  `testnet`
--  `betanet`
+Root
 
 ```tsx
 ReactDOM.render(
@@ -23,20 +22,15 @@ ReactDOM.render(
 );
 ```
 
-You can more finely tune the NEAR configuration by passing additional props
-no the `NearProvider`. See the docs for more information.
-
-Once the application is wrapped with the `NearProvider` your can access the
-NEAR connection, the NEAR wallet, and NEAR contract using react hooks from
-any component in the application.
-
-Wrap Page (or App)
+App
 
 ```tsx
-function WrappedContract() {
-   const contract = useNearContract('dev-123456789', {
+const CONTRACT_NAME = 'dev-123456789';
+
+function App() {
+   const contract = useNearContract(CONTRACT_NAME, {
       viewMethods: ['nft_tokens_for_owner', 'nft_metadata'],
-      changeMethods: [],
+      changeMethods: ['nft_mint'],
    });
 
    return (
@@ -47,16 +41,32 @@ function WrappedContract() {
 }
 ```
 
+Page
+
 ```tsx
 function Page() {
-   const user = useNearUser(contractId);
+   // const contract = useNearContractProvided();
+   const user = useNearUser(CONTRACT_NAME);
 
-   const { data: metadata } = useNearQuery<{ id: string }, {}>('nft_metadata', {
-      variables: {},
+   // useNearQuery use caching for all requests
+   const { data: metadata, loading: loadingMeta } = useNearQuery<{ id: string }, {}>(
+      'nft_metadata',
+      {
+         variables: {},
+      },
+   );
+   const {
+      data: collection,
+      loading: loadingCollection,
+      refetch: refetchCollection,
+   } = useNearQuery<{ id: string }, {}>('nft_tokens_for_owner', {
+      variables: { address: user.address },
+      skip: !user.address,
    });
-   const [mint] = useNearMutation<{ id: string }, { address: string }>('mint', {});
-
-   const [showMeta, setShowMeta] = React.useState(false);
+   const [mint, { data: mintResult }] = useNearMutation<{ id: string }, { address: string }>(
+      'nft_mint',
+      {},
+   );
 
    return (
       <div>
@@ -66,25 +76,35 @@ function Page() {
             </div>
          ) : (
             <div>
-               <span>
-                  {user.address} {user.balance} NEAR
-               </span>
-               <div>Metadata: {JSON.stringify(metadata)}</div>
-               <button
-                  onClick={() => {
-                     if (user.address) {
-                        mint({ address: user.address }).then(() => {
+               <div>
+                  <span>User</span>
+
+                  <span>
+                     {user.address} {user.balance} NEAR
+                  </span>
+                  <button onClick={() => user.disconnect()}>disconnect</button>
+               </div>
+
+               <div>
+                  <span>Nft</span>
+
+                  {loadingMeta ? 'Loading ...' : <span>Metadata: {JSON.stringify(metadata)}</span>}
+                  {loadingCollection ? (
+                     'Loading...'
+                  ) : (
+                     <div>{collection && collection.map((el) => <img src={el.src} />)}</div>
+                  )}
+                  <button
+                     onClick={() => {
+                        mint({ address: user.address as string }).then(() => {
+                           refetchCollection({ address: user.address as string }).then();
                            user.refreshBalance().then();
                         });
-                     }
-                  }}
-               >
-                  mint
-               </button>
-
-               <button onClick={() => user.disconnect()}>disconnect</button>
-               <button onClick={() => setShowMeta(!showMeta)}>toggle</button>
-               {showMeta && <Collection />}
+                     }}
+                  >
+                     mint nft
+                  </button>
+               </div>
             </div>
          )}
       </div>
