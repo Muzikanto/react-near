@@ -3,18 +3,22 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useNearAccount } from './index';
 import { NEAR_GAS } from '../config';
 import useNearContractProvided from '../core/contract-provided';
+import { NearClient } from '../core/client';
+import { NearContext } from '../NearProvider';
 
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    debug?: boolean;
    gas?: number;
+   update?: (client: NearClient, res: { data: Res }) => void;
 };
 
 function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    methodName: string,
    opts: NearMutationOptions<Res, Req> = {},
 ) {
+   const { client } = React.useContext(NearContext);
    const contract = useNearContractProvided();
    const account = useNearAccount();
 
@@ -81,6 +85,10 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
 
             if (opts.debug) {
                console.log(`NEAR #${methodName}`, res);
+            }
+
+            if (opts.update) {
+               opts.update(client, { data: res });
             }
 
             if (opts.onCompleted) {

@@ -4,6 +4,7 @@ import { NEAR_GAS } from '../config';
 import useNearAccount from './account';
 import useNearWallet from './wallet';
 import { NearContext } from '../NearProvider';
+import { encodeRequest } from './client';
 
 export type NearContract = Contract & {
    funcCall: <Res = any, Req extends { [key: string]: any } = {}>(
@@ -25,11 +26,11 @@ function useNearContract(
    const contract = React.useMemo(() => {
       if (wallet) {
          const walletAccount = wallet.account();
-         const requestId = client.encodeRequest(contractId, {
+         const requestId = encodeRequest(contractId, {
             accountId: walletAccount.accountId,
             ...contractMethods,
          });
-         const cacheState = client.get(requestId, 'CONTRACT');
+         const cacheState = client.cache.get(requestId, 'CONTRACT');
 
          if (cacheState) {
             return cacheState as Contract;
@@ -57,7 +58,7 @@ function useNearContract(
             return Promise.reject('Account not connected');
          };
 
-         client.set(requestId, contr, 'CONTRACT');
+         client.cache.set(requestId, contr, 'CONTRACT');
 
          return contr;
       }

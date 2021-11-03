@@ -1,6 +1,7 @@
 import React from 'react';
 import useNearContractProvided from '../core/contract-provided';
 import { NearContext } from '../NearProvider';
+import {encodeRequest} from "../core/client";
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
    variables?: Req;
@@ -21,15 +22,15 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const [loading, setLoading] = React.useState<boolean>(Boolean(!opts.skip));
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
-      const requestId = client.encodeRequest(methodName, args || opts.variables || {});
-      const cacheState = client.get(requestId, 'QUERY') as Res | null;
-      const isFetched = client.get(requestId, 'FETCHED') as boolean | null;
+      const requestId = encodeRequest(methodName, args || opts.variables || {});
+      const cacheState = client.cache.get(requestId, 'QUERY') as Res | null;
+      const isFetched = client.cache.get(requestId, 'FETCHED') as boolean | null;
 
       if (contract && (contract as any)[methodName] && (useCache ? !cacheState : false)) {
          if (useCache) {
             if (cacheState) {
                // setState(cacheState);
-               client.set(requestId, cacheState, 'QUERY');
+               client.cache.set(requestId, cacheState, 'QUERY');
 
                return Promise.resolve(cacheState) as Promise<Res>;
             }
@@ -37,7 +38,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                return Promise.resolve(undefined);
             }
 
-            client.set(requestId, true, 'LOADING');
+            client.cache.set(requestId, true, 'LOADING');
          }
       }
 
@@ -67,9 +68,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   opts.onCompleted(res);
                }
 
-               client.set(requestId, res, 'QUERY');
-               client.set(requestId, true, 'FETCHED');
-               client.set(requestId, false, 'LOADING');
+               client.cache.set(requestId, res, 'QUERY');
+               client.cache.set(requestId, true, 'FETCHED');
+               client.cache.set(requestId, false, 'LOADING');
 
                return resolve(res);
             } catch (e) {
@@ -81,7 +82,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   opts.onError(e as Error);
                }
 
-               client.set(requestId, false, 'LOADING');
+               client.cache.set(requestId, false, 'LOADING');
 
                return reject(e);
             }
@@ -102,7 +103,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
    React.useEffect(() => {
       if (!opts.skip) {
-         const requestId = client.encodeRequest(methodName, opts.variables || {});
+         const requestId = encodeRequest(methodName, opts.variables || {});
 
          const watcher = function (v: any) {
             if (JSON.stringify(v) !== JSON.stringify(state)) {
@@ -110,7 +111,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             }
          };
 
-         const unWatch = client.subscribe(requestId, watcher, 'QUERY');
+         const unWatch = client.cache.watch(requestId, watcher, 'QUERY');
 
          return () => {
             unWatch();
@@ -121,14 +122,14 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    }, [client, opts.variables, methodName, state, opts.skip]);
    React.useEffect(() => {
       if (!opts.skip) {
-         const requestId = client.encodeRequest(methodName, opts.variables || {});
+         const requestId = encodeRequest(methodName, opts.variables || {});
          const watcher = function (v: any) {
             if (v !== loading) {
                setLoading(v);
             }
          };
 
-         const unWatch = client.subscribe(requestId, watcher, 'LOADING');
+         const unWatch = client.cache.watch(requestId, watcher, 'LOADING');
 
          return () => {
             unWatch();

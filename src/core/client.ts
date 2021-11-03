@@ -1,10 +1,15 @@
 export type NearClient = {
-   cache: { [key: string]: any };
-   set: (key: string, value: any, rootId?: string) => void;
-   get: (key: string, rootId?: string) => any;
-   encodeRequest: (methodName: string, args: { [key: string]: any }) => string;
-   subscribe: (key: string, watcher: (v: any) => void, rootId?: string) => () => void;
+   cache: {
+      data: { [key: string]: any };
+      set: (key: string, value: any, rootId?: string) => void;
+      get: (key: string, rootId?: string) => any;
+      watch: (key: string, watcher: (v: any) => void, rootId?: string) => () => void;
+   };
 };
+
+export function encodeRequest(methodName: string, args: { [key: string]: any }) {
+   return `${methodName}(${JSON.stringify(args)})`;
+}
 
 const getNearClient = (): NearClient => {
    const watchers: {
@@ -38,7 +43,7 @@ const getNearClient = (): NearClient => {
       }
    };
 
-   const subscribe = (key: string, watcher: (v: any) => void, rootId: string = 'ROOT') => {
+   const watch = (key: string, watcher: (v: any) => void, rootId: string = 'ROOT') => {
       if (!watchers[rootId]) {
          watchers[rootId] = {};
       }
@@ -53,16 +58,13 @@ const getNearClient = (): NearClient => {
       };
    };
 
-   const encodeRequest = (methodName: string, args: { [key: string]: any }) => {
-      return `${methodName}(${JSON.stringify(args)})`;
-   };
-
    const client: NearClient & { watchers: any } = {
-      subscribe,
-      cache,
-      set,
-      get,
-      encodeRequest,
+      cache: {
+         data: cache,
+         set,
+         get,
+         watch,
+      },
       watchers,
    };
 

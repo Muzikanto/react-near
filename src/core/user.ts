@@ -26,14 +26,14 @@ function useNearUser(contractId: string) {
          const balanceV = +formatNearAmount((await account.getAccountBalance()).available, 2);
 
          setBalance(balanceV);
-         client.set(account.accountId, balanceV, 'USER');
+         client.cache.set(account.accountId, balanceV, 'USER');
       }
    };
    const address: string | null = wallet ? wallet.getAccountId() : null;
    const isConnected = Boolean(signedIn && account);
 
    React.useEffect(() => {
-      if (account && !loading && typeof client.get(account.accountId, 'USER') === 'undefined') {
+      if (account && !loading && typeof client.cache.get(account.accountId, 'USER') === 'undefined') {
          refreshBalance()
             .then()
             .catch((e) => {
