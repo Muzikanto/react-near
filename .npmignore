@@ -6,3 +6,4 @@ node_modules
 .prettierrc
 src
 tsconfig.json
+example

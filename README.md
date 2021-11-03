@@ -59,7 +59,7 @@ function Page() {
       data: collection,
       loading: loadingCollection,
       refetch: refetchCollection,
-   } = useNearQuery<{ id: string }, {}>('nft_tokens_for_owner', {
+   } = useNearQuery<Array<{ src: string }>, {}>('nft_tokens_for_owner', {
       variables: { address: user.address },
       skip: !user.address,
    });

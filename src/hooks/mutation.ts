@@ -1,9 +1,7 @@
 import React from 'react';
-import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { useNearAccount } from './index';
-import { NEAR_GAS } from '../config';
 import useNearContractProvided from '../core/contract-provided';
-import { NearClient } from '../core/client';
+import { encodeRequest, NearClient } from '../core/client';
 import { NearContext } from '../NearProvider';
 
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
@@ -11,7 +9,17 @@ export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = 
    onCompleted?: (res: Res) => void;
    debug?: boolean;
    gas?: number;
-   update?: (client: NearClient, res: { data: Res }) => void;
+   skipRenders?: boolean;
+   update?: (
+      client: NearClient,
+      res: {
+         data: Res;
+         variables: Req;
+         attachedDeposit?: number;
+         methodName: string;
+         requestId: string;
+      },
+   ) => void;
 };
 
 function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
@@ -23,8 +31,13 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    const account = useNearAccount();
 
    const [state, setState] = React.useState<Res | undefined>(undefined);
+   const [loading, setLoading] = React.useState<boolean>(false);
 
    const callMethod = async (args: Req, attachedDeposit?: number): Promise<Res> => {
+      if (account && contract && (contract as any)[methodName] && !opts.skipRenders) {
+         setLoading(true);
+      }
+
       return new Promise(async (resolve: (res: Res) => void, reject) => {
          if (!account) {
             const err = new Error('Not found contract account');
@@ -69,15 +82,12 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             let res: any;
 
             if (attachedDeposit || opts.gas) {
-               res = await account.functionCall(
-                  contract.contractId,
-                  methodName,
+               res = await contract.funcCall({
+                  method: methodName,
+                  attachedDeposit,
+                  gas: opts.gas,
                   args,
-                  (opts.gas || NEAR_GAS) as any,
-                  (attachedDeposit
-                     ? parseNearAmount(attachedDeposit.toString())
-                     : undefined) as any,
-               );
+               });
             } else {
                // @ts-ignore
                res = await contract[methodName](args);
@@ -88,14 +98,23 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             }
 
             if (opts.update) {
-               opts.update(client, { data: res });
+               opts.update(client, {
+                  data: res,
+                  variables: args,
+                  attachedDeposit,
+                  methodName,
+                  requestId: encodeRequest(methodName, args),
+               });
             }
 
             if (opts.onCompleted) {
                opts.onCompleted(res);
             }
 
-            setState(res);
+            if (!opts.skipRenders) {
+               setState(res);
+               setLoading(false);
+            }
 
             return resolve(res);
          } catch (e) {
@@ -107,12 +126,16 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                opts.onError(e as Error);
             }
 
+            if (!opts.skipRenders) {
+               setLoading(false);
+            }
+
             return reject(e);
          }
       });
    };
 
-   return [callMethod, { data: state }] as const;
+   return [callMethod, { data: state, loading }] as const;
 }
 
 export default useNearMutation;

@@ -1,4 +1,4 @@
-export const NEAR_GAS = '200000000000000';
+export const NEAR_GAS = 200000000000000;
 
 function getNearConfig(env: string) {
    const s: {
@@ -9,7 +9,7 @@ function getNearConfig(env: string) {
       nodeUrl: string;
       GAS: string;
    } = {
-      GAS: NEAR_GAS,
+      GAS: NEAR_GAS.toString(),
       contractName: '',
       networkId: '',
       helperUrl: '',

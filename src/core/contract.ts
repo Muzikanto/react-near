@@ -7,11 +7,12 @@ import { NearContext } from '../NearProvider';
 import { encodeRequest } from './client';
 
 export type NearContract = Contract & {
-   funcCall: <Res = any, Req extends { [key: string]: any } = {}>(
-      methodName: string,
-      args: Req,
-      attachedDeposit: number,
-   ) => Promise<Res>;
+   funcCall: <Res = any, Req extends { [key: string]: any } = {}>(opts: {
+      method: string;
+      args?: Req;
+      gas?: number;
+      attachedDeposit?: number;
+   }) => Promise<Res>;
 };
 
 function useNearContract(
@@ -30,7 +31,7 @@ function useNearContract(
             accountId: walletAccount.accountId,
             ...contractMethods,
          });
-         const cacheState = client.cache.get(requestId, 'CONTRACT');
+         const cacheState = client.cache.get(requestId, 'ROOT_CONTRACT');
 
          if (cacheState) {
             return cacheState as Contract;
@@ -38,19 +39,20 @@ function useNearContract(
 
          const contr = new Contract(walletAccount, contractId, contractMethods);
 
-         (contr as any).funcCall = function (
-            methodName: string,
-            args: { [key: string]: any } = {},
-            attachedDeposit?: number,
-         ) {
+         (contr as any).funcCall = function (opts: {
+            method: string;
+            args?: any;
+            gas?: number;
+            attachedDeposit?: number;
+         }) {
             if (account) {
                return account.functionCall(
                   contractId,
-                  methodName,
-                  args,
-                  NEAR_GAS as any,
-                  attachedDeposit
-                     ? (utils.format.parseNearAmount(attachedDeposit.toString()) as any)
+                  opts.method,
+                  opts.args || {},
+                  (opts.gas || NEAR_GAS).toString() as any,
+                  opts.attachedDeposit
+                     ? (utils.format.parseNearAmount(opts.attachedDeposit.toString()) as any)
                      : undefined,
                ) as any;
             }
@@ -58,7 +60,7 @@ function useNearContract(
             return Promise.reject('Account not connected');
          };
 
-         client.cache.set(requestId, contr, 'CONTRACT');
+         client.cache.set(requestId, contr, 'ROOT_CONTRACT');
 
          return contr;
       }

@@ -1,11 +1,11 @@
 import { Contract } from 'near-api-js';
 import { NearQueryOptions, useNearQuery } from '../hooks';
-import { DefaultToken } from './index';
+import { DefaultNftToken } from './index';
 
 export type UseNftCollectionQueryInput = { account_id: string; fromIndex?: number; limit?: number };
 
 function useNearNftTokensForOwner<
-   Res extends DefaultToken[] = DefaultToken[],
+   Res extends DefaultNftToken[] = DefaultNftToken[],
    Req extends UseNftCollectionQueryInput = UseNftCollectionQueryInput,
 >(
    contract: Contract,

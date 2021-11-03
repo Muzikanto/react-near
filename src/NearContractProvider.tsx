@@ -1,12 +1,13 @@
 import React from 'react';
-import { ConnectConfig, Contract } from 'near-api-js';
+import { ConnectConfig } from 'near-api-js';
+import { NearContract } from './core/contract';
 
 export interface NearContractContextType {
-   contract?: Contract | null;
+   contract?: NearContract | null;
 }
 
 export type NearContractProviderProps = Partial<ConnectConfig> & {
-   contract?: Contract | null;
+   contract?: NearContract | null;
 };
 
 export const NearContractContext = React.createContext<NearContractContextType>({});

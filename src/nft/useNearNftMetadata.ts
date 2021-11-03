@@ -1,9 +1,9 @@
 import { Contract } from 'near-api-js';
 import { NearQueryOptions, useNearQuery } from '../hooks';
-import { DefaultContractMetadata } from './index';
+import { DefaultNftContractMetadata } from './index';
 
 function useNearNftMetadata<
-   Res extends DefaultContractMetadata = DefaultContractMetadata,
+   Res extends DefaultNftContractMetadata = DefaultNftContractMetadata,
    Req = {},
 >(contract: Contract, opts: NearQueryOptions<Res, Req> = {}) {
    return useNearQuery<Res, Req>('nft_metadata', opts);
