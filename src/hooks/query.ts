@@ -28,8 +28,16 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const { client } = React.useContext(NearContext);
    const contract = useNearContractProvided();
 
-   const [state, setState] = React.useState<Res | undefined>(undefined);
-   const [loading, setLoading] = React.useState<boolean>(Boolean(!opts.skip));
+   const [state, setState] = React.useState<{
+      data: Res | undefined | null;
+      loading: boolean;
+      error: Error | null | undefined;
+   }>({
+      loading: !opts.skip,
+      data: null,
+      error: null,
+   });
+   // const [loading, setLoading] = React.useState<boolean>(Boolean(!opts.skip));
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
       const requestId = encodeRequest(methodName, args || opts.variables || {});
@@ -39,7 +47,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       if (contract && (contract as any)[methodName] && (useCache ? !cacheState : false)) {
          if (useCache) {
             if (cacheState) {
-               // setState(cacheState);
                client.cache.set(requestId, cacheState, 'ROOT_QUERY');
 
                return Promise.resolve(cacheState) as Promise<Res>;
@@ -48,7 +55,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                return Promise.resolve(undefined);
             }
 
-            client.cache.set(requestId, true, 'ROOT_LOADING');
+            client.cache.set(
+               requestId,
+               { data: cacheState, loading: true, error: null },
+               'ROOT_QUERY',
+            );
          }
       }
 
@@ -87,9 +98,13 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   opts.onCompleted(res);
                }
 
-               client.cache.set(requestId, res, 'ROOT_QUERY');
+               client.cache.set(
+                  requestId,
+                  { data: res, loading: false, error: null },
+                  'ROOT_QUERY',
+               );
                client.cache.set(requestId, true, 'ROOT_FETCHED');
-               client.cache.set(requestId, false, 'ROOT_LOADING');
+               // client.cache.set(requestId, false, 'ROOT_LOADING');
 
                return resolve(res);
             } catch (e) {
@@ -101,7 +116,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   opts.onError(e as Error);
                }
 
-               client.cache.set(requestId, false, 'ROOT_LOADING');
+               client.cache.set(
+                  requestId,
+                  { data: undefined, loading: false, error: e },
+                  'ROOT_QUERY',
+               );
 
                return reject(e);
             }
@@ -124,7 +143,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       if (!opts.skip) {
          const requestId = encodeRequest(methodName, opts.variables || {});
 
-         const watcher = function (v: any) {
+         const watcher = function (v: { data: any; loading: boolean; error: Error | null | undefined }) {
             if (JSON.stringify(v) !== JSON.stringify(state)) {
                setState(v);
             }
@@ -139,24 +158,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
       return () => {};
    }, [client, opts.variables, methodName, state, opts.skip]);
-   React.useEffect(() => {
-      if (!opts.skip) {
-         const requestId = encodeRequest(methodName, opts.variables || {});
-         const watcher = function (v: any) {
-            if (v !== loading) {
-               setLoading(v);
-            }
-         };
-
-         const unWatch = client.cache.watch(requestId, watcher, 'ROOT_LOADING');
-
-         return () => {
-            unWatch();
-         };
-      }
-
-      return () => {};
-   }, [client, opts.variables, methodName, loading, opts.skip]);
 
    React.useEffect(() => {
       if (contract && !opts.skip) {
@@ -167,8 +168,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    }, [contract, methodName, opts.skip]);
 
    return {
-      data: state,
-      loading,
+      data: state.data,
+      loading: state.loading,
+      error: state.error,
       refetch: (args?: Req) => callMethod(args, false),
    };
 }
