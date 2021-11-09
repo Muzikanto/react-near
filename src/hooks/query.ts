@@ -29,12 +29,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const contract = useNearContractProvided();
 
    const [state, setState] = React.useState<{
-      data: Res | undefined | null;
+      data: Res | undefined;
       loading: boolean;
       error: Error | null | undefined;
    }>({
       loading: !opts.skip,
-      data: null,
+      data: undefined,
       error: null,
    });
    // const [loading, setLoading] = React.useState<boolean>(Boolean(!opts.skip));

@@ -26,7 +26,6 @@ function Page() {
    } = useNearQuery<DefaultNftToken[], {}>('nft_tokens_for_owner', {
       variables: { account_id: user.address },
       skip: !user.address,
-      debug: true,
    });
 
    const [mint, { data: mintResult, loading: mintLoading }] = useNearMutation<
@@ -81,24 +80,9 @@ function Page() {
                </div>
             </div>
          )}
-         {/*<Test />*/}
+         <Test />
       </div>
    );
 }
-
-const Test = React.memo(function () {
-   const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata, {}>(
-      'nft_metadata',
-      {
-         variables: {},
-         update: ({ cache }, { data }) => {
-            cache.set('METADATA', data);
-         },
-      },
-   );
-   console.log(loadingMeta, metadata);
-
-   return <div>{loadingMeta ? 'loading...' : 'data'}</div>;
-});
 
 export default Page;
