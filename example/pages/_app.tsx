@@ -3,7 +3,7 @@ import { AppProps } from 'next/app';
 import { useNearContract } from '../../src/hooks';
 import { NearContractProvider, NearEnvironment, NearProvider } from '../../src';
 
-export const CONTRACT_NAME = 'cow-nft.testnet';
+export const CONTRACT_NAME = 'mfclub-nft.testnet';
 
 function WrappedContract({ children }: { children: React.ReactNode }) {
    const contract = useNearContract(CONTRACT_NAME, {

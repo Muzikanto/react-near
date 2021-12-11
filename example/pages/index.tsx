@@ -12,9 +12,6 @@ function Page() {
       'nft_metadata',
       {
          variables: {},
-         update: ({ cache }, { data }) => {
-            cache.set('METADATA', data);
-         },
          // skip: true,
       },
    );
@@ -80,7 +77,6 @@ function Page() {
                </div>
             </div>
          )}
-         <Test />
       </div>
    );
 }

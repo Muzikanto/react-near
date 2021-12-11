@@ -44,7 +44,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as Res | null;
       const isFetched = client.cache.get(requestId, 'ROOT_FETCHED') as boolean | null;
 
-      if (contract && (contract as any)[methodName] && (useCache ? !cacheState : false)) {
+      if (contract && (contract as any)[methodName]) {
          if (useCache) {
             if (cacheState) {
                client.cache.set(requestId, cacheState, 'ROOT_QUERY');
@@ -116,6 +116,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   opts.onError(e as Error);
                }
 
+               client.cache.set(requestId, true, 'ROOT_FETCHED');
                client.cache.set(
                   requestId,
                   { data: undefined, loading: false, error: e },
