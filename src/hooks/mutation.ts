@@ -136,7 +136,10 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       });
    };
 
-   return [callMethod, { data: state.data, loading: state.loading }] as const;
+   return [
+      callMethod,
+      { data: state.data === null ? undefined : state.data, loading: state.loading },
+   ] as const;
 }
 
 export default useNearMutation;

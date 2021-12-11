@@ -143,7 +143,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       if (!opts.skip) {
          const requestId = encodeRequest(methodName, opts.variables || {});
 
-         const watcher = function (v: { data: any; loading: boolean; error: Error | null | undefined }) {
+         const watcher = function (v: {
+            data: any;
+            loading: boolean;
+            error: Error | null | undefined;
+         }) {
             if (JSON.stringify(v) !== JSON.stringify(state)) {
                setState(v);
             }
@@ -165,10 +169,10 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             .then()
             .catch(() => {});
       }
-   }, [contract, methodName, opts.skip]);
+   }, [contract, methodName, opts.skip, opts.onError]);
 
    return {
-      data: state.data,
+      data: state.data === null ? undefined : state.data,
       loading: state.loading,
       error: state.error,
       refetch: (args?: Req) => callMethod(args, false),
