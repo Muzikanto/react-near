@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "2.5.4",
+   "version": "2.5.5",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -44,11 +44,10 @@
    "license": "ISC",
    "peerDependencies": {
       "@types/react": "^17.0.27",
-      "react": "^17.0.2"
-   },
-   "dependencies": {
+      "react": "^17.0.2",
       "near-api-js": "^0.43.1"
    },
+   "dependencies": {},
    "devDependencies": {
       "@storybook/react": "^6.3.10",
       "@types/react-dom": "^17.0.9",
