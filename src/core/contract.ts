@@ -11,7 +11,7 @@ export type NearContract = Contract & {
       method: string;
       args?: Req;
       gas?: number;
-      attachedDeposit?: number;
+      attachedDeposit?: string;
    }) => Promise<Res>;
 };
 

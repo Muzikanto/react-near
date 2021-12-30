@@ -15,7 +15,7 @@ export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = 
       res: {
          data: Res;
          variables: Req;
-         attachedDeposit?: number;
+         attachedDeposit?: string;
          methodName: string;
          requestId: string;
       },
@@ -35,7 +35,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
    });
 
-   const callMethod = async (args: Req, attachedDeposit?: number): Promise<Res> => {
+   const callMethod = async (args: Req, attachedDeposit?: string): Promise<Res> => {
       if (account && contract && (contract as any)[methodName] && !opts.skipRenders) {
          setState({ data: undefined, loading: true });
       }
