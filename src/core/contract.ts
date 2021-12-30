@@ -1,5 +1,5 @@
 import React from 'react';
-import { Contract, utils } from 'near-api-js';
+import { Contract } from 'near-api-js';
 import { NEAR_GAS } from '../config';
 import useNearAccount from './account';
 import useNearWallet from './wallet';
@@ -43,7 +43,7 @@ function useNearContract(
             method: string;
             args?: any;
             gas?: number;
-            attachedDeposit?: number;
+            attachedDeposit?: string;
          }) {
             if (account) {
                return account.functionCall(
@@ -51,9 +51,7 @@ function useNearContract(
                   opts.method,
                   opts.args || {},
                   (opts.gas || NEAR_GAS).toString() as any,
-                  opts.attachedDeposit
-                     ? (utils.format.parseNearAmount(opts.attachedDeposit.toString()) as any)
-                     : undefined,
+                  opts.attachedDeposit,
                ) as any;
             }
 
