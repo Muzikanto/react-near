@@ -2,16 +2,11 @@
 
 Inspired by graphql (for the frontend) I decided to do the same for near.
 
-- provider Near, NearWallet, NearAccount and NearContract to the App
-- use useNearQuery and useNearMutation for fetch data
-- all fetched data are cached
-- use basic functions to query for data (useNearNft, useNearNftMetadata, useNearNftTokensForOwner and others)
-
 ## Setup
 
 You'll need to install the package from npm `npm i react-near near-api-js`.
 
-Root
+App
 
 ```tsx
 ReactDOM.render(
@@ -22,50 +17,39 @@ ReactDOM.render(
 );
 ```
 
-App
+Page
 
 ```tsx
 const CONTRACT_NAME = 'dev-123456789';
 
-function App() {
-   const contract = useNearContract(CONTRACT_NAME, {
-      viewMethods: ['nft_tokens_for_owner', 'nft_metadata'],
-      changeMethods: ['nft_mint'],
-   });
-
-   return (
-      <NearContractProvider contract={contract}>
-         <Page />
-      </NearContractProvider>
-   );
-}
-```
-
-Page
-
-```tsx
 function Page() {
-   // const contract = useNearContractProvided();
    const user = useNearUser(CONTRACT_NAME);
 
    // useNearQuery use caching for all requests
    const { data: metadata, loading: loadingMeta } = useNearQuery<{ id: string }, {}>(
+      CONTRACT_NAME,
       'nft_metadata',
-      {
-         variables: {},
-      },
    );
+   // or ... = useNftMetadata<NftMetadataArgs, NftMetadataResult>();
    const {
       data: collection,
       loading: loadingCollection,
       refetch: refetchCollection,
-   } = useNearQuery<Array<{ src: string }>, {}>('nft_tokens_for_owner', {
+   } = useNearQuery<Array<{ src: string }>, {}>(CONTRACT_NAME, 'nft_tokens_for_owner', {
       variables: { address: user.address },
       skip: !user.address,
    });
+   // or ... = useNftTokensForOwner<NftTokensForOwnerArgs, NftTokensForOwnerResult>();
    const [mint, { data: mintResult }] = useNearMutation<{ id: string }, { address: string }>(
+      CONTRACT_NAME,
       'nft_mint',
-      {},
+      {
+         onCompleted: (res) => {
+            refetchCollection({ address: user.address as string }).then();
+            user.refreshBalance().then();
+         },
+         onError: (err) => console.log(getNearError(err)),
+      },
    );
 
    return (
@@ -96,10 +80,9 @@ function Page() {
                   )}
                   <button
                      onClick={() => {
-                        mint({ address: user.address as string }).then(() => {
-                           refetchCollection({ address: user.address as string }).then();
-                           user.refreshBalance().then();
-                        });
+                        mint({ address: user.address as string })
+                           .then()
+                           .catch(() => {});
                      }}
                   >
                      mint nft
@@ -111,3 +94,21 @@ function Page() {
    );
 }
 ```
+
+### Api
+
+-  Nft
+   -  [x] nft_approve
+   -  [x] nft_is_approved
+   -  [x] nft_metadata
+   -  [x] nft_revoke
+   -  [x] nft_revoke_all
+   -  [x] nft_supply_for_owner
+   -  [x] nft_token
+   -  [x] nft_tokens
+   -  [x] nft_tokens_for_owner
+   -  [x] nft_total_supply
+   -  [x] nft_transfer
+   -  [x] nft_transfer_call
+-  Ft
+   -  [ ] ft_transfer
