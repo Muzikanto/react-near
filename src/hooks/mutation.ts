@@ -1,6 +1,4 @@
 import React from 'react';
-import { useNearAccount } from './index';
-import useNearContractProvided from '../core/contract-provided';
 import { encodeRequest, NearClient } from '../core/client';
 import { NearContext } from '../NearProvider';
 
@@ -23,12 +21,11 @@ export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = 
 };
 
 function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
+   contractId: string,
    methodName: string,
    opts: NearMutationOptions<Res, Req> = {},
 ) {
-   const { client } = React.useContext(NearContext);
-   const contract = useNearContractProvided();
-   const account = useNearAccount();
+   const { client, account } = React.useContext(NearContext);
 
    const [state, setState] = React.useState<{ data: Res | undefined; loading: boolean }>({
       loading: false,
@@ -36,7 +33,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    });
 
    const callMethod = async (args: Req, attachedDeposit?: string): Promise<Res> => {
-      if (account && contract && (contract as any)[methodName] && !opts.skipRenders) {
+      if (account && !opts.skipRenders) {
          setState({ data: undefined, loading: true });
       }
 
@@ -45,36 +42,10 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             const err = new Error('Not found contract account');
 
             if (opts.debug) {
-               console.log(`NEAR #${methodName} Error!`, err);
+               console.error(`NEAR #${contractId}-${methodName}`, err);
             }
             if (opts.onError) {
                opts.onError(err);
-            }
-
-            return reject(err);
-         }
-
-         if (!contract) {
-            const err = new Error('Not found contract state');
-
-            if (opts.debug) {
-               console.log(`NEAR #${methodName} Error!`, err);
-            }
-            if (opts.onError) {
-               opts.onError(err);
-            }
-
-            return reject(err);
-         }
-
-         if (!(contract as any)[methodName]) {
-            const err = new Error('Not found contract method');
-
-            if (opts.onError) {
-               opts.onError(err);
-            }
-            if (opts.debug) {
-               console.log(`NEAR #${methodName} Error!`, err);
             }
 
             return reject(err);
@@ -83,20 +54,16 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
          try {
             let res: any;
 
-            if (attachedDeposit || opts.gas) {
-               res = await contract.funcCall({
-                  method: methodName,
-                  attachedDeposit,
-                  gas: opts.gas,
-                  args,
-               });
-            } else {
-               // @ts-ignore
-               res = await contract[methodName](args);
-            }
+            res = await account.functionCall({
+               contractId,
+               methodName,
+               attachedDeposit,
+               gas: opts.gas,
+               args,
+            });
 
             if (opts.debug) {
-               console.log(`NEAR #${methodName}`, res);
+               console.log(`NEAR #${contractId}-${methodName}`, { ...args }, res);
             }
 
             if (opts.update) {
@@ -120,7 +87,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             return resolve(res);
          } catch (e) {
             if (opts.debug) {
-               console.log(`NEAR #${methodName} Error!`, e);
+               console.error(`NEAR #${contractId}-${methodName}`, { ...args }, e);
             }
 
             if (opts.onError) {

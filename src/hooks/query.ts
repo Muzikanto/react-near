@@ -1,5 +1,4 @@
 import React from 'react';
-import useNearContractProvided from '../core/contract-provided';
 import { NearContext } from '../NearProvider';
 import { encodeRequest, NearClient } from '../core/client';
 
@@ -22,11 +21,11 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
 };
 
 function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
+   contractId: string,
    methodName: string,
    opts: NearQueryOptions<Res, Req> = {},
 ) {
-   const { client } = React.useContext(NearContext);
-   const contract = useNearContractProvided();
+   const { client, account } = React.useContext(NearContext);
 
    const [state, setState] = React.useState<{
       data: Res | undefined;
@@ -44,99 +43,80 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as Res | null;
       const isFetched = client.cache.get(requestId, 'ROOT_FETCHED') as boolean | null;
 
-      if (contract && (contract as any)[methodName]) {
-         if (useCache) {
-            if (cacheState) {
-               client.cache.set(requestId, cacheState, 'ROOT_QUERY');
+      if (useCache) {
+         if (cacheState) {
+            client.cache.set(requestId, cacheState, 'ROOT_QUERY');
 
-               return Promise.resolve(cacheState) as Promise<Res>;
-            }
-            if (isFetched) {
-               return Promise.resolve(undefined);
-            }
-
-            client.cache.set(
-               requestId,
-               { data: cacheState, loading: true, error: null },
-               'ROOT_QUERY',
-            );
+            return Promise.resolve(cacheState) as Promise<Res>;
          }
+         if (isFetched) {
+            return Promise.resolve(undefined);
+         }
+
+         client.cache.set(
+            requestId,
+            { data: cacheState, loading: true, error: null },
+            'ROOT_QUERY',
+         );
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
-         if (contract) {
-            if (!(contract as any)[methodName]) {
-               const err = new Error('Not found contract method');
+         try {
+            if (!account) {
+               const err = new Error('Not found contract account');
 
+               if (opts.debug) {
+                  console.error(`NEAR #${contractId}-${methodName}`, err);
+               }
                if (opts.onError) {
                   opts.onError(err);
                }
-               if (opts.debug) {
-                  console.log(`NEAR #${methodName} Error!`, err);
-               }
+
                return reject(err);
             }
 
-            try {
-               // @ts-ignore
-               const res = await contract[methodName](args || opts.variables);
+            const res = await account.viewFunction(contractId, methodName, args || opts.variables);
 
-               if (opts.debug) {
-                  console.log(`NEAR #${methodName}`, res);
-               }
-
-               if (opts.update) {
-                  opts.update(client, {
-                     data: res,
-                     variables: (args || opts.variables || {}) as any,
-                     methodName,
-                     requestId,
-                  });
-               }
-
-               if (opts.onCompleted) {
-                  opts.onCompleted(res);
-               }
-
-               client.cache.set(
-                  requestId,
-                  { data: res, loading: false, error: null },
-                  'ROOT_QUERY',
-               );
-               client.cache.set(requestId, true, 'ROOT_FETCHED');
-               // client.cache.set(requestId, false, 'ROOT_LOADING');
-
-               return resolve(res);
-            } catch (e) {
-               if (opts.debug) {
-                  console.log(`NEAR #${methodName} Error!`, { ...opts.variables }, e);
-               }
-
-               if (opts.onError) {
-                  opts.onError(e as Error);
-               }
-
-               client.cache.set(requestId, true, 'ROOT_FETCHED');
-               client.cache.set(
-                  requestId,
-                  { data: undefined, loading: false, error: e },
-                  'ROOT_QUERY',
-               );
-
-               return reject(e);
+            if (opts.debug) {
+               console.log(`NEAR #${contractId}-${methodName}`, { ...args }, res);
             }
-         }
 
-         const err = new Error('Contract is not provided');
+            if (opts.update) {
+               opts.update(client, {
+                  data: res,
+                  variables: (args || opts.variables || {}) as any,
+                  methodName,
+                  requestId,
+               });
+            }
 
-         if (opts.onError) {
-            opts.onError(err);
-         }
-         if (opts.debug) {
-            console.log(`NEAR #${methodName} Error!`, err);
-         }
+            if (opts.onCompleted) {
+               opts.onCompleted(res);
+            }
 
-         return reject(err);
+            client.cache.set(requestId, { data: res, loading: false, error: null }, 'ROOT_QUERY');
+            client.cache.set(requestId, true, 'ROOT_FETCHED');
+            // client.cache.set(requestId, false, 'ROOT_LOADING');
+
+            return resolve(res);
+         } catch (e) {
+            if (opts.debug) {
+               console.error(`NEAR #${contractId}-${methodName}`, { ...opts.variables }, e);
+            }
+
+            if (opts.onError) {
+               opts.onError(e as Error);
+            }
+
+            client.cache.set(requestId, true, 'ROOT_FETCHED');
+            client.cache.set(
+               requestId,
+               { data: undefined, loading: false, error: e },
+               'ROOT_QUERY',
+            );
+
+            return reject(e);
+         }
       });
    };
 
@@ -165,12 +145,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    }, [client, opts.variables, methodName, state, opts.skip]);
 
    React.useEffect(() => {
-      if (contract && !opts.skip) {
+      if (!opts.skip) {
          callMethod()
             .then()
             .catch(() => {});
       }
-   }, [contract, methodName, opts.skip, opts.onError]);
+   }, [methodName, opts.skip, opts.onError]);
 
    return {
       data: state.data === null ? undefined : state.data,
