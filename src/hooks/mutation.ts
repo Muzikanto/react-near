@@ -42,9 +42,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
 
       return new Promise(async (resolve: (res: Res) => void, reject) => {
          const contractV =
-            (typeof opts.contract === 'object' && opts.contract !== null
-               ? opts.contract.contractId
-               : undefined) ||
+            (typeof opts.contract === 'object' ? opts.contract.contractId : opts.contract) ||
             (contractProvided && contractProvided.contractId);
 
          try {

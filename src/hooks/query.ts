@@ -63,10 +63,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
-         const contractV =
-            (typeof opts.contract === 'object' && opts.contract !== null
-               ? opts.contract
-               : undefined) || contractProvided;
+         const contractV = opts.contract || contractProvided;
          const variables = args || opts.variables;
 
          try {
