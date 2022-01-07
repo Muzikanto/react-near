@@ -7,9 +7,9 @@ export type NftRevokeArgs = {
 };
 
 function useNftRevoke<Res = void, Req extends NftRevokeArgs = NftRevokeArgs>(
-   opts: Omit<NearMutationOptions<Res, Req>, 'methodName'> & { methodName?: string },
+   opts: NearMutationOptions<Res, Req> = {},
 ) {
-   return useNearMutation<Res, Req>({ methodName: 'nft_revoke', ...opts });
+   return useNearMutation<Res, Req>('nft_revoke', opts);
 }
 
 export default useNftRevoke;

@@ -6,7 +6,6 @@ import useNearContractProvided from '../contract/useNearContractProvided';
 
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
-   methodName: string;
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    debug?: boolean;
@@ -24,11 +23,10 @@ export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = 
    ) => void;
 };
 
-function useNearMutation<Res = any, Req extends { [key: string]: any } = any>({
-   contract,
-   methodName,
-   ...opts
-}: NearMutationOptions<Res, Req>) {
+function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
+   methodName: string,
+   opts: NearMutationOptions<Res, Req>,
+) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
 
@@ -44,8 +42,8 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>({
 
       return new Promise(async (resolve: (res: Res) => void, reject) => {
          const contractV =
-            (typeof contract === 'object' && contract !== null
-               ? contract.contractId
+            (typeof opts.contract === 'object' && opts.contract !== null
+               ? opts.contract.contractId
                : undefined) ||
             (contractProvided && contractProvided.contractId);
 

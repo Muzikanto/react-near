@@ -5,8 +5,7 @@ import { NearContract } from '../contract/useNearContract';
 import useNearContractProvided from '../contract/useNearContractProvided';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
-   contract: string | NearContract | null;
-   methodName: string;
+   contract?: string | NearContract;
    variables?: Req;
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
@@ -24,11 +23,10 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
    ) => void;
 };
 
-function useNearQuery<Res = any, Req extends { [key: string]: any } = any>({
-   methodName,
-   contract,
-   ...opts
-}: NearQueryOptions<Res, Req>) {
+function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
+   methodName: string,
+   opts: NearQueryOptions<Res, Req>,
+) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
 
@@ -66,8 +64,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>({
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
          const contractV =
-            (typeof contract === 'object' && contract !== null ? contract : undefined) ||
-            contractProvided;
+            (typeof opts.contract === 'object' && opts.contract !== null
+               ? opts.contract
+               : undefined) || contractProvided;
          const variables = args || opts.variables;
 
          try {

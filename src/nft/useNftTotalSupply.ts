@@ -6,14 +6,8 @@ export type NftTotalSupplyResult = number;
 function useNftTotalSupply<
    Res extends NftTotalSupplyResult = NftTotalSupplyResult,
    Req extends NftTotalSupplyArgs = NftTotalSupplyArgs,
->(
-   {
-      onCompleted,
-      ...opts
-   }: Omit<NearQueryOptions<Res, Req>, 'methodName'> & { methodName?: string },
-) {
-   const { data, ...query } = useNearQuery<Res, Req>({
-      methodName: 'nft_total_supply',
+>({ onCompleted, ...opts }: NearQueryOptions<Res, Req>) {
+   const { data, ...query } = useNearQuery<Res, Req>('nft_total_supply', {
       ...opts,
       onCompleted: (res) => {
          if (onCompleted) {
