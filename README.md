@@ -44,6 +44,7 @@ function Page() {
       CONTRACT_NAME,
       'nft_mint',
       {
+         gas: NEAR_GAS,
          onCompleted: (res) => {
             refetchCollection({ address: user.address as string }).then();
             user.refreshBalance().then();

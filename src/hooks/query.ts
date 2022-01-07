@@ -1,6 +1,8 @@
 import React from 'react';
 import { NearContext } from '../NearProvider';
 import { encodeRequest, NearClient } from '../core/client';
+import { NearContract } from '../contract/useNearContract';
+import useNearContractProvided from '../contract/useNearContractProvided';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
    variables?: Req;
@@ -8,6 +10,7 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
    onCompleted?: (res: Res) => void;
    skip?: boolean;
    debug?: boolean;
+   contract?: NearContract;
    update?: (
       client: NearClient,
       res: {
@@ -26,6 +29,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    opts: NearQueryOptions<Res, Req> = {},
 ) {
    const { client, account } = React.useContext(NearContext);
+   const contractProvided = useNearContractProvided();
 
    const [state, setState] = React.useState<{
       data: Res | undefined;
@@ -61,8 +65,19 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
          try {
-            if (!account) {
-               const err = new Error('Not found contract account');
+            let res: Res | undefined = undefined;
+            const variables = args || opts.variables;
+            const contract = opts.contract || contractProvided;
+
+            if (account) {
+               res = await account.viewFunction(contractId, methodName, variables);
+            }
+            if (contract && (contract as any)[methodName]) {
+               res = await (contract as any)[methodName](variables);
+            }
+
+            if (!res) {
+               const err = new Error('Not found account ctx or contract');
 
                if (opts.debug) {
                   console.error(`NEAR #${contractId}-${methodName}`, err);
@@ -73,8 +88,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
                return reject(err);
             }
-
-            const res = await account.viewFunction(contractId, methodName, args || opts.variables);
 
             if (opts.debug) {
                console.log(`NEAR #${contractId}-${methodName}`, { ...args }, res);
