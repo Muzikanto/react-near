@@ -7,8 +7,8 @@ export type NftTokensResult = DefaultNftToken[];
 function useNftMTokens<
    Res extends NftTokensResult = NftTokensResult,
    Req extends NftTokensArgs = NftTokensArgs,
->(contractId: string, opts: NearQueryOptions<Res, Req> = {}) {
-   return useNearQuery<Res, Req>(contractId, 'nft_tokens', opts);
+>(opts: Omit<NearQueryOptions<Res, Req>, 'methodName'> & { methodName?: string }) {
+   return useNearQuery<Res, Req>({ methodName: 'nft_tokens', ...opts });
 }
 
 export default useNftMTokens;

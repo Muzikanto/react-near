@@ -8,8 +8,12 @@ export type NftSupplyForOwnerResult = number;
 function useNftSupplyForOwner<
    Res extends NftSupplyForOwnerResult = NftSupplyForOwnerResult,
    Req extends NftSupplyForOwnerArgs = NftSupplyForOwnerArgs,
->(contractId: string, { onCompleted, ...opts }: NearQueryOptions<Res, Req> = {}) {
-   const { data, ...query } = useNearQuery<Res, Req>(contractId, 'nft_supply_for_owner', {
+>({
+   onCompleted,
+   ...opts
+}: Omit<NearQueryOptions<Res, Req>, 'methodName'> & { methodName?: string }) {
+   const { data, ...query } = useNearQuery<Res, Req>({
+      methodName: 'nft_supply_for_owner',
       ...opts,
       onCompleted: (res) => {
          if (onCompleted) {

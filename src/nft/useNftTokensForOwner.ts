@@ -8,13 +8,13 @@ function useNftTokensForOwner<
    Res extends NftTokensForOwnerResult = NftTokensForOwnerResult,
    Req extends NftTokensForOwnerArgs = NftTokensForOwnerArgs,
 >(
-   contractId: string,
    {
       variables: { fromIndex = 0, limit = 100, ...variables } = {} as any,
       ...opts
-   }: NearQueryOptions<Res, Req> = {},
+   }: Omit<NearQueryOptions<Res, Req>, 'methodName'> & { methodName?: string },
 ) {
-   return useNearQuery<Res, Req>(contractId, 'nft_tokens_for_owner', {
+   return useNearQuery<Res, Req>({
+      methodName: 'nft_tokens_for_owner',
       ...opts,
       variables: {
          from_index: fromIndex.toString(),

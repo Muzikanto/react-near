@@ -9,10 +9,9 @@ export type NftTransferArgs = {
 };
 
 function useNftTransfer<Res = void, Req extends NftTransferArgs = NftTransferArgs>(
-   contractId: string,
-   opts: NearMutationOptions<Res, Req> = {},
+   opts: Omit<NearMutationOptions<Res, Req>, 'methodName'> & { methodName?: string },
 ) {
-   return useNearMutation<Res, Req>(contractId, 'nft_transfer', opts);
+   return useNearMutation<Res, Req>({ methodName: 'nft_transfer', ...opts });
 }
 
 export default useNftTransfer;

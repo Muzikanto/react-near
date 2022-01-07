@@ -5,12 +5,13 @@ import { NearContract } from '../contract/useNearContract';
 import useNearContractProvided from '../contract/useNearContractProvided';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
+   contract: string | NearContract | null;
+   methodName: string;
    variables?: Req;
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    skip?: boolean;
    debug?: boolean;
-   contract?: NearContract;
    update?: (
       client: NearClient,
       res: {
@@ -23,11 +24,11 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
    ) => void;
 };
 
-function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
-   contractId: string,
-   methodName: string,
-   opts: NearQueryOptions<Res, Req> = {},
-) {
+function useNearQuery<Res = any, Req extends { [key: string]: any } = any>({
+   methodName,
+   contract,
+   ...opts
+}: NearQueryOptions<Res, Req>) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
 
@@ -64,23 +65,26 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
+         const contractV =
+            (typeof contract === 'object' && contract !== null ? contract : undefined) ||
+            contractProvided;
+         const variables = args || opts.variables;
+
          try {
             let res: Res | undefined = undefined;
-            const variables = args || opts.variables;
-            const contract = opts.contract || contractProvided;
 
-            if (account) {
-               res = await account.viewFunction(contractId, methodName, variables);
+            if (account && typeof contractV === 'string') {
+               res = await account.viewFunction(contractV, methodName, variables);
             }
-            if (contract && (contract as any)[methodName]) {
-               res = await (contract as any)[methodName](variables);
+            if (contractV && (contractV as any)[methodName]) {
+               res = await (contractV as any)[methodName](variables);
             }
 
             if (!res) {
                const err = new Error('Not found account ctx or contract');
 
                if (opts.debug) {
-                  console.error(`NEAR #${contractId}-${methodName}`, err);
+                  console.error(`NEAR #${contractV}-${methodName}`, err);
                }
                if (opts.onError) {
                   opts.onError(err);
@@ -90,7 +94,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             }
 
             if (opts.debug) {
-               console.log(`NEAR #${contractId}-${methodName}`, { ...args }, res);
+               console.log(`NEAR #${contractV}-${methodName}`, { ...args }, res);
             }
 
             if (opts.update) {
@@ -113,7 +117,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             return resolve(res);
          } catch (e) {
             if (opts.debug) {
-               console.error(`NEAR #${contractId}-${methodName}`, { ...opts.variables }, e);
+               console.error(`NEAR #${contractV}-${methodName}`, { ...opts.variables }, e);
             }
 
             if (opts.onError) {

@@ -6,14 +6,13 @@ export type NftTransferCallArgs = {
    token_id: string;
    approval_id?: number;
    memo?: string;
-   msg: string,
+   msg: string;
 };
 
 function useNftTransferCall<Res = void, Req extends NftTransferCallArgs = NftTransferCallArgs>(
-   contractId: string,
-   opts: NearMutationOptions<Res, Req> = {},
+   opts: Omit<NearMutationOptions<Res, Req>, 'methodName'> & { methodName?: string },
 ) {
-   return useNearMutation<Res, Req>(contractId, 'nft_transfer_call', opts);
+   return useNearMutation<Res, Req>({ methodName: 'nft_transfer_call', ...opts });
 }
 
 export default useNftTransferCall;
