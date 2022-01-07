@@ -36,7 +36,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
       error: null,
    });
-   // const [loading, setLoading] = React.useState<boolean>(Boolean(!opts.skip));
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
       const requestId = encodeRequest(methodName, args || opts.variables || {});
@@ -150,7 +149,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             .then()
             .catch(() => {});
       }
-   }, [methodName, opts.skip, opts.onError]);
+   }, [methodName, opts.skip, opts.onError, opts.variables, account]);
 
    return {
       data: state.data === null ? undefined : state.data,
