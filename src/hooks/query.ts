@@ -98,7 +98,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
             if (opts.update) {
                opts.update(client, {
-                  data: res,
+                  data: res as any,
                   variables: (args || opts.variables || {}) as any,
                   methodName,
                   requestId,
@@ -106,7 +106,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             }
 
             if (opts.onCompleted) {
-               opts.onCompleted(res);
+               opts.onCompleted(res as any);
             }
 
             client.cache.set(requestId, { data: res, loading: false, error: null }, 'ROOT_QUERY');
