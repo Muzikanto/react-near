@@ -35,7 +35,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
    });
 
-   const callMethod = async (args: Req, attachedDeposit?: string): Promise<Res> => {
+   const callMethod = async (args: Req, attachedDeposit?: string, gas?: number): Promise<Res> => {
       if (account && !opts.skipRenders) {
          setState({ data: undefined, loading: true });
       }
@@ -77,7 +77,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                contractId: contractV,
                methodName,
                attachedDeposit,
-               gas: opts.gas,
+               gas: gas || opts.gas,
                args,
             });
 
