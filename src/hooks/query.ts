@@ -11,6 +11,7 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
    onCompleted?: (res: Res) => void;
    skip?: boolean;
    debug?: boolean;
+   poolInterval?: number;
    update?: (
       client: NearClient,
       res: {
@@ -165,6 +166,21 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             .then()
             .catch(() => {});
       }
+   }, [methodName, opts.skip, opts.onError, opts.variables, account]);
+   React.useEffect(() => {
+      if (!opts.skip && opts.poolInterval) {
+         const internal = setInterval(() => {
+            callMethod()
+               .then()
+               .catch(() => {});
+         }, opts.poolInterval);
+
+         return () => {
+            clearInterval(internal);
+         };
+      }
+
+      return () => {};
    }, [methodName, opts.skip, opts.onError, opts.variables, account]);
 
    return {
