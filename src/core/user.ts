@@ -33,7 +33,7 @@ function useNearUser(contractId: string) {
    const isConnected = Boolean(signedIn && account);
 
    React.useEffect(() => {
-      if (account && !loading && typeof client.cache.get(account.accountId, 'ROOT_USER') === 'undefined') {
+      if (account && !loading) {
          refreshBalance()
             .then()
             .catch((e) => {
