@@ -30,6 +30,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 ) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
+   const cacheState = client.cache.get(encodeRequest(methodName, opts.variables || {}), 'ROOT_QUERY');
 
    const [state, setState] = React.useState<{
       data: Res | undefined;
@@ -37,7 +38,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       error: Error | null | undefined;
    }>({
       loading: !opts.skip,
-      data: undefined,
+      data: cacheState ? cacheState.data : undefined,
       error: null,
    });
 
