@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "3.2.5",
+   "version": "3.2.6",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",

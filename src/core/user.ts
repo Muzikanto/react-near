@@ -7,7 +7,9 @@ function useNearUser(contractId: string) {
 
    const signedIn = wallet && wallet.isSignedIn();
    // const [account, setAccount] = React.useState<Account | null>(null);
-   const [balance, setBalance] = React.useState<number>(0);
+   const [balance, setBalance] = React.useState<number>(
+      account ? client.cache.get(account.accountId, 'ROOT_USER') : 0,
+   );
 
    const disconnect = async () => {
       if (wallet) {
@@ -33,6 +35,9 @@ function useNearUser(contractId: string) {
    const isConnected = Boolean(signedIn && account);
 
    React.useEffect(() => {
+      if (account) {
+         setBalance(client.cache.get(account.accountId, 'ROOT_USER'));
+      }
       if (account && !loading) {
          refreshBalance()
             .then()
