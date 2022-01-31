@@ -161,14 +161,14 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    }, [client, opts.variables, methodName, state, opts.skip]);
 
    React.useEffect(() => {
+      const requestId = encodeRequest(methodName, opts.variables || {});
+      const state = client.cache.get(requestId, 'ROOT_QUERY');
+
+      if (state) {
+         setState(state);
+      }
+
       if (!opts.skip) {
-         const requestId = encodeRequest(methodName, opts.variables || {});
-         const state = client.cache.get(requestId, 'ROOT_QUERY');
-
-         if (state) {
-            setState(state);
-         }
-
          callMethod()
             .then()
             .catch(() => {});
