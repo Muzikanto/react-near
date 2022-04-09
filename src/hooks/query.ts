@@ -189,7 +189,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return () => {};
-   }, [methodName, opts.skip, opts.onError, opts.variables, account]);
+   }, [methodName, opts.skip, opts.onError, opts.variables, account, opts.contract]);
 
    return {
       data: state.data === null ? undefined : state.data,
