@@ -29,6 +29,12 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
 ) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
+   const contractV = opts.contract || contractProvided;
+   const contractId = contractV
+       ? typeof contractV === 'string'
+           ? contractV
+           : contractV.contractId
+       : '_';
 
    const [state, setState] = React.useState<{ data: Res | undefined; loading: boolean }>({
       loading: false,
@@ -91,7 +97,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                   variables: args,
                   attachedDeposit,
                   methodName,
-                  requestId: encodeRequest(methodName, args),
+                  requestId: encodeRequest(contractId, methodName, args),
                });
             }
 
