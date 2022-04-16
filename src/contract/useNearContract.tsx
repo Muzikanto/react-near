@@ -17,7 +17,7 @@ function useNearContract(
    const contract = React.useMemo(() => {
       if (wallet) {
          const walletAccount = wallet.account();
-         const requestId = encodeRequest(contractId, {
+         const requestId = encodeRequest(contractId,  '_', {
             accountId: walletAccount.accountId,
             ...contractMethods,
          });
