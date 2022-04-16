@@ -30,8 +30,15 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 ) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
+   const contractV = opts.contract || contractProvided;
+   const contractId = contractV
+      ? typeof contractV === 'string'
+         ? contractV
+         : contractV.contractId
+      : '_';
+
    const cacheState = client.cache.get(
-      encodeRequest(methodName, opts.variables || {}),
+      encodeRequest(contractId, methodName, opts.variables || {}),
       'ROOT_QUERY',
    );
 
@@ -46,12 +53,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    });
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
-      const contractV = opts.contract || contractProvided;
-      const requestId = encodeRequest(
-         contractV ? (typeof contractV === 'string' ? contractV : contractV.contractId) : '_',
-         methodName,
-         args || opts.variables || {},
-      );
+      const requestId = encodeRequest(contractId, methodName, args || opts.variables || {});
       const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as Res | null;
       const isFetched = client.cache.get(requestId, 'ROOT_FETCHED') as boolean | null;
 
@@ -146,7 +148,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
    React.useEffect(() => {
       if (!opts.skip) {
-         const requestId = encodeRequest(methodName, opts.variables || {});
+         const requestId = encodeRequest(contractId, methodName, opts.variables || {});
 
          const watcher = function (v: {
             data: any;
@@ -166,10 +168,10 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return () => {};
-   }, [client, opts.variables, methodName, state, opts.skip]);
+   }, [client, opts.variables, methodName, state, opts.skip, contractId]);
 
    React.useEffect(() => {
-      const requestId = encodeRequest(methodName, opts.variables || {});
+      const requestId = encodeRequest(contractId, methodName, opts.variables || {});
       const state = client.cache.get(requestId, 'ROOT_QUERY');
 
       if (state) {
@@ -181,7 +183,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             .then()
             .catch(() => {});
       }
-   }, [methodName, opts.skip, opts.onError, opts.variables, account]);
+   }, [methodName, opts.skip, opts.onError, opts.variables, account, contractId]);
    React.useEffect(() => {
       if (!opts.skip && opts.poolInterval) {
          const internal = setInterval(() => {
