@@ -7,8 +7,8 @@ export type NearClient = {
    };
 };
 
-export function encodeRequest(methodName: string, args: { [key: string]: any }) {
-   return `${methodName}(${JSON.stringify(args)})`;
+export function encodeRequest(contractId: string, methodName: string, args: { [key: string]: any }) {
+   return `${contractId}.${methodName}(${JSON.stringify(args)})`;
 }
 
 const getNearClient = (): NearClient => {

@@ -30,7 +30,10 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 ) {
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
-   const cacheState = client.cache.get(encodeRequest(methodName, opts.variables || {}), 'ROOT_QUERY');
+   const cacheState = client.cache.get(
+      encodeRequest(methodName, opts.variables || {}),
+      'ROOT_QUERY',
+   );
 
    const [state, setState] = React.useState<{
       data: Res | undefined;
@@ -43,7 +46,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    });
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
-      const requestId = encodeRequest(methodName, args || opts.variables || {});
+      const contractV = opts.contract || contractProvided;
+      const requestId = encodeRequest(
+         contractV ? (typeof contractV === 'string' ? contractV : contractV.contractId) : '_',
+         methodName,
+         args || opts.variables || {},
+      );
       const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as Res | null;
       const isFetched = client.cache.get(requestId, 'ROOT_FETCHED') as boolean | null;
 
@@ -65,7 +73,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
-         const contractV = opts.contract || contractProvided;
          const variables = args || opts.variables;
 
          try {
