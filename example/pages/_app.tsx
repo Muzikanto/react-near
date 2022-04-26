@@ -1,7 +1,9 @@
 import React from 'react';
 import { AppProps } from 'next/app';
-import { useNearContract } from '../../src/hooks';
-import { NearContractProvider, NearEnvironment, NearProvider } from '../../src';
+import {  } from '../../src/hooks';
+import { NearEnvironment, NearProvider } from '../../src';
+import useNearContract from "../../contract/useNearContract";
+import NearContractProvider from "../../contract/NearContractProvider";
 
 export const CONTRACT_NAME = 'mfclub-nft.testnet';
 
