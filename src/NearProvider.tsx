@@ -66,7 +66,7 @@ const NearProvider: React.FC<NearProviderProps> = ({
                console.error('NEAR Error!', err);
             });
       }
-   }, [config]);
+   }, []);
 
    return (
       <NearContext.Provider
