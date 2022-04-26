@@ -14,7 +14,7 @@ function useNearContract(contractId, contractMethods) {
     const contract = react_1.default.useMemo(() => {
         if (wallet) {
             const walletAccount = wallet.account();
-            const requestId = (0, client_1.encodeRequest)(contractId, Object.assign({ accountId: walletAccount.accountId }, contractMethods));
+            const requestId = (0, client_1.encodeRequest)(contractId, '_', Object.assign({ accountId: walletAccount.accountId }, contractMethods));
             const cacheState = client.cache.get(requestId, 'ROOT_CONTRACT');
             if (cacheState) {
                 return cacheState;
