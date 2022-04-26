@@ -1,5 +1,5 @@
 import React from 'react';
-import { NearEnvironment } from '../index';
+import { NearEnvironment } from '../NearProvider';
 
 export interface NearEnvironmentContextType {
    value: NearEnvironment;
@@ -8,7 +8,7 @@ export interface NearEnvironmentContextType {
 }
 
 export type NearEnvironmentProviderProps = {
-   environment?: NearEnvironment;
+   defaultEnvironment?: NearEnvironment;
 };
 
 export function useNearEnvironment() {
@@ -24,10 +24,10 @@ export const NearEnvironmentContext = React.createContext<NearEnvironmentContext
 });
 
 const NearEnvironmentProvider: React.FC<NearEnvironmentProviderProps> = ({
-   environment = NearEnvironment.TestNet,
+   defaultEnvironment = NearEnvironment.TestNet,
    children,
 }) => {
-   const [value, setValue] = React.useState<NearEnvironment>(environment);
+   const [value, setValue] = React.useState<NearEnvironment>(defaultEnvironment);
 
    return (
       <NearEnvironmentContext.Provider
