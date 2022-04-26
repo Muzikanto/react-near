@@ -32,7 +32,7 @@ const NearProvider: React.FC<NearProviderProps> = ({
    ...props
 }) => {
    const env = useNearEnvironment();
-   const environment = (env.isProvided ? env.value : defaultEnvironment) || NearEnvironment.TestNet;
+   const environment = (env.isProvided ? defaultEnvironment || env.value : defaultEnvironment) || NearEnvironment.TestNet;
 
    const client = React.useMemo(() => getNearClient(), []);
    const config: ConnectConfig | null = React.useMemo(() => {
