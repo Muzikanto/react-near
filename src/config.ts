@@ -1,5 +1,13 @@
 export const NEAR_GAS = 200000000000000;
 
+export enum NearEnvironment {
+   MainNet = 'mainnet',
+   TestNet = 'testnet',
+   BetaNet = 'betanet',
+   Test = 'test',
+   Local = 'local',
+}
+
 function getNearConfig(env: string) {
    const s: {
       networkId: string;

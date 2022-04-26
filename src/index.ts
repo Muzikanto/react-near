@@ -8,20 +8,16 @@ import {
    NearQueryOptions,
    NearMutationOptions,
 } from './hooks';
-import NearProvider, {
-   NearEnvironment,
-   NearContext,
-   NearContextType,
-   NearProviderProps,
-} from './NearProvider';
+import NearProvider, { NearContext, NearContextType, NearProviderProps } from './NearProvider';
 import getNearConfig, { NEAR_GAS } from './config';
 import { getNearError } from './utils';
-import {
+import NearEnvironmentProvider, {
    NearEnvironmentContext,
    useNearEnvironment,
    NearEnvironmentContextType,
    NearEnvironmentProviderProps,
 } from './environment';
+import { NearEnvironment } from './config';
 
 export {
    useNear,
@@ -49,4 +45,5 @@ export {
    useNearEnvironment,
    NearEnvironmentContextType,
    NearEnvironmentProviderProps,
+   NearEnvironmentProvider,
 };

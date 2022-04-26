@@ -1,5 +1,5 @@
 import React from 'react';
-import { NearEnvironment } from '../NearProvider';
+import { NearEnvironment } from '../config';
 
 export interface NearEnvironmentContextType {
    value: NearEnvironment;
