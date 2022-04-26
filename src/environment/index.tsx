@@ -1,5 +1,6 @@
 import React from 'react';
 import { NearEnvironment } from '../config';
+import {getNearCookie, setNearCookie} from "../utils";
 
 export interface NearEnvironmentContextType {
    value: NearEnvironment;
@@ -27,13 +28,23 @@ const NearEnvironmentProvider: React.FC<NearEnvironmentProviderProps> = ({
    defaultEnvironment = NearEnvironment.TestNet,
    children,
 }) => {
-   const [value, setValue] = React.useState<NearEnvironment>(defaultEnvironment);
+   let nearEnv = getNearCookie('near-env') || NearEnvironment.TestNet;
+
+   React.useEffect(() => {
+      if (![NearEnvironment.MainNet, NearEnvironment.TestNet].includes(nearEnv as any)) {
+         nearEnv = defaultEnvironment;
+         setNearCookie('near-env', nearEnv);
+      }
+   }, []);
 
    return (
       <NearEnvironmentContext.Provider
          value={{
-            value,
-            update: (v) => setValue(v),
+            value: nearEnv as NearEnvironment,
+            update: (v: NearEnvironment) => {
+                setNearCookie('near-env', v);
+                window.location.reload();
+            },
             isProvided: true,
          }}
       >

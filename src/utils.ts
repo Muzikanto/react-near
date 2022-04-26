@@ -1,3 +1,6 @@
+// @ts-ignore
+import cookie from 'cookie';
+
 export function getNearError(e: any) {
    try {
       if (e.kind && typeof e.kind.ExecutionError === 'string') {
@@ -10,3 +13,16 @@ export function getNearError(e: any) {
       return e.message || String(e);
    }
 }
+
+export const setNearCookie = (path: string, value: string, opts: { maxAge?: number } = {}) => {
+   document.cookie = cookie.serialize(path, value, {
+      maxAge: opts.maxAge, // 30 minutes
+      path: '/',
+   });
+};
+
+export const getNearCookie = (key: string) => {
+   let parsed: { [key: string]: string } = cookie.parse(document.cookie);
+
+   return parsed[key];
+};
