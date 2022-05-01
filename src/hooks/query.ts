@@ -35,7 +35,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       ? typeof contractV === 'string'
          ? contractV
          : contractV.contractId
-      : '_';
+      : '';
 
    const cacheState = client.cache.get(
       encodeRequest(contractId, methodName, opts.variables || {}),
