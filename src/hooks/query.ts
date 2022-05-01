@@ -168,7 +168,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return () => {};
-   }, [client, opts.variables, methodName, state, opts.skip, contractId]);
+   }, [client, opts.variables, methodName, state, opts.skip, contractV]);
 
    React.useEffect(() => {
       const requestId = encodeRequest(contractId, methodName, opts.variables || {});
@@ -178,14 +178,14 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          setState(state);
       }
 
-      if (!opts.skip) {
+      if (!opts.skip && (account || contractV)) {
          callMethod()
             .then()
             .catch(() => {});
       }
-   }, [methodName, opts.skip, opts.onError, opts.variables, account, contractId]);
+   }, [methodName, opts.skip, opts.onError, opts.variables, account, contractV]);
    React.useEffect(() => {
-      if (!opts.skip && opts.poolInterval) {
+      if (!opts.skip && opts.poolInterval && (account || contractV)) {
          const internal = setInterval(() => {
             callMethod()
                .then()
