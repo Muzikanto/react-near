@@ -11,7 +11,7 @@
    ],
    "scripts": {
       "start": "start-storybook -p 6006",
-      "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks && rm -rf ./nft && rm -rf ./core && rm -rf ./environment",
+      "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks && rm -rf ./nft && rm -rf ./core && rm -rf ./environment && rm -rf ./ft",
       "build": "tsc -b",
       "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",
       "prepublish": "npm run build",
