@@ -10,9 +10,11 @@ App
 
 ```tsx
 ReactDOM.render(
-   <NearProvider environment={NearEnvironment.TestNet}>
-      <App />
-   </NearProvider>,
+   <NearEnvironmentProvider>
+      <NearProvider environment={NearEnvironment.TestNet}>
+         <App />
+      </NearProvider>
+   </NearEnvironmentProvider>,
    document.querySelector('#root'),
 );
 ```
@@ -20,7 +22,7 @@ ReactDOM.render(
 Page
 
 ```tsx
-const CONTRACT_NAME = 'dev-123456789';
+const CONTRACT_NAME = 'mfight-nft_v2.testnet';
 
 function Page() {
    const user = useNearUser(CONTRACT_NAME);
@@ -39,10 +41,10 @@ function Page() {
       contract: CONTRACT_NAME,
       variables: { address: user.address },
       skip: !user.address,
-      poolInterval: 30000
+      poolInterval: 30000,
    });
    // or ... = useNftTokensForOwner();
-   const [mint, { data: mintResult }] = useNearMutation<{ id: string }, { receiver_id: string }>(
+   const [mint, { data: mintResult }] = useNearMutation<DefaultNftToken, { receiver_id: string }>(
       'nft_mint',
       {
          contract: CONTRACT_NAME,
@@ -83,7 +85,7 @@ function Page() {
                   )}
                   <button
                      onClick={() => {
-                        mint({ address: user.address as string })
+                        mint({ receiver_id: user.address as string }, parseNearAmount('10'))
                            .then()
                            .catch(() => {});
                      }}
