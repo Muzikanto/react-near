@@ -26,27 +26,29 @@ function Page() {
    const user = useNearUser(CONTRACT_NAME);
 
    // useNearQuery use caching for all requests
-   const { data: metadata, loading: loadingMeta } = useNearQuery<{ id: string }, {}>(
-      CONTRACT_NAME,
+   const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata>(
       'nft_metadata',
+      { contract: CONTRACT_NAME },
    );
    // or ... = useNftMetadata<NftMetadataArgs, NftMetadataResult>();
    const {
       data: collection,
       loading: loadingCollection,
       refetch: refetchCollection,
-   } = useNearQuery<Array<{ src: string }>, {}>(CONTRACT_NAME, 'nft_tokens_for_owner', {
+   } = useNearQuery<NftTokensForOwnerResult, NftTokensForOwnerArgs>('nft_tokens_for_owner', {
+      contract: CONTRACT_NAME,
       variables: { address: user.address },
       skip: !user.address,
+      poolInterval: 30000
    });
-   // or ... = useNftTokensForOwner<NftTokensForOwnerArgs, NftTokensForOwnerResult>();
-   const [mint, { data: mintResult }] = useNearMutation<{ id: string }, { address: string }>(
-      CONTRACT_NAME,
+   // or ... = useNftTokensForOwner();
+   const [mint, { data: mintResult }] = useNearMutation<{ id: string }, { receiver_id: string }>(
       'nft_mint',
       {
+         contract: CONTRACT_NAME,
          gas: NEAR_GAS,
          onCompleted: (res) => {
-            refetchCollection({ address: user.address as string }).then();
+            refetchCollection({ receiver_id: user.address as string }).then();
             user.refreshBalance().then();
          },
          onError: (err) => console.log(getNearError(err)),
@@ -112,4 +114,5 @@ function Page() {
    -  [x] nft_transfer
    -  [x] nft_transfer_call
 -  Ft
-   -  [ ] ft_transfer
+   -  [x] ft_transfer
+   -  [x] ft_balance_of
