@@ -9,53 +9,89 @@ You'll need to install the package from npm `npm i react-near near-api-js`.
 App
 
 ```tsx
-ReactDOM.render(
-   <NearEnvironmentProvider>
-      <NearProvider environment={NearEnvironment.TestNet}>
-         <App />
-      </NearProvider>
-   </NearEnvironmentProvider>,
-   document.querySelector('#root'),
-);
+import React from 'react';
+import { AppProps } from 'next/app';
+import {
+   NearContractProvider,
+   NearEnvironment,
+   NearEnvironmentProvider,
+   NearProvider,
+   useNearContract,
+} from '../../src';
+
+export const NFT_CONTRACT_NAME = 'mfight-nft_v2.testnet';
+export const FT_CONTRACT_NAME = 'mfight-ft.testnet';
+
+function WrappedContract({ children }: { children: React.ReactNode }) {
+   const contract = useNearContract(NFT_CONTRACT_NAME, {
+      viewMethods: ['nft_tokens_for_owner', 'nft_metadata', 'nft_tokens'],
+      changeMethods: [],
+   });
+
+   return <NearContractProvider contract={contract}>{children}</NearContractProvider>;
+}
+
+function WrappedNear({ children }: { children: React.ReactNode }) {
+   return (
+      <NearEnvironmentProvider defaultEnvironment={NearEnvironment.TestNet}>
+         <NearProvider>
+            <WrappedContract>{children}</WrappedContract>
+         </NearProvider>
+      </NearEnvironmentProvider>
+   );
+}
+
+function MyApp({ Component, pageProps }: AppProps) {
+   return (
+      <WrappedNear>
+         <Component {...pageProps} />
+      </WrappedNear>
+   );
+}
+
+export default MyApp;
 ```
 
 Page
 
 ```tsx
-const CONTRACT_NAME = 'mfight-nft_v2.testnet';
+import { NFT_CONTRACT_NAME, FT_CONTRACT_NAME } from './_app';
+import { NEAR_GAS, useNearMutation, useNearQuery, useNearUser } from '../../src';
+import { DefaultNftContractMetadata, useNftTokens } from '../../src/nft';
+import React from 'react';
+import { useFtBalanceOf, useFtTransfer } from '../../src/ft';
+import { parseNearAmount } from 'near-api-js/lib/utils/format';
+import useNearContractProvided from '../../src/contract/useNearContractProvided';
 
 function Page() {
-   const user = useNearUser(CONTRACT_NAME);
+   const nftContract = useNearContractProvided();
+   const user = useNearUser(NFT_CONTRACT_NAME);
 
-   // useNearQuery use caching for all requests
-   const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata>(
+   // NFT
+   const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata, {}>(
       'nft_metadata',
-      { contract: CONTRACT_NAME },
-   );
-   // or ... = useNftMetadata<NftMetadataArgs, NftMetadataResult>();
-   const {
-      data: collection,
-      loading: loadingCollection,
-      refetch: refetchCollection,
-   } = useNearQuery<NftTokensForOwnerResult, NftTokensForOwnerArgs>('nft_tokens_for_owner', {
-      contract: CONTRACT_NAME,
-      variables: { address: user.address },
-      skip: !user.address,
-      poolInterval: 30000,
-   });
-   // or ... = useNftTokensForOwner();
-   const [mint, { data: mintResult }] = useNearMutation<DefaultNftToken, { receiver_id: string }>(
-      'nft_mint',
       {
-         contract: CONTRACT_NAME,
-         gas: NEAR_GAS,
-         onCompleted: (res) => {
-            refetchCollection({ receiver_id: user.address as string }).then();
-            user.refreshBalance().then();
-         },
-         onError: (err) => console.log(getNearError(err)),
+         variables: {},
+         // skip: true,
       },
    );
+   const {
+      data: collection,
+      error: collectionError,
+      loading: loadingCollection,
+      refetch: refetchCollection,
+   } = useNftTokens({
+      variables: { limit: 5, from_index: '0' },
+      poolInterval: 1000 * 60 * 5,
+   });
+   const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
+      variables: { account_id: user.address as string },
+      poolInterval: 1000 * 60 * 5,
+      skip: !user.isConnected,
+   });
+
+   const [amountToTransfer, setAmountToTransfer] = React.useState(1);
+   const [ftTransfer] = useFtTransfer({ contract: FT_CONTRACT_NAME, gas: NEAR_GAS });
 
    return (
       <div>
@@ -66,31 +102,73 @@ function Page() {
          ) : (
             <div>
                <div>
-                  <span>User</span>
+                  <p>User</p>
 
-                  <span>
-                     {user.address} {user.balance} NEAR
-                  </span>
+                  <p>Address: {user.address}</p>
+                  <p>{user.balance} NEAR</p>
+                  <p>{ftBalance} MFIGT</p>
                   <button onClick={() => user.disconnect()}>disconnect</button>
                </div>
 
-               <div>
-                  <span>Nft</span>
+               <hr />
 
-                  {loadingMeta ? 'Loading ...' : <span>Metadata: {JSON.stringify(metadata)}</span>}
+               <div>
+                  <p>Nft Information</p>
+
+                  {loadingMeta ? <p>Loading ...</p> : <p>Metadata: {JSON.stringify(metadata)}</p>}
                   {loadingCollection ? (
-                     'Loading...'
+                     <p>Loading ...</p>
+                  ) : collectionError ? (
+                     <p>Error: {collectionError.message}</p>
                   ) : (
-                     <div>{collection && collection.map((el) => <img src={el.src} />)}</div>
+                     <div style={{ display: 'flex' }}>
+                        {collection
+                           ? collection.length > 0
+                              ? collection.map((el) => (
+                                   <div style={{ marginRight: 16 }}>
+                                      <img
+                                         src={
+                                            metadata
+                                               ? metadata.base_uri + '/' + el.metadata.media
+                                               : ''
+                                         }
+                                         style={{
+                                            width: 70,
+                                            height: 100,
+                                            objectFit: 'contain',
+                                            border: 'solid 1px black',
+                                            padding: 4,
+                                         }}
+                                         alt=''
+                                      />
+                                   </div>
+                                ))
+                              : 'Empty collection'
+                           : ''}
+                     </div>
                   )}
+               </div>
+
+               <hr />
+
+               <div>
+                  <p>Example call method</p>
+
                   <button
                      onClick={() => {
-                        mint({ receiver_id: user.address as string }, parseNearAmount('10'))
-                           .then()
-                           .catch(() => {});
+                        ftTransfer(
+                           {
+                              receiver_id: 'muzikant.testnet',
+                              amount: parseNearAmount(amountToTransfer.toString()) as string,
+                           },
+                           parseNearAmount('0.01') as string,
+                        ).then(() => {
+                           refetchFtBalance().then();
+                           user.refreshBalance().then();
+                        });
                      }}
                   >
-                     mint nft
+                     Transfer FT
                   </button>
                </div>
             </div>
@@ -98,6 +176,8 @@ function Page() {
       </div>
    );
 }
+
+export default Page;
 ```
 
 ### Api

@@ -18,6 +18,8 @@ import NearEnvironmentProvider, {
    NearEnvironmentProviderProps,
 } from './environment';
 import { NearEnvironment } from './config';
+import NearContractProvider from './contract/NearContractProvider';
+import useNearContract from './contract/useNearContract';
 
 export {
    useNear,
@@ -46,4 +48,7 @@ export {
    NearEnvironmentContextType,
    NearEnvironmentProviderProps,
    NearEnvironmentProvider,
+   //
+   NearContractProvider,
+   useNearContract
 };

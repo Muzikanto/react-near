@@ -1,13 +1,16 @@
-import { CONTRACT_NAME } from './_app';
+import { NFT_CONTRACT_NAME, FT_CONTRACT_NAME } from './_app';
 import { NEAR_GAS, useNearMutation, useNearQuery, useNearUser } from '../../src';
-import { DefaultNftContractMetadata, DefaultNftToken } from '../../src/nft';
+import { DefaultNftContractMetadata, useNftTokens } from '../../src/nft';
 import React from 'react';
+import { useFtBalanceOf, useFtTransfer } from '../../src/ft';
+import { parseNearAmount } from 'near-api-js/lib/utils/format';
+import useNearContractProvided from '../../src/contract/useNearContractProvided';
 
 function Page() {
-   // const contract = useNearContractProvided();
-   const user = useNearUser(CONTRACT_NAME);
+   const nftContract = useNearContractProvided();
+   const user = useNearUser(NFT_CONTRACT_NAME);
 
-   // useNearQuery use caching for all requests
+   // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata, {}>(
       'nft_metadata',
       {
@@ -20,15 +23,18 @@ function Page() {
       error: collectionError,
       loading: loadingCollection,
       refetch: refetchCollection,
-   } = useNearQuery<DefaultNftToken[], {}>('nft_tokens_for_owner', {
-      variables: { account_id: user.address },
-      skip: !user.address,
+   } = useNftTokens({
+      variables: { limit: 5, from_index: '0' },
+      poolInterval: 1000 * 60 * 5,
+   });
+   const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
+      variables: { account_id: user.address as string },
+      poolInterval: 1000 * 60 * 5,
+      skip: !user.isConnected,
    });
 
-   const [mint, { data: mintResult, loading: mintLoading }] = useNearMutation<
-      { id: string },
-      { address: string }
-   >('nft_mint', { debug: true, gas: NEAR_GAS });
+   const [amountToTransfer, setAmountToTransfer] = React.useState(1);
+   const [ftTransfer] = useFtTransfer({ contract: FT_CONTRACT_NAME, gas: NEAR_GAS });
 
    return (
       <div>
@@ -41,14 +47,16 @@ function Page() {
                <div>
                   <p>User</p>
 
-                  <p>
-                     {user.address} {user.balance} NEAR
-                  </p>
+                  <p>Address: {user.address}</p>
+                  <p>{user.balance} NEAR</p>
+                  <p>{ftBalance} MFIGT</p>
                   <button onClick={() => user.disconnect()}>disconnect</button>
                </div>
 
+               <hr />
+
                <div>
-                  <p>Nft</p>
+                  <p>Nft Information</p>
 
                   {loadingMeta ? <p>Loading ...</p> : <p>Metadata: {JSON.stringify(metadata)}</p>}
                   {loadingCollection ? (
@@ -56,23 +64,54 @@ function Page() {
                   ) : collectionError ? (
                      <p>Error: {collectionError.message}</p>
                   ) : (
-                     <div>
+                     <div style={{ display: 'flex' }}>
                         {collection
                            ? collection.length > 0
-                              ? collection.map((el) => <p>{el.token_id}</p>)
+                              ? collection.map((el) => (
+                                   <div style={{ marginRight: 16 }}>
+                                      <img
+                                         src={
+                                            metadata
+                                               ? metadata.base_uri + '/' + el.metadata.media
+                                               : ''
+                                         }
+                                         style={{
+                                            width: 70,
+                                            height: 100,
+                                            objectFit: 'contain',
+                                            border: 'solid 1px black',
+                                            padding: 4,
+                                         }}
+                                         alt=''
+                                      />
+                                   </div>
+                                ))
                               : 'Empty collection'
                            : ''}
                      </div>
                   )}
+               </div>
+
+               <hr />
+
+               <div>
+                  <p>Example call method</p>
+
                   <button
                      onClick={() => {
-                        mint({ address: user.address as string }).then(() => {
-                           refetchCollection({ address: user.address as string }).then();
+                        ftTransfer(
+                           {
+                              receiver_id: 'muzikant.testnet',
+                              amount: parseNearAmount(amountToTransfer.toString()) as string,
+                           },
+                           parseNearAmount('0.01') as string,
+                        ).then(() => {
+                           refetchFtBalance().then();
                            user.refreshBalance().then();
                         });
                      }}
                   >
-                     mint nft
+                     Transfer FT
                   </button>
                </div>
             </div>

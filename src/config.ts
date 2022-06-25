@@ -1,4 +1,6 @@
 export const NEAR_GAS = 200000000000000;
+export const NEAR_MAX_GAS = 300000000000000;
+export const NEAR_GAS_1 = 100000000000000;
 
 export enum NearEnvironment {
    MainNet = 'mainnet',

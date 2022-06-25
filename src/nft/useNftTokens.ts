@@ -1,7 +1,7 @@
 import { NearQueryOptions, useNearQuery } from '../hooks';
 import { DefaultNftToken } from './index';
 
-export type NftTokensArgs = { fromIndex?: number; limit?: number };
+export type NftTokensArgs = { from_index?: string; limit?: number };
 export type NftTokensResult = DefaultNftToken[];
 
 function useNftMTokens<

@@ -1,27 +1,32 @@
 import React from 'react';
 import { AppProps } from 'next/app';
-import {  } from '../../src/hooks';
-import { NearEnvironment, NearProvider } from '../../src';
-import useNearContract from "../../contract/useNearContract";
-import NearContractProvider from "../../contract/NearContractProvider";
+import {
+   NearContractProvider,
+   NearEnvironment,
+   NearEnvironmentProvider,
+   NearProvider,
+   useNearContract,
+} from '../../src';
 
-export const CONTRACT_NAME = 'mfclub-nft.testnet';
+export const NFT_CONTRACT_NAME = 'mfight-nft_v2.testnet';
+export const FT_CONTRACT_NAME = 'mfight-ft.testnet';
 
 function WrappedContract({ children }: { children: React.ReactNode }) {
-   const contract = useNearContract(CONTRACT_NAME, {
-      viewMethods: ['nft_tokens_for_owner', 'nft_metadata'],
+   const contract = useNearContract(NFT_CONTRACT_NAME, {
+      viewMethods: ['nft_tokens_for_owner', 'nft_metadata', 'nft_tokens'],
       changeMethods: [],
    });
 
    return <NearContractProvider contract={contract}>{children}</NearContractProvider>;
 }
 
-// provide near state
 function WrappedNear({ children }: { children: React.ReactNode }) {
    return (
-      <NearProvider networkId={NearEnvironment.TestNet}>
-         <WrappedContract>{children}</WrappedContract>
-      </NearProvider>
+      <NearEnvironmentProvider defaultEnvironment={NearEnvironment.TestNet}>
+         <NearProvider>
+            <WrappedContract>{children}</WrappedContract>
+         </NearProvider>
+      </NearEnvironmentProvider>
    );
 }
 
