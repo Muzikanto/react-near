@@ -83,7 +83,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             if (account && typeof contractV === 'string') {
                res = await account.viewFunction(contractV, methodName, variables);
             }
-            if (contractV && methodName in (contractV as any)) {
+            if (!res && contractV && methodName in (contractV as any)) {
                res = await (contractV as any)[methodName](variables);
             }
 
