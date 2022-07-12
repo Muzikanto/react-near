@@ -9,7 +9,7 @@ export type NearContract = Contract;
 function useNearContract(
    contractId: string,
    contractMethods: { viewMethods: string[]; changeMethods: string[] },
-): NearContract | null {
+): NearContract | undefined {
    const { client } = React.useContext(NearContext);
 
    const wallet = useNearWallet();
@@ -37,7 +37,7 @@ function useNearContract(
       return null;
    }, [wallet]);
 
-   return wallet ? (contract as NearContract) : null;
+   return wallet ? (contract as NearContract) : undefined;
 }
 
 export default useNearContract;
