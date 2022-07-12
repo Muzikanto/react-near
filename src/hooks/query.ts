@@ -83,13 +83,18 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             if (account && typeof contractV === 'string') {
                res = await account.viewFunction(contractV, methodName, variables);
             }
-            if (!res && contractV && methodName in (contractV as any)) {
+            if (
+               !res &&
+               contractV &&
+               typeof contractV === 'object' &&
+               methodName in (contractV as any)
+            ) {
                res = await (contractV as any)[methodName](variables);
             }
 
             if (
                !(account && typeof contractV === 'string') &&
-               !(contractV && methodName in (contractV as any))
+               !(contractV && typeof contractV === 'object' && methodName in (contractV as any))
             ) {
                throw new Error(`Not found account ctx or contract method (${methodName})`);
             }
