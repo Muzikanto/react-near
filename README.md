@@ -22,11 +22,21 @@ import {
 export const NFT_CONTRACT_NAME = 'mfight-nft_v2.testnet';
 export const FT_CONTRACT_NAME = 'mfight-ft.testnet';
 
-function WrappedContract({ children }: { children: React.ReactNode }) {
-   const contract = useNearContract(NFT_CONTRACT_NAME, {
-      viewMethods: ['nft_tokens_for_owner', 'nft_metadata', 'nft_tokens'],
-      changeMethods: [],
+function useFtContract() {
+    return useNearContract(FT_CONTRACT_NAME, {
+      viewMethods: ['ft_balance_of'],
+      changeMethods: ['ft_transfer'],
    });
+}
+function useNftContract() {
+    return useNearContract(FT_CONTRACT_NAME, {
+      viewMethods: ['nft_tokens_for_owner', 'nft_metadata', 'nft_tokens'],
+      changeMethods: ['nft_transfer'],
+   });
+}
+
+function WrappedContract({ children }: { children: React.ReactNode }) {
+   const contract = useNftContract();
 
    return <NearContractProvider contract={contract}>{children}</NearContractProvider>;
 }
@@ -64,9 +74,17 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import useNearContractProvided from '../../src/contract/useNearContractProvided';
 
 function Page() {
-   const nftContract = useNearContractProvided();
-   const user = useNearUser(NFT_CONTRACT_NAME);
+  const nftContract = useNearContractProvided();
+  const ftContract = useFtContract();
+  const user = useNearUser(NFT_CONTRACT_NAME);
 
+    // FT
+  const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
+      contract: ftContract,
+      variables: { account_id: user.address as string },
+      poolInterval: 1000 * 60 * 5,
+      skip: !user.isConnected,
+   });
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata, {}>(
       'nft_metadata',
@@ -84,14 +102,9 @@ function Page() {
       variables: { limit: 5, from_index: '0' },
       poolInterval: 1000 * 60 * 5,
    });
-   const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
-      variables: { account_id: user.address as string },
-      poolInterval: 1000 * 60 * 5,
-      skip: !user.isConnected,
-   });
 
    const [amountToTransfer, setAmountToTransfer] = React.useState(1);
-   const [ftTransfer] = useFtTransfer({ contract: FT_CONTRACT_NAME, gas: NEAR_GAS });
+   const [ftTransfer] = useFtTransfer({ contract: ftContract, gas: NEAR_GAS });
 
    return (
       <div>
@@ -182,19 +195,32 @@ export default Page;
 
 ### Api
 
--  Nft
-   -  [x] nft_approve
-   -  [x] nft_is_approved
+-  NFT
    -  [x] nft_metadata
-   -  [x] nft_revoke
-   -  [x] nft_revoke_all
-   -  [x] nft_supply_for_owner
    -  [x] nft_token
    -  [x] nft_tokens
    -  [x] nft_tokens_for_owner
    -  [x] nft_total_supply
+   -  [x] nft_is_approved
+   -  [x] nft_supply_for_owner
    -  [x] nft_transfer
    -  [x] nft_transfer_call
--  Ft
+   -  [x] nft_approve
+   -  [x] nft_revoke
+   -  [x] nft_revoke_all
+-  FT
+   -  [x] ft_metadata
    -  [x] ft_transfer
+   -  [x] ft_transfer_call
    -  [x] ft_balance_of
+   -  [x] ft_total_supply
+   -  [x] storage_balance_of
+   -  [x] storage_balance_bounds
+   -  [x] storage_deposit
+   -  [x] storage_withdraw
+   -  [x] storage_unregister
+-  MT
+   -  [x] mt_balance_of
+   -  [x] mt_total_supply
+   -  [x] mt_batch_transfer
+   -  [x] mt_batch_transfer_call

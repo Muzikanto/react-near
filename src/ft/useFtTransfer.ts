@@ -4,6 +4,7 @@ import useNearMutation from '../hooks/mutation';
 export type FtTransferArgs = {
    amount: string;
    receiver_id: string;
+   memo?: string;
 };
 
 function useFtTransfer<Res = void, Req extends FtTransferArgs = FtTransferArgs>(
