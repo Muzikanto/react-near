@@ -32,7 +32,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const [args, setArgs] = React.useState(opts.variables || {});
 
    React.useEffect(() => {
-      setArgs(opts.variables || {});
+      if (JSON.stringify(args) !== JSON.stringify(setArgs(opts.variables || {}))) {
+         setArgs(opts.variables || {})
+      }
    }, [opts.variables]);
 
    const { client, account } = React.useContext(NearContext);
