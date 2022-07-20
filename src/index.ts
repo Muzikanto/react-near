@@ -50,5 +50,5 @@ export {
    NearEnvironmentProvider,
    //
    NearContractProvider,
-   useNearContract
+   useNearContract,
 };
