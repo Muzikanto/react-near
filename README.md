@@ -22,7 +22,7 @@
           <img alt="npm" src="https://img.shields.io/badge/types-included-32715f.svg?style=for-the-badge&labelColor=000000">
         </a>
 </p>
-
+</div>
 
 ## Introduction
 
