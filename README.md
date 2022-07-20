@@ -14,7 +14,7 @@ Inspired by graphql (for the frontend) I decided to do the same for near.
    -  [useNearUser](#batch-transactions) batch Transactions
    -  [useNearQuery](#usenearquery) use view methods
    -  [useNearMutation](#usenearmutation) use change methods
--  [contracts](#contracts) FT (nep141), NFT (nep171), MT (nep245)
+-  [contracts](#contracts)
    -  [ft](#ft) Fungible Token Standard (nep141) methods
    -  [nft](#nft) Non Fungible Token Standard (nep171) methods
    -  [mt](#mt) Multi Token Standard (nep245) methods
@@ -301,7 +301,7 @@ function Page() {
    const nearUser = useNearUser('contract.near');
    const ftContract = useFtContract();
 
-   const [transfer, { loading, data }] = useNearQuery<
+   const [transfer, { loading, data }] = useNearMutation<
       string,
       { receiver_id: string; amount: string }
    >('ft_transfer', {
