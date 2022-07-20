@@ -29,6 +29,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    methodName: string,
    opts: NearQueryOptions<Res, Req>,
 ) {
+   const [args, setArgs] = React.useState(opts.variables || {});
+
+   React.useEffect(() => {
+      setArgs(opts.variables || {});
+   }, [opts.variables]);
+
    const { client, account } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
    const contractV = opts.contract || contractProvided;
@@ -38,10 +44,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          : contractV.contractId
       : '';
 
-   const cacheState = client.cache.get(
-      encodeRequest(contractId, methodName, opts.variables || {}),
-      'ROOT_QUERY',
+   const requestId = React.useMemo(
+      () => encodeRequest(contractId, methodName, args),
+      [args, methodName, contractId],
    );
+   const cacheState = client.cache.get(requestId, 'ROOT_QUERY');
 
    const [state, setState] = React.useState<{
       data: Res | undefined;
@@ -54,17 +61,22 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    });
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
-      const requestId = encodeRequest(contractId, methodName, args || opts.variables || {});
-      const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as {
+      const nextRequestId = encodeRequest(contractId, methodName, args || opts.variables || {});
+
+      if (nextRequestId !== requestId) {
+         setArgs(args || opts.variables || {});
+      }
+
+      const cacheState = client.cache.get(nextRequestId, 'ROOT_QUERY') as {
          data?: Res;
          loading: boolean;
          error?: Error;
       };
-      const isFetched = client.cache.get(requestId, 'ROOT_FETCHED') as boolean | null;
+      const isFetched = client.cache.get(nextRequestId, 'ROOT_FETCHED') as boolean | null;
 
       if (useCache) {
          if (cacheState) {
-            client.cache.set(requestId, cacheState, 'ROOT_QUERY');
+            client.cache.set(nextRequestId, cacheState, 'ROOT_QUERY');
 
             return Promise.resolve(cacheState.data) as Promise<Res>;
          }
@@ -73,7 +85,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          }
       } else {
          client.cache.set(
-            requestId,
+            nextRequestId,
             { data: cacheState ? cacheState.data : undefined, loading: true, error: null },
             'ROOT_QUERY',
          );
@@ -117,7 +129,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                   data: res as any,
                   variables: (args || opts.variables || {}) as any,
                   methodName,
-                  requestId,
+                  requestId: nextRequestId,
                });
             }
 
@@ -125,8 +137,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                opts.onCompleted(res as any);
             }
 
-            client.cache.set(requestId, { data: res, loading: false, error: null }, 'ROOT_QUERY');
-            client.cache.set(requestId, true, 'ROOT_FETCHED');
+            client.cache.set(
+               nextRequestId,
+               { data: res, loading: false, error: null },
+               'ROOT_QUERY',
+            );
+            client.cache.set(nextRequestId, true, 'ROOT_FETCHED');
             // client.cache.set(requestId, false, 'ROOT_LOADING');
 
             return resolve(res);
@@ -139,9 +155,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                opts.onError(e as Error);
             }
 
-            client.cache.set(requestId, true, 'ROOT_FETCHED');
+            client.cache.set(nextRequestId, true, 'ROOT_FETCHED');
             client.cache.set(
-               requestId,
+               nextRequestId,
                { data: undefined, loading: false, error: e },
                'ROOT_QUERY',
             );
@@ -152,8 +168,6 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    };
 
    React.useEffect(() => {
-      const requestId = encodeRequest(contractId, methodName, opts.variables || {});
-
       const watcher = function (v: {
          data: any;
          loading: boolean;
@@ -169,10 +183,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       return () => {
          unWatch();
       };
-   }, [client, opts.variables, methodName, state, opts.skip, contractV]);
+   }, [client, opts.variables, methodName, state, opts.skip, contractV, requestId]);
 
    React.useEffect(() => {
-      const requestId = encodeRequest(contractId, methodName, opts.variables || {});
       const state = client.cache.get(requestId, 'ROOT_QUERY');
 
       if (state) {
@@ -184,7 +197,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             .then()
             .catch(() => {});
       }
-   }, [methodName, opts.skip, opts.onError, opts.variables, account, contractV]);
+   }, [methodName, opts.skip, opts.onError, opts.variables, account, contractV, requestId]);
    React.useEffect(() => {
       if (!opts.skip && opts.poolInterval && (account || contractV)) {
          const internal = setInterval(() => {
