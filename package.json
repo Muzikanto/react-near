@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "3.6.10",
+   "version": "3.6.11",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -10,7 +10,6 @@
       }
    ],
    "scripts": {
-      "start": "start-storybook -p 6006",
       "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks && rm -rf ./nft && rm -rf ./core && rm -rf ./environment && rm -rf ./ft && rm -rf ./contract && rm -rf ./mt",
       "build": "tsc -b",
       "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",

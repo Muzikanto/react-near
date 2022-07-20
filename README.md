@@ -1,4 +1,30 @@
-# NEAR React
+<h1 align="center">react-near</h1>
+
+<div align="center">
+
+<p align="center">
+  <a aria-label="Vercel logo" href="https://mfight.io">
+    <img src="https://img.shields.io/badge/MADE%20BY%20MFIGHT-000000.svg?style=for-the-badge&&labelColor=000">
+  </a>
+  <a aria-label="NPM version" href="https://www.npmjs.com/package/react-near">
+    <img alt="" src="https://img.shields.io/npm/v/react-near.svg?style=for-the-badge&labelColor=000000">
+  </a>
+  <a aria-label="Package size" href="https://www.npmjs.com/package/react-near">
+    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/react-near?style=for-the-badge&labelColor=000000">
+    </a>
+  <a aria-label="Downloads" href="https://www.npmjs.com/package/react-near">
+    <img alt="npm" src="https://img.shields.io/npm/dm/react-near?style=for-the-badge&labelColor=000000">
+  </a>
+  <a aria-label="Prettier" href="https://www.npmjs.com/package/react-near">
+      <img alt="npm" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=for-the-badge&labelColor=000000">
+    </a>
+    <a aria-label="Prettier" href="https://www.npmjs.com/package/react-near">
+          <img alt="npm" src="https://img.shields.io/badge/types-included-32715f.svg?style=for-the-badge&labelColor=000000">
+        </a>
+</p>
+
+
+## Introduction
 
 Inspired by graphql (for the frontend) I decided to do the same for near.
 
