@@ -6,6 +6,7 @@ import useNearContractProvided from '../contract/useNearContractProvided';
 
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
+   mock?: (args: Req, attachedDeposit?: string, gas?: number) => Promise<Res>;
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    debug?: boolean;
@@ -31,10 +32,10 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    const contractProvided = useNearContractProvided();
    const contractV = opts.contract || contractProvided;
    const contractId = contractV
-       ? typeof contractV === 'string'
-           ? contractV
-           : contractV.contractId
-       : '_';
+      ? typeof contractV === 'string'
+         ? contractV
+         : contractV.contractId
+      : '_';
 
    const [state, setState] = React.useState<{ data: Res | undefined; loading: boolean }>({
       loading: false,
@@ -54,38 +55,42 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
          try {
             let res: any;
 
-            if (!account) {
-               const err = new Error('Not found near account');
+            if (opts.mock) {
+               res = opts.mock(args, attachedDeposit, gas);
+            } else {
+               if (!account) {
+                  const err = new Error('Not found near account');
 
-               if (opts.debug) {
-                  console.error(`NEAR #${contractV}-${methodName}`, err);
+                  if (opts.debug) {
+                     console.error(`NEAR #${contractV}-${methodName}`, err);
+                  }
+                  if (opts.onError) {
+                     opts.onError(err);
+                  }
+
+                  return reject(err);
                }
-               if (opts.onError) {
-                  opts.onError(err);
+               if (!contractV) {
+                  const err = new Error('Not found contract');
+
+                  if (opts.debug) {
+                     console.error(`NEAR #${contractV}-${methodName}`, err);
+                  }
+                  if (opts.onError) {
+                     opts.onError(err);
+                  }
+
+                  return reject(err);
                }
 
-               return reject(err);
+               res = await account.functionCall({
+                  contractId: contractV,
+                  methodName,
+                  attachedDeposit,
+                  gas: gas || opts.gas,
+                  args,
+               });
             }
-            if (!contractV) {
-               const err = new Error('Not found contract');
-
-               if (opts.debug) {
-                  console.error(`NEAR #${contractV}-${methodName}`, err);
-               }
-               if (opts.onError) {
-                  opts.onError(err);
-               }
-
-               return reject(err);
-            }
-
-            res = await account.functionCall({
-               contractId: contractV,
-               methodName,
-               attachedDeposit,
-               gas: gas || opts.gas,
-               args,
-            });
 
             if (opts.debug) {
                console.log(`NEAR #${contractV}-${methodName}`, { ...args }, res);

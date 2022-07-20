@@ -7,6 +7,7 @@ import useNearContractProvided from '../contract/useNearContractProvided';
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
    variables?: Req;
+   mock?: (args: Req) => Promise<Res>;
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    skip?: boolean;
@@ -75,28 +76,32 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
-         const variables = args || opts.variables;
+         const variables = args || opts.variables || ({} as any);
 
          try {
             let res: Res | undefined = undefined;
 
-            if (account && typeof contractV === 'string') {
-               res = await account.viewFunction(contractV, methodName, variables);
-            }
-            if (
-               !res &&
-               contractV &&
-               typeof contractV === 'object' &&
-               methodName in (contractV as any)
-            ) {
-               res = await (contractV as any)[methodName](variables);
-            }
+            if (opts.mock) {
+               res = await opts.mock(variables);
+            } else {
+               if (account && typeof contractV === 'string') {
+                  res = await account.viewFunction(contractV, methodName, variables);
+               }
+               if (
+                  !res &&
+                  contractV &&
+                  typeof contractV === 'object' &&
+                  methodName in (contractV as any)
+               ) {
+                  res = await (contractV as any)[methodName](variables);
+               }
 
-            if (
-               !(account && typeof contractV === 'string') &&
-               !(contractV && typeof contractV === 'object' && methodName in (contractV as any))
-            ) {
-               throw new Error(`Not found account ctx or contract method (${methodName})`);
+               if (
+                  !(account && typeof contractV === 'string') &&
+                  !(contractV && typeof contractV === 'object' && methodName in (contractV as any))
+               ) {
+                  throw new Error(`Not found account ctx or contract method (${methodName})`);
+               }
             }
 
             if (opts.debug) {

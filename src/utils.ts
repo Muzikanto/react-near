@@ -1,5 +1,6 @@
 // @ts-ignore
 import cookie from 'cookie';
+import { formatNearAmount } from 'near-api-js/lib/utils/format';
 
 export function getNearError(e: any) {
    try {
@@ -26,3 +27,5 @@ export const getNearCookie = (key: string) => {
 
    return parsed[key];
 };
+
+export const ONE_NEAR_YOCTO = formatNearAmount('1') as string;
