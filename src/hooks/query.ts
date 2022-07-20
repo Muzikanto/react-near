@@ -32,8 +32,8 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    const [args, setArgs] = React.useState(opts.variables || {});
 
    React.useEffect(() => {
-      if (JSON.stringify(args) !== JSON.stringify(setArgs(opts.variables || {}))) {
-         setArgs(opts.variables || {})
+      if (JSON.stringify(args) !== JSON.stringify(opts.variables || {})) {
+         setArgs(opts.variables || {});
       }
    }, [opts.variables]);
 
