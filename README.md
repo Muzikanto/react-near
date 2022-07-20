@@ -19,8 +19,11 @@
       <img alt="npm" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=for-the-badge&labelColor=000000">
     </a>
     <a aria-label="Prettier" href="https://www.npmjs.com/package/react-near">
-          <img alt="npm" src="https://img.shields.io/badge/types-included-32715f.svg?style=for-the-badge&labelColor=000000">
-        </a>
+        <img alt="npm" src="https://img.shields.io/badge/types-included-32715f.svg?style=for-the-badge&labelColor=000000">
+    </a>
+    <a aria-label="License" href="https://github.com/Muzikanto/react-near/blob/master/LICENSE.md">
+        <img alt="" src="https://img.shields.io/npm/l/next.svg?style=for-the-badge&labelColor=000000">
+    </a>
 </p>
 </div>
 
@@ -396,3 +399,7 @@ function Page() {
 -  [x] storage_deposit
 -  [x] storage_withdraw
 -  [x] storage_unregister
+
+## Authors
+
+- Maksim Schiriy [@maksim-schiriy](https://www.linkedin.com/in/maksim-schiriy/?locale=en_US)
