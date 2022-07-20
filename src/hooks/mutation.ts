@@ -56,7 +56,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             let res: any;
 
             if (opts.mock) {
-               res = opts.mock(args, attachedDeposit, gas);
+               res = await opts.mock(args, attachedDeposit, gas);
             } else {
                if (!account) {
                   const err = new Error('Not found near account');

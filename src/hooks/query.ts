@@ -55,22 +55,26 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
       const requestId = encodeRequest(contractId, methodName, args || opts.variables || {});
-      const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as Res | null;
+      const cacheState = client.cache.get(requestId, 'ROOT_QUERY') as {
+         data?: Res;
+         loading: boolean;
+         error?: Error;
+      };
       const isFetched = client.cache.get(requestId, 'ROOT_FETCHED') as boolean | null;
 
       if (useCache) {
          if (cacheState) {
             client.cache.set(requestId, cacheState, 'ROOT_QUERY');
 
-            return Promise.resolve(cacheState) as Promise<Res>;
+            return Promise.resolve(cacheState.data) as Promise<Res>;
          }
          if (isFetched) {
             return Promise.resolve(undefined);
          }
-
+      } else {
          client.cache.set(
             requestId,
-            { data: cacheState, loading: true, error: null },
+            { data: cacheState ? cacheState.data : undefined, loading: true, error: null },
             'ROOT_QUERY',
          );
       }
@@ -148,27 +152,23 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    };
 
    React.useEffect(() => {
-      if (!opts.skip) {
-         const requestId = encodeRequest(contractId, methodName, opts.variables || {});
+      const requestId = encodeRequest(contractId, methodName, opts.variables || {});
 
-         const watcher = function (v: {
-            data: any;
-            loading: boolean;
-            error: Error | null | undefined;
-         }) {
-            if (JSON.stringify(v) !== JSON.stringify(state)) {
-               setState(v);
-            }
-         };
+      const watcher = function (v: {
+         data: any;
+         loading: boolean;
+         error: Error | null | undefined;
+      }) {
+         if (JSON.stringify(v) !== JSON.stringify(state)) {
+            setState(v);
+         }
+      };
 
-         const unWatch = client.cache.watch(requestId, watcher, 'ROOT_QUERY');
+      const unWatch = client.cache.watch(requestId, watcher, 'ROOT_QUERY');
 
-         return () => {
-            unWatch();
-         };
-      }
-
-      return () => {};
+      return () => {
+         unWatch();
+      };
    }, [client, opts.variables, methodName, state, opts.skip, contractV]);
 
    React.useEffect(() => {

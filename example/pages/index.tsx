@@ -27,10 +27,17 @@ function Page() {
       variables: { limit: 5, from_index: '0' },
       poolInterval: 1000 * 60 * 5,
    });
-   const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
+   const {
+      data: ftBalance = '0',
+      refetch: refetchFtBalance,
+      error,
+   } = useFtBalanceOf({
       variables: { account_id: user.address as string },
       poolInterval: 1000 * 60 * 5,
       skip: !user.isConnected,
+      // mock: async () => {
+      //    throw new Error('test')
+      // },
    });
 
    const [amountToTransfer, setAmountToTransfer] = React.useState(1);
@@ -45,7 +52,7 @@ function Page() {
          ) : (
             <div>
                <div>
-                  <p>User</p>
+                  <p onClick={() => refetchFtBalance().catch(() => {})}>User</p>
 
                   <p>Address: {user.address}</p>
                   <p>{user.balance} NEAR</p>
