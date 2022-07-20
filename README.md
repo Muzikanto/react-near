@@ -142,6 +142,8 @@ function Page() {
 
 #### useNearUser
 
+Everything you need to manage your account
+
 ```typescript jsx
 function Page() {
    const nearUser = useNearUser('example-contract');
@@ -218,6 +220,8 @@ function Page() {
 
 #### Define and use Contracts
 
+Adding contracts to the application
+
 ```typescript jsx
 export const NFT_CONTRACT_NAME = 'mfight-nft.near';
 export const FT_CONTRACT_NAME = 'mfight-ft.near';
@@ -253,6 +257,8 @@ function Page() {
 
 #### useNearQuery
 
+Calling the view method from the contract
+
 ```typescript jsx
 function Page() {
    const nearUser = useNearUser('contract.near');
@@ -287,6 +293,8 @@ function Page() {
 ```
 
 #### useNearMutation
+
+Calling the change method from the contract
 
 ```typescript jsx
 function Page() {
@@ -325,7 +333,7 @@ function Page() {
 
 ### Contracts
 
-####NFT
+#### NFT
 
 -  [x] nft_metadata
 -  [x] nft_token
