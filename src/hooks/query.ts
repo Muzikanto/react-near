@@ -11,6 +11,7 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    skip?: boolean;
+   ssr?: boolean;
    debug?: boolean;
    poolInterval?: number;
    update?: (
@@ -169,6 +170,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       });
    };
 
+   // subscribe to changes
    React.useEffect(() => {
       const watcher = function (v: {
          data: any;
@@ -185,8 +187,9 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       return () => {
          unWatch();
       };
-   }, [client, opts.variables, methodName, state, opts.skip, contractV, requestId]);
+   }, [client, opts.variables, methodName, state, contractV, requestId]);
 
+   // first fetch
    React.useEffect(() => {
       const state = client.cache.get(requestId, 'ROOT_QUERY');
 
@@ -194,14 +197,33 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          setState(state);
       }
 
-      if (!opts.skip && (account || contractV)) {
+      if (
+         !opts.skip &&
+         (opts.ssr === false ? typeof window !== 'undefined' : true) &&
+         (account || contractV)
+      ) {
          callMethod()
             .then()
             .catch(() => {});
       }
-   }, [methodName, opts.skip, opts.onError, opts.variables, account, contractV, requestId]);
+   }, [
+      methodName,
+      opts.skip,
+      opts.ssr,
+      opts.onError,
+      opts.variables,
+      account,
+      contractV,
+      requestId,
+   ]);
+   // interval refetch
    React.useEffect(() => {
-      if (!opts.skip && opts.poolInterval && (account || contractV)) {
+      if (
+         typeof window !== 'undefined' &&
+         !opts.skip &&
+         opts.poolInterval &&
+         (account || contractV)
+      ) {
          const internal = setInterval(() => {
             callMethod()
                .then()
@@ -214,7 +236,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return () => {};
-   }, [methodName, opts.skip, opts.onError, opts.variables, account, opts.contract]);
+   }, [methodName, opts.skip, opts.ssr, opts.onError, opts.variables, account, opts.contract]);
 
    return {
       data: state.data === null ? undefined : state.data,
