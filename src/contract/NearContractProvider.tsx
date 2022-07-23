@@ -1,6 +1,6 @@
 import React from 'react';
-import { ConnectConfig } from 'near-api-js';
-import { NearContract } from './useNearContract';
+import {ConnectConfig} from 'near-api-js';
+import {NearContract} from './useNearContract';
 
 export interface NearContractContextType {
     contract?: NearContract | null;
@@ -12,9 +12,12 @@ export type NearContractProviderProps = Partial<ConnectConfig> & {
 
 export const NearContractContext = React.createContext<NearContractContextType>({});
 
-const NearContractProvider: React.FC<NearContractProviderProps> = ({ contract, children }) => {
+const NearContractProvider: React.FC<React.PropsWithChildren<NearContractProviderProps>> = ({
+    contract,
+    children
+}) => {
     return (
-        <NearContractContext.Provider value={{ contract }}>{children}</NearContractContext.Provider>
+        <NearContractContext.Provider value={{contract}}>{children}</NearContractContext.Provider>
     );
 };
 
