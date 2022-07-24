@@ -1,19 +1,22 @@
-import { NFT_CONTRACT_NAME, FT_CONTRACT_NAME } from './_app';
-import { NEAR_GAS, useNearMutation, useNearQuery, useNearUser } from '../../src';
+import { NFT_CONTRACT_NAME, FT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
+import { NEAR_GAS, NearContext, useNearQuery, useNearUser } from '../../src';
 import { DefaultNftContractMetadata, useNftTokens } from '../../src/nft';
 import React from 'react';
 import { useFtBalanceOf, useFtTransfer } from '../../src/ft';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
-import useNearContractProvided from '../../src/contract/useNearContractProvided';
+import { NextPage } from 'next';
+import {formatNearPrice} from "../../src/utils";
 
-function Page() {
-   const nftContract = useNearContractProvided();
+const Page: NextPage = function () {
+   const nftContract = useNftContract();
+   const ftContract = useFtContract();
    const user = useNearUser(NFT_CONTRACT_NAME);
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata, {}>(
       'nft_metadata',
       {
+         contract: nftContract,
          variables: {},
          // skip: true,
       },
@@ -24,27 +27,29 @@ function Page() {
       loading: loadingCollection,
       refetch: refetchCollection,
    } = useNftTokens({
+      contract: nftContract,
       variables: { limit: 5, from_index: '0' },
       poolInterval: 1000 * 60 * 5,
    });
    const {
       data: ftBalance = '0',
       refetch: refetchFtBalance,
+      loading,
       error,
    } = useFtBalanceOf({
-      variables: { account_id: user.address as string },
+      contract: ftContract,
+      variables: { account_id: 'muzikant.testnet' },
       poolInterval: 1000 * 60 * 5,
-      skip: !user.isConnected,
-      // mock: async () => {
-      //    throw new Error('test')
-      // },
+      ssr: true
    });
 
    const [amountToTransfer, setAmountToTransfer] = React.useState(1);
-   const [ftTransfer] = useFtTransfer({ contract: FT_CONTRACT_NAME, gas: NEAR_GAS });
+   const [ftTransfer] = useFtTransfer({ contract: ftContract, gas: NEAR_GAS });
 
    return (
       <div>
+         <p>Data From SSR: {ftBalance} MFIGT</p>
+
          {!user.isConnected ? (
             <div>
                <button onClick={() => user.connect('NEAR Example title')}>connect</button>
@@ -52,11 +57,11 @@ function Page() {
          ) : (
             <div>
                <div>
-                  <p onClick={() => refetchFtBalance().catch(() => {})}>User</p>
+                  <p>User</p>
 
                   <p>Address: {user.address}</p>
                   <p>{user.balance} NEAR</p>
-                  <p>{ftBalance} MFIGT</p>
+                  <p>{formatNearPrice(ftBalance).toFixed(2)} MFIGT</p>
                   <button onClick={() => user.disconnect()}>disconnect</button>
                </div>
 
@@ -74,8 +79,8 @@ function Page() {
                      <div style={{ display: 'flex' }}>
                         {collection
                            ? collection.length > 0
-                              ? collection.map((el) => (
-                                   <div style={{ marginRight: 16 }}>
+                              ? collection.map((el, i) => (
+                                   <div style={{ marginRight: 16 }} key={`item-${i}`}>
                                       <img
                                          src={
                                             metadata
@@ -125,6 +130,6 @@ function Page() {
          )}
       </div>
    );
-}
+};
 
 export default Page;

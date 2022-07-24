@@ -1,6 +1,6 @@
 import React from 'react';
 import { Near, ConnectConfig, WalletConnection, connect, keyStores, Account } from 'near-api-js';
-import getNearConfig, {NearEnvironment} from './config';
+import getNearConfig, { NearEnvironment } from './config';
 import getNearClient, { NearClient } from './core/client';
 import { useNearEnvironment } from './environment';
 
@@ -11,53 +11,73 @@ export interface NearContextType {
    client: NearClient;
    loading?: boolean;
 }
+export type NearProviderState = {
+   near: Near | undefined;
+   wallet: WalletConnection | undefined;
+   loading: boolean;
+};
 
 export type NearProviderProps = Partial<ConnectConfig> & {
    environment?: NearEnvironment;
+   defaultState?: NearProviderState;
+   defaultClient?: NearClient;
 };
 
 export const NearContext = React.createContext<NearContextType>({ client: null as any });
 
+export async function makeNearProviderState({
+   environment = NearEnvironment.TestNet,
+   ...props
+}: Partial<ConnectConfig> & {
+   environment: NearEnvironment;
+}): Promise<NearProviderState & { near: Near }> {
+   const config = {
+      ...getNearConfig(environment),
+      deps: {
+         keyStore:
+            typeof window === 'undefined'
+               ? new keyStores.InMemoryKeyStore()
+               : new keyStores.BrowserLocalStorageKeyStore(),
+      },
+      ...props,
+   };
+
+   const nearInstance = await connect(config);
+   const walletInstance =
+      typeof window === 'undefined' ? undefined : new WalletConnection(nearInstance, null);
+
+   return { near: nearInstance, wallet: walletInstance, loading: false };
+}
+
 const NearProvider: React.FC<React.PropsWithChildren<NearProviderProps>> = ({
-   environment: defaultEnvironment,
+   environment: forceEnvironment,
    children,
+   defaultState,
+   defaultClient,
    ...props
 }) => {
    const env = useNearEnvironment();
-   const environment =
-      (env.isProvided ? defaultEnvironment || env.value : defaultEnvironment) ||
-      NearEnvironment.TestNet;
+   const environment = forceEnvironment || env.value || NearEnvironment.TestNet;
 
-   const client = React.useMemo(() => getNearClient(), []);
-   const config: ConnectConfig | null = React.useMemo(() => {
-      if (typeof window === 'undefined') {
-         return null;
-      }
+   const client = React.useMemo(() => defaultClient || getNearClient(), []);
 
-      return {
-         ...getNearConfig(environment),
-         deps: { keyStore: new keyStores.BrowserLocalStorageKeyStore() },
-         ...props,
-      };
-   }, [props, environment]);
-
-   const [state, setState] = React.useState<{
-      near: Near | undefined;
-      wallet: WalletConnection | undefined;
-      loading: boolean;
-   }>({
-      near: undefined,
-      wallet: undefined,
-      loading: true,
-   });
+   const [state, setState] = React.useState<NearProviderState>(
+      defaultState || {
+         near: undefined,
+         wallet: undefined,
+         loading: true,
+      },
+   );
 
    React.useEffect(() => {
-      if (config && typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
          const setup = async function (): Promise<void> {
-            const nearInstance = await connect(config);
-            const walletInstance = new WalletConnection(nearInstance, null);
+            const nextState = await makeNearProviderState({
+               environment,
+               ...props,
+            });
 
-            setState({ loading: false, wallet: walletInstance, near: nearInstance });
+            setState(nextState);
          };
 
          setup()

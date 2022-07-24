@@ -29,3 +29,11 @@ export const getNearCookie = (key: string) => {
 };
 
 export const ONE_NEAR_YOCTO = formatNearAmount('1') as string;
+
+export function formatNearPrice(price: string, decimals: number = 24): number {
+   if (decimals === 0) {
+      return +price;
+   }
+
+   return +(+formatNearAmount(price, decimals).split(',').join(''));
+}

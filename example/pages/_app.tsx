@@ -1,41 +1,93 @@
 import React from 'react';
-import { AppProps } from 'next/app';
-import {
-   NearContractProvider,
-   NearEnvironment,
-   NearEnvironmentProvider,
-   NearProvider,
-   useNearContract,
-} from '../../src';
+import { AppInitialProps, AppProps } from 'next/app';
+import { NearEnvironment, NearEnvironmentProvider, NearProvider, useNearContract } from '../../src';
+import { AppContext } from 'next/dist/pages/_app';
+import { makeNearProviderState, NearProviderState } from '../../src/NearProvider';
+import * as nearApi from 'near-api-js';
+import createNearClient, { encodeRequest, NearClient } from '../../src/core/client';
+import withNear from '../../src/withNear';
+import { collectNearData } from '../../src/collectNearInfo';
 
 export const NFT_CONTRACT_NAME = 'mfight-nft_v2.testnet';
 export const FT_CONTRACT_NAME = 'mfight-ft.testnet';
 
-function WrappedContract({ children }: { children: React.ReactNode }) {
-   const contract = useNearContract(NFT_CONTRACT_NAME, {
+const FT_CONTRACT_METHODS = {
+   viewMethods: ['ft_balance_of'],
+   changeMethods: ['ft_transfer'],
+};
+export function useFtContract() {
+   return useNearContract(FT_CONTRACT_NAME, FT_CONTRACT_METHODS);
+}
+export function useNftContract() {
+   return useNearContract(NFT_CONTRACT_NAME, {
       viewMethods: ['nft_tokens_for_owner', 'nft_metadata', 'nft_tokens'],
       changeMethods: [],
    });
-
-   return <NearContractProvider contract={contract}>{children}</NearContractProvider>;
 }
 
-function WrappedNear({ children }: { children: React.ReactNode }) {
+type MyAppProps = AppProps & { nearState?: NearProviderState; nearClient?: NearClient };
+
+const MyApp: React.FC<MyAppProps> = function ({
+   Component,
+   pageProps,
+   nearState,
+   nearClient,
+}: MyAppProps) {
    return (
       <NearEnvironmentProvider defaultEnvironment={NearEnvironment.TestNet}>
-         <NearProvider>
-            <WrappedContract>{children}</WrappedContract>
+         <NearProvider
+            defaultState={nearState}
+            defaultClient={
+               typeof window !== 'undefined'
+                  ? nearClient
+                     ? createNearClient(nearClient)
+                     : undefined
+                  : nearClient
+            }
+         >
+            <Component {...pageProps} />
          </NearProvider>
       </NearEnvironmentProvider>
    );
-}
+};
 
-function MyApp({ Component, pageProps }: AppProps) {
-   return (
-      <WrappedNear>
-         <Component {...pageProps} />
-      </WrappedNear>
-   );
-}
+// @ts-ignore
+MyApp.getInitialProps = async ({
+   Component,
+   ctx,
+}: AppContext): Promise<
+   AppInitialProps & { nearState?: NearProviderState; nearClient?: NearClient }
+> => {
+   const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
+
+   if (typeof window !== 'undefined') {
+      return {
+         pageProps,
+      };
+   }
+
+   // get data on ssr
+   const nearState = await makeNearProviderState({ environment: NearEnvironment.TestNet });
+   const nearClient = createNearClient();
+
+   // save contract
+   const ftAccount = await nearState.near.account(FT_CONTRACT_NAME);
+   const ftContract = new nearApi.Contract(ftAccount, FT_CONTRACT_NAME, FT_CONTRACT_METHODS);
+
+   const contractKey = encodeRequest(FT_CONTRACT_NAME);
+   nearClient.cache.setContract(contractKey, ftContract);
+
+   const props = {
+      nearState,
+      nearClient,
+      pageProps,
+   };
+
+   // render for collect methods
+   const { AppTree } = ctx;
+   await collectNearData(nearClient, <AppTree {...props} />);
+
+   return props;
+};
 
 export default MyApp;

@@ -3,6 +3,7 @@ import { NearContext } from '../NearProvider';
 import { encodeRequest, NearClient } from '../core/client';
 import { NearContract } from '../contract/useNearContract';
 import useNearContractProvided from '../contract/useNearContractProvided';
+import {Contract} from "near-api-js";
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
@@ -24,6 +25,11 @@ export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any
          requestId: string;
       },
    ) => void;
+};
+export type NearQueryState<Res = any> = {
+   data: Res | undefined;
+   loading: boolean;
+   error: Error | null | undefined;
 };
 
 function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
@@ -51,17 +57,14 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       () => encodeRequest(contractId, methodName, args),
       [args, methodName, contractId],
    );
-   const cacheState = client.cache.get(requestId, 'ROOT_QUERY');
 
-   const [state, setState] = React.useState<{
-      data: Res | undefined;
-      loading: boolean;
-      error: Error | null | undefined;
-   }>({
-      loading: !opts.skip,
-      data: cacheState ? cacheState.data : undefined,
-      error: null,
-   });
+   const [state, setState] = React.useState<NearQueryState<Res>>(
+      client.cache.getQuery<Res>(requestId) || {
+         loading: !opts.skip,
+         data: undefined,
+         error: null,
+      },
+   );
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
       const nextRequestId = encodeRequest(contractId, methodName, args || opts.variables || {});
@@ -70,16 +73,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          setArgs(args || opts.variables || {});
       }
 
-      const cacheState = client.cache.get(nextRequestId, 'ROOT_QUERY') as {
-         data?: Res;
-         loading: boolean;
-         error?: Error;
-      };
+      const cacheState = client.cache.getQuery<Res>(nextRequestId);
       const isFetched = client.cache.get(nextRequestId, 'ROOT_FETCHED') as boolean | null;
 
       if (useCache) {
          if (cacheState) {
-            client.cache.set(nextRequestId, cacheState, 'ROOT_QUERY');
+            client.cache.setQuery(nextRequestId, cacheState);
 
             return Promise.resolve(cacheState.data) as Promise<Res>;
          }
@@ -87,11 +86,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             return Promise.resolve(undefined);
          }
       } else {
-         client.cache.set(
-            nextRequestId,
-            { data: cacheState ? cacheState.data : undefined, loading: true, error: null },
-            'ROOT_QUERY',
-         );
+         client.cache.setQuery(nextRequestId, {
+            data: cacheState ? cacheState.data : undefined,
+            loading: true,
+            error: null,
+         });
       }
 
       return new Promise(async (resolve: (res: Res | undefined) => void, reject) => {
@@ -108,8 +107,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                }
                if (
                   !res &&
-                  contractV &&
-                  typeof contractV === 'object' &&
+                  contractV && contractV instanceof Contract &&
                   methodName in (contractV as any)
                ) {
                   res = await (contractV as any)[methodName](variables);
@@ -117,7 +115,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
                if (
                   !(account && typeof contractV === 'string') &&
-                  !(contractV && typeof contractV === 'object' && methodName in (contractV as any))
+                  !(contractV && contractV instanceof Contract && methodName in (contractV as any))
                ) {
                   throw new Error(`Not found account ctx or contract method (${methodName})`);
                }
@@ -140,11 +138,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                opts.onCompleted(res as any);
             }
 
-            client.cache.set(
-               nextRequestId,
-               { data: res, loading: false, error: null },
-               'ROOT_QUERY',
-            );
+            client.cache.setQuery(nextRequestId, { data: res, loading: false, error: null });
             client.cache.set(nextRequestId, true, 'ROOT_FETCHED');
             // client.cache.set(requestId, false, 'ROOT_LOADING');
 
@@ -159,11 +153,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             }
 
             client.cache.set(nextRequestId, true, 'ROOT_FETCHED');
-            client.cache.set(
-               nextRequestId,
-               { data: undefined, loading: false, error: e },
-               'ROOT_QUERY',
-            );
+            client.cache.setQuery(nextRequestId, {
+               data: undefined,
+               loading: false,
+               error: e as Error,
+            });
 
             return reject(e);
          }
@@ -187,11 +181,11 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       return () => {
          unWatch();
       };
-   }, [client, opts.variables, methodName, state, contractV, requestId]);
+   }, [client, opts.variables, opts.contract, methodName, state, contractV, requestId]);
 
    // first fetch
    React.useEffect(() => {
-      const state = client.cache.get(requestId, 'ROOT_QUERY');
+      const state = client.cache.getQuery<Res>(requestId);
 
       if (state) {
          setState(state);
@@ -200,7 +194,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       if (
          !opts.skip &&
          (opts.ssr === false ? typeof window !== 'undefined' : true) &&
-         (account || contractV)
+         (account || contractV instanceof Contract)
       ) {
          callMethod()
             .then()
@@ -237,6 +231,12 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
 
       return () => {};
    }, [methodName, opts.skip, opts.ssr, opts.onError, opts.variables, account, opts.contract]);
+
+   if (typeof window === 'undefined') {
+      if (opts.ssr) {
+         client.cache.set(requestId, { contractId, methodName, args }, 'SSR');
+      }
+   }
 
    return {
       data: state.data === null ? undefined : state.data,

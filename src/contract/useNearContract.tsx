@@ -15,29 +15,39 @@ function useNearContract(
    const wallet = useNearWallet();
 
    const contract = React.useMemo(() => {
-      if (wallet) {
-         const walletAccount = wallet.account();
-         const requestId = encodeRequest(contractId,  '_', {
-            accountId: walletAccount.accountId,
-            ...contractMethods,
-         });
-         const cacheState = client.cache.get(requestId, 'ROOT_CONTRACT');
+      const requestId = encodeRequest(contractId);
+      const cacheState = client.cache.getContract(requestId);
 
-         if (cacheState) {
-            return cacheState as Contract;
+      if (cacheState) {
+         const isAvailableCache =
+            typeof window === 'undefined' ? true : cacheState instanceof Contract;
+
+         if (wallet && !isAvailableCache) {
+            const walletAccount = wallet.account();
+            const contract = new Contract(walletAccount, contractId, contractMethods);
+
+            client.cache.setContract(requestId, contract);
+            client.cache.set(requestId, true, 'ROOT_FETCHED');
+
+            return contract;
          }
 
-         const contr = new Contract(walletAccount, contractId, contractMethods);
-
-         client.cache.set(requestId, contr, 'ROOT_CONTRACT');
-
-         return contr;
+         return cacheState as Contract;
+      }
+      if (!wallet) {
+         return undefined;
       }
 
-      return null;
+      const walletAccount = wallet.account();
+      const contract = new Contract(walletAccount, contractId, contractMethods);
+
+      client.cache.setContract(requestId, contract);
+      client.cache.set(requestId, true, 'ROOT_FETCHED');
+
+      return contract;
    }, [wallet]);
 
-   return wallet ? (contract as NearContract) : undefined;
+   return (contract as NearContract | undefined) || undefined;
 }
 
 export default useNearContract;
