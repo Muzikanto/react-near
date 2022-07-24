@@ -73,7 +73,7 @@ function useNearUser(contractId: string) {
    );
    const refreshBalance = React.useCallback(async () => {
       if (account) {
-         const balanceV = +formatNearAmount((await account.getAccountBalance()).available, 2);
+         const balanceV = +(formatNearAmount((await account.getAccountBalance()).available, 2)).split(',').join('');
 
          setBalance(balanceV);
          client.cache.set(account.accountId, balanceV, 'ROOT_USER');

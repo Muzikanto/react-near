@@ -24,7 +24,7 @@ export const NearEnvironmentContext = React.createContext<NearEnvironmentContext
    isProvided: false,
 });
 
-const NearEnvironmentProvider: React.FC<NearEnvironmentProviderProps> = ({
+const NearEnvironmentProvider: React.FC<React.PropsWithChildren<NearEnvironmentProviderProps>> = ({
    defaultEnvironment = NearEnvironment.TestNet,
    children,
 }) => {

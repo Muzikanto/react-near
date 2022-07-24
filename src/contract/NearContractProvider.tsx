@@ -12,7 +12,7 @@ export type NearContractProviderProps = Partial<ConnectConfig> & {
 
 export const NearContractContext = React.createContext<NearContractContextType>({});
 
-const NearContractProvider: React.FC<NearContractProviderProps> = ({ contract, children }) => {
+const NearContractProvider: React.FC<React.PropsWithChildren<NearContractProviderProps>> = ({ contract, children }) => {
     return (
         <NearContractContext.Provider value={{ contract }}>{children}</NearContractContext.Provider>
     );
