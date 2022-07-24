@@ -291,11 +291,11 @@ Run queries on nextjs server side (experimental)
 
 ```typescript jsx
 // app.tsx
-type MyAppProps = AppProps & { nearClient?: NearClient };
+type MyAppProps = AppProps & { nearClient?: NearClient; nearState?: NearProviderState };
 
-const MyApp: React.FC<MyAppProps> = function ({ Component, pageProps, nearClient }: MyAppProps) {
+const MyApp: React.FC<MyAppProps> = function ({ Component, pageProps, nearClient, nearState }: MyAppProps) {
    return (
-      <NearProvider defaultClient={nearClient}>
+      <NearProvider defaultClient={nearClient} defaultState={nearState}>
          <Component {...pageProps} />
       </NearProvider>
    );
@@ -308,6 +308,7 @@ MyApp.getInitialProps = async ({
    const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
 
    // create cache client
+   const nearState = await makeNearProviderState({ environment: NearEnvironment.TestNet });
    const nearClient = createNearClient();
 
    // init contract
@@ -321,6 +322,7 @@ MyApp.getInitialProps = async ({
    const props = {
       nearState,
       nearClient,
+      nearState,
       pageProps,
    };
 
