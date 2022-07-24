@@ -16,7 +16,7 @@ function useNearContract(
 
    const contract = React.useMemo(() => {
       const requestId = encodeRequest(contractId);
-      const cacheState = client.cache.getContract(requestId);
+      const cacheState = client.getContract(requestId);
 
       if (cacheState) {
          const isAvailableCache =
@@ -26,8 +26,8 @@ function useNearContract(
             const walletAccount = wallet.account();
             const contract = new Contract(walletAccount, contractId, contractMethods);
 
-            client.cache.setContract(requestId, contract);
-            client.cache.set(requestId, true, 'ROOT_FETCHED');
+            client.setContract(requestId, contract);
+            client.set(requestId, true, 'ROOT_FETCHED');
 
             return contract;
          }
@@ -41,8 +41,8 @@ function useNearContract(
       const walletAccount = wallet.account();
       const contract = new Contract(walletAccount, contractId, contractMethods);
 
-      client.cache.setContract(requestId, contract);
-      client.cache.set(requestId, true, 'ROOT_FETCHED');
+      client.setContract(requestId, contract);
+      client.set(requestId, true, 'ROOT_FETCHED');
 
       return contract;
    }, [wallet]);

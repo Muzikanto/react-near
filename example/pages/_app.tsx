@@ -35,16 +35,7 @@ const MyApp: React.FC<MyAppProps> = function ({
 }: MyAppProps) {
    return (
       <NearEnvironmentProvider defaultEnvironment={NearEnvironment.TestNet}>
-         <NearProvider
-            defaultState={nearState}
-            defaultClient={
-               typeof window !== 'undefined'
-                  ? nearClient
-                     ? createNearClient(nearClient)
-                     : undefined
-                  : nearClient
-            }
-         >
+         <NearProvider defaultState={nearState} defaultClient={nearClient}>
             <Component {...pageProps} />
          </NearProvider>
       </NearEnvironmentProvider>
@@ -60,12 +51,6 @@ MyApp.getInitialProps = async ({
 > => {
    const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
 
-   if (typeof window !== 'undefined') {
-      return {
-         pageProps,
-      };
-   }
-
    // get data on ssr
    const nearState = await makeNearProviderState({ environment: NearEnvironment.TestNet });
    const nearClient = createNearClient();
@@ -75,7 +60,7 @@ MyApp.getInitialProps = async ({
    const ftContract = new nearApi.Contract(ftAccount, FT_CONTRACT_NAME, FT_CONTRACT_METHODS);
 
    const contractKey = encodeRequest(FT_CONTRACT_NAME);
-   nearClient.cache.setContract(contractKey, ftContract);
+   nearClient.setContract(contractKey, ftContract);
 
    const props = {
       nearState,

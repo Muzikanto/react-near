@@ -1,8 +1,9 @@
 import React from 'react';
 import { Near, ConnectConfig, WalletConnection, connect, keyStores, Account } from 'near-api-js';
 import getNearConfig, { NearEnvironment } from './config';
-import getNearClient, { NearClient } from './core/client';
+import { NearClient } from './core/client';
 import { useNearEnvironment } from './environment';
+import createNearClient from './core/client';
 
 export interface NearContextType {
    near?: Near;
@@ -59,7 +60,10 @@ const NearProvider: React.FC<React.PropsWithChildren<NearProviderProps>> = ({
    const env = useNearEnvironment();
    const environment = forceEnvironment || env.value || NearEnvironment.TestNet;
 
-   const client = React.useMemo(() => defaultClient || getNearClient(), []);
+   const client = React.useMemo(
+      () => (defaultClient instanceof NearClient ? defaultClient : createNearClient(defaultClient)),
+      [],
+   );
 
    const [state, setState] = React.useState<NearProviderState>(
       defaultState || {

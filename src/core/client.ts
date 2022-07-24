@@ -1,22 +1,6 @@
 import { Contract } from 'near-api-js';
 import { NearQueryState } from '../hooks/query';
 
-export type NearClient = {
-   cache: {
-      data: { [key: string]: any };
-      set: (key: string, value: any, rootId?: string) => void;
-      get: (key: string, rootId?: string) => any;
-      watch: (key: string, watcher: (v: any) => void, rootId?: string) => () => void;
-      exists: (key: string) => boolean;
-
-      setContract: (key: string, contract: Contract) => void;
-      getContract: (key: string) => Contract | null;
-
-      setQuery: <R>(key: string, data: NearQueryState<R>) => void;
-      getQuery: <R>(key: string) => NearQueryState<R> | null;
-   };
-};
-
 export function encodeRequest(
    contractId: string,
    methodName: string = '',
@@ -25,26 +9,24 @@ export function encodeRequest(
    return `${contractId}.${methodName}(${JSON.stringify(args)})`;
 }
 
-// let nearClient: NearClient | null = null;
-
-// export function getNearClient() {
-//    return nearClient;
-// }
-
-const createNearClient = (fromClient?: NearClient): NearClient => {
-   const watchers: {
+export class NearClient {
+   protected watchers: {
       [key: string]: {
          [key: string]: Array<(v: any) => void>;
       };
    } = {};
-   const cache: { [key: string]: any } = fromClient
-      ? {
-           ROOT_QUERY: fromClient.cache.data.ROOT_QUERY,
-           ROOT_CONTRACT: fromClient.cache.data.ROOT_CONTRACT,
-        }
-      : {};
 
-   const set = <T>(key: string, value: T, rootId: string = 'ROOT') => {
+   public cache: { [key: string]: any } = {};
+
+   constructor(fromClient?: NearClient) {
+      if (fromClient) {
+         this.from(fromClient);
+      }
+   }
+
+   public set = <T>(key: string, value: T, rootId: string = 'ROOT') => {
+      const { watchers, cache } = this;
+
       if (rootId) {
          if (!cache[rootId]) {
             cache[rootId] = {};
@@ -59,22 +41,27 @@ const createNearClient = (fromClient?: NearClient): NearClient => {
          watchers[rootId][key].forEach((watcher) => watcher(value));
       }
    };
-   const setContract = (requestId: string, contract: Contract) => {
-      set(requestId, contract, 'ROOT_CONTRACT');
+
+   public setContract = (requestId: string, contract: Contract) => {
+      this.set(requestId, contract, 'ROOT_CONTRACT');
    };
 
-   const get = <T>(key: string, rootId: string = 'ROOT'): T | null => {
+   public get = <T>(key: string, rootId: string = 'ROOT'): T | null => {
+      const { cache } = this;
+
       if (rootId) {
          return (cache[rootId] || {})[key];
       } else {
          return cache[key];
       }
    };
-   const getContract = (requestId: string): Contract | null => {
-      return get<Contract | null>(requestId, 'ROOT_CONTRACT');
+   public getContract = (requestId: string): Contract | null => {
+      return this.get<Contract | null>(requestId, 'ROOT_CONTRACT');
    };
 
-   const watch = (key: string, watcher: (v: any) => void, rootId: string = 'ROOT') => {
+   public watch = (key: string, watcher: (v: any) => void, rootId: string = 'ROOT') => {
+      const { watchers } = this;
+
       if (!watchers[rootId]) {
          watchers[rootId] = {};
       }
@@ -89,29 +76,29 @@ const createNearClient = (fromClient?: NearClient): NearClient => {
       };
    };
 
-   const setQuery = <R>(key: string, data: NearQueryState<R>) => {
-      set(key, data, 'ROOT_QUERY');
+   public setQuery = <R>(key: string, data: NearQueryState<R>) => {
+      this.set(key, data, 'ROOT_QUERY');
    };
-   const getQuery = <R>(requestId: string): NearQueryState<R> | null => {
-      return get<NearQueryState<R>>(requestId, 'ROOT_QUERY');
-   };
-
-   const client: NearClient & { watchers: any } = {
-      cache: {
-         data: cache,
-         set,
-         get,
-         watch,
-         setContract,
-         getContract,
-         setQuery,
-         getQuery,
-         exists: (k) => k in cache,
-      },
-      watchers,
+   public getQuery = <R>(requestId: string): NearQueryState<R> | null => {
+      return this.get<NearQueryState<R>>(requestId, 'ROOT_QUERY');
    };
 
-   // nearClient = client;
+   public from(fromClient: NearClient): NearClient {
+      this.cache = {
+         ROOT_QUERY: fromClient.cache.ROOT_QUERY,
+         ROOT_CONTRACT: fromClient.cache.ROOT_CONTRACT,
+      };
+
+      return this;
+   }
+
+   public exists(key: string): boolean {
+      return key in this.cache;
+   }
+}
+
+const createNearClient = (fromClient?: NearClient): NearClient => {
+   const client = new NearClient(fromClient);
 
    if (typeof window !== 'undefined') {
       // @ts-ignore

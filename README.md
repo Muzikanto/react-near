@@ -39,15 +39,16 @@ Inspired by graphql (for the frontend) I decided to do the same for near.
    -  [NearProvider](#nearprovider) define near in app
    -  [NearEnvironmentProvider](#nearenvironmentprovider) switch env (TestNet, MainNet..)
    -  [Config](#define-and-use-contracts) define contracts
+   -  [ssr rendering](#ssr)
    -  [useNearUser](#usenearuser) complex example
    -  [useNearUser](#batch-transactions) batch Transactions
    -  [useNearQuery](#usenearquery) use view methods
    -  [useNearMutation](#usenearmutation) use change methods
 -  [contracts](#contracts)
-   -  [ft](#ft) Fungible Token Standard (nep141) methods
-   -  [nft](#nft) Non Fungible Token Standard (nep171) methods
-   -  [mt](#mt) Multi Token Standard (nep245) methods
-   -  [storage](#storage) Storage Management (nep145) methods
+   -  [ft](#ft) Fungible Token Standard ([nep141](https://github.com/near/NEPs/blob/master/neps/nep-0141.md)) methods
+   -  [nft](#nft) Non Fungible Token Standard ([nep171](https://github.com/near/NEPs/blob/master/neps/nep-0171.md)) methods
+   -  [mt](#mt) Multi Token Standard ([nep245](https://github.com/near/NEPs/blob/master/neps/nep-0245.md)) methods
+   -  [storage](#storage) Storage Management ([nep145](https://github.com/near/NEPs/blob/master/neps/nep-0145.md)) methods
 
 ## Setup
 
@@ -284,6 +285,71 @@ function Page() {
 }
 ```
 
+#### Ssr
+
+Run queries on nextjs server side (experimental)
+
+```typescript jsx
+// app.tsx
+type MyAppProps = AppProps & { nearClient?: NearClient };
+
+const MyApp: React.FC<MyAppProps> = function ({ Component, pageProps, nearClient }: MyAppProps) {
+   return (
+      <NearProvider defaultClient={nearClient}>
+         <Component {...pageProps} />
+      </NearProvider>
+   );
+};
+
+MyApp.getInitialProps = async ({
+   Component,
+   ctx,
+}: AppContext): Promise<AppInitialProps & { nearClient?: NearClient }> => {
+   const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
+
+   // create cache client
+   const nearClient = createNearClient();
+
+   // init contract
+   const ftAccount = await nearState.near.account(FT_CONTRACT_NAME);
+   const ftContract = new nearApi.Contract(ftAccount, FT_CONTRACT_NAME, FT_CONTRACT_METHODS);
+
+   // save contract to cache
+   const contractKey = encodeRequest(FT_CONTRACT_NAME);
+   nearClient.cache.setContract(contractKey, ftContract);
+
+   const props = {
+      nearState,
+      nearClient,
+      pageProps,
+   };
+
+   // render for collect methods
+   const { AppTree } = ctx;
+   await collectNearData(nearClient, <AppTree {...props} />);
+
+   return props;
+};
+
+// page.tsx
+
+function Page() {
+   const ftContract = useFtContract();
+   const {
+      data: ftBalance = '0',
+      refetch: refetchFtBalance,
+      loading,
+      error,
+   } = useFtBalanceOf({
+      contract: ftContract,
+      variables: { account_id: 'muzikant.testnet' },
+      ssr: true,
+   });
+
+   return <span>Balance: {ftBalance}</span>;
+}
+```
+
 #### useNearQuery
 
 Calling the view method from the contract
@@ -402,4 +468,4 @@ function Page() {
 
 ## Authors
 
-- Maksim Schiriy [@maksim-schiriy](https://www.linkedin.com/in/maksim-schiriy/?locale=en_US)
+-  Maksim Schiriy [@maksim-schiriy](https://www.linkedin.com/in/maksim-schiriy/?locale=en_US)
