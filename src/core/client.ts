@@ -46,7 +46,7 @@ export class NearClient {
       this.set(requestId, contract, 'ROOT_CONTRACT');
    };
 
-   public get = <T>(key: string, rootId: string = 'ROOT'): T | null => {
+   public get = <T>(key: string, rootId: string = 'ROOT'): T | undefined => {
       const { cache } = this;
 
       if (rootId) {
@@ -55,8 +55,8 @@ export class NearClient {
          return cache[key];
       }
    };
-   public getContract = (requestId: string): Contract | null => {
-      return this.get<Contract | null>(requestId, 'ROOT_CONTRACT');
+   public getContract = (requestId: string): Contract | undefined => {
+      return this.get<Contract | undefined>(requestId, 'ROOT_CONTRACT');
    };
 
    public watch = (key: string, watcher: (v: any) => void, rootId: string = 'ROOT') => {
@@ -79,7 +79,7 @@ export class NearClient {
    public setQuery = <R>(key: string, data: NearQueryState<R>) => {
       this.set(key, data, 'ROOT_QUERY');
    };
-   public getQuery = <R>(requestId: string): NearQueryState<R> | null => {
+   public getQuery = <R>(requestId: string): NearQueryState<R> | undefined => {
       return this.get<NearQueryState<R>>(requestId, 'ROOT_QUERY');
    };
 

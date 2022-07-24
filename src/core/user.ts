@@ -53,7 +53,7 @@ function useNearUser(contractId: string) {
 
    // const [account, setAccount] = React.useState<Account | null>(null);
    const [balance, setBalance] = React.useState<number>(
-      account ? client.get(account.accountId, 'ROOT_USER') : 0,
+      account ? client.get(account.accountId, 'ROOT_USER') || 0 : 0,
    );
 
    const disconnect = React.useCallback(async () => {
@@ -73,7 +73,9 @@ function useNearUser(contractId: string) {
    );
    const refreshBalance = React.useCallback(async () => {
       if (account) {
-         const balanceV = +(formatNearAmount((await account.getAccountBalance()).available, 2)).split(',').join('');
+         const balanceV = +formatNearAmount((await account.getAccountBalance()).available, 2)
+            .split(',')
+            .join('');
 
          setBalance(balanceV);
          client.set(account.accountId, balanceV, 'ROOT_USER');
@@ -116,7 +118,7 @@ function useNearUser(contractId: string) {
 
    React.useEffect(() => {
       if (account) {
-         setBalance(client.get(account.accountId, 'ROOT_USER'));
+         setBalance(client.get<number>(account.accountId, 'ROOT_USER') || 0);
       }
       if (account && !loading) {
          refreshBalance()
