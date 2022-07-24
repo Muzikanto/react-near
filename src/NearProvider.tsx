@@ -18,7 +18,7 @@ export type NearProviderProps = Partial<ConnectConfig> & {
 
 export const NearContext = React.createContext<NearContextType>({ client: null as any });
 
-const NearProvider: React.FC<NearProviderProps> = ({
+const NearProvider: React.FC<React.PropsWithChildren<NearProviderProps>> = ({
    environment: defaultEnvironment,
    children,
    ...props
