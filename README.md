@@ -9,6 +9,9 @@
   <a aria-label="NPM version" href="https://www.npmjs.com/package/react-near">
     <img alt="" src="https://img.shields.io/npm/v/react-near.svg?style=for-the-badge&labelColor=000000">
   </a>
+  <a aria-label="github issues" href="https://www.npmjs.com/package/react-near">
+    <img alt="github issues" src="https://img.shields.io/github/issues-closed/muzikanto/react-near?style=for-the-badge&labelColor=000000">
+  </a>
   <a aria-label="Package size" href="https://www.npmjs.com/package/react-near">
     <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/minzip/react-near?style=for-the-badge&labelColor=000000">
     </a>
