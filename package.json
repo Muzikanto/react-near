@@ -10,7 +10,7 @@
       }
    ],
    "scripts": {
-      "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks && rm -rf ./nft && rm -rf ./core && rm -rf ./environment && rm -rf ./ft && rm -rf ./contract && rm -rf ./mt && rm -rf ./storage",
+      "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks && rm -rf ./nft && rm -rf ./core && rm -rf ./environment && rm -rf ./ft && rm -rf ./contract && rm -rf ./standards && rm -rf ./storage",
       "build": "tsc -b",
       "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",
       "prepublish": "npm run build",

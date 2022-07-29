@@ -1,11 +1,12 @@
-import { NFT_CONTRACT_NAME, FT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
-import { NEAR_GAS, NearContext, useNearQuery, useNearUser } from '../../src';
-import { DefaultNftContractMetadata, useNftTokens } from '../../src/nft';
 import React from 'react';
-import { useFtBalanceOf, useFtTransfer } from '../../src/ft';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { NextPage } from 'next';
-import {formatNearPrice} from "../../src/utils";
+import { NFT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
+import { NEAR_GAS, useNearQuery, useNearUser } from '../../src';
+import { useNftTokens } from '../../src/standards';
+import { useFtBalanceOf, useFtTransfer } from '../../src/standards';
+import { formatNearPrice } from '../../src/utils';
+import { NftContractMetadata } from '../../src/standards/nft/types';
 
 const Page: NextPage = function () {
    const nftContract = useNftContract();
@@ -13,7 +14,7 @@ const Page: NextPage = function () {
    const user = useNearUser(NFT_CONTRACT_NAME);
 
    // NFT
-   const { data: metadata, loading: loadingMeta } = useNearQuery<DefaultNftContractMetadata, {}>(
+   const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(
       'nft_metadata',
       {
          contract: nftContract,
@@ -40,7 +41,7 @@ const Page: NextPage = function () {
       contract: ftContract,
       variables: { account_id: 'muzikant.testnet' },
       poolInterval: 1000 * 60 * 5,
-      ssr: true
+      ssr: true,
    });
 
    const [amountToTransfer, setAmountToTransfer] = React.useState(1);

@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-   NearEnvironment,
-   NearEnvironmentProvider,
-   NearEnvironmentProviderProps,
-   NearProvider,
-   NearProviderProps,
-} from './index';
+import { NearEnvironment, NearEnvironmentProvider, NearProvider } from './index';
+import { NearEnvironmentProviderProps } from './environment';
+import { NearProviderProps } from './NearProvider';
 
 function withNear<T = any>(
    AppComponent: React.FC<React.PropsWithChildren<T>> & { getInitialProps?: any },

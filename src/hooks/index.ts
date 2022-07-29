@@ -2,16 +2,7 @@ import useNear from '../core/near';
 import useNearAccount from '../core/account';
 import useNearWallet from '../core/wallet';
 import useNearUser from '../core/user';
-import useNearMutation, { NearMutationOptions } from './mutation';
-import useNearQuery, { NearQueryOptions } from './query';
+import useNearMutation from './mutation';
+import useNearQuery from './query';
 
-export {
-   useNear,
-   useNearWallet,
-   useNearUser,
-   useNearAccount,
-   NearQueryOptions,
-   useNearQuery,
-   useNearMutation,
-   NearMutationOptions,
-};
+export { useNear, useNearWallet, useNearUser, useNearAccount, useNearQuery, useNearMutation };
