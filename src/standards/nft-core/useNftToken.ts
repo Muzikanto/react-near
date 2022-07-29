@@ -5,11 +5,11 @@ import { NftCoreMethods } from './methods';
 export type NftTokenArgs = { token_id: string };
 export type NftTokenResult = NftToken;
 
-function useNftMToken<
+function useNftToken<
    Res extends NftTokenResult = NftTokenResult,
    Req extends NftTokenArgs = NftTokenArgs,
 >(opts: NearQueryOptions<Res, Req>) {
    return useNearQuery<Res, Req>(NftCoreMethods.nft_token, opts);
 }
 
-export default useNftMToken;
+export default useNftToken;

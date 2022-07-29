@@ -5,11 +5,11 @@ import useNearQuery, { NearQueryOptions } from '../../hooks/query';
 export type NftTokensArgs = { from_index?: string; limit?: number };
 export type NftTokensResult = NftToken[];
 
-function useNftMTokens<
+function useNftTokens<
    Res extends NftTokensResult = NftTokensResult,
    Req extends NftTokensArgs = NftTokensArgs,
 >(opts: NearQueryOptions<Res, Req>) {
    return useNearQuery<Res, Req>(NftEnumerationMethods.nft_tokens, opts);
 }
 
-export default useNftMTokens;
+export default useNftTokens;

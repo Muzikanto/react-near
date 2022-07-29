@@ -1,6 +1,6 @@
-import useNfMToken from './useNftToken';
+import useNftToken from './useNftToken';
 import useNftTransfer from './useNftTransfer';
 import useNftMetadata from './useNftMetadata';
 import useNftTransferCall from './useNftTransferCall';
 
-export { useNftMetadata, useNfMToken, useNftTransferCall, useNftTransfer };
+export { useNftMetadata, useNftToken, useNftTransferCall, useNftTransfer };

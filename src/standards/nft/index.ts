@@ -1,4 +1,4 @@
-import { useNftTransfer, useNftTransferCall, useNfMToken, useNftMetadata } from '../nft-core';
+import { useNftTransfer, useNftTransferCall, useNftToken, useNftMetadata } from '../nft-core';
 import {
    useNftSupplyForOwner,
    useNftTokens,
@@ -15,7 +15,7 @@ export {
    useNftTokensForOwner,
    useNftTokens,
    useNftSupplyForOwner,
-   useNfMToken,
+   useNftToken,
    useNftTransferCall,
    useNftTransfer,
    useNftIsApproved,
