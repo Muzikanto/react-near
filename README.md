@@ -437,16 +437,25 @@ function Page() {
 
 -  [x] nft_metadata
 -  [x] nft_token
+-  [x] nft_transfer
+-  [x] nft_transfer_call
+
 -  [x] nft_tokens
 -  [x] nft_tokens_for_owner
 -  [x] nft_total_supply
--  [x] nft_is_approved
 -  [x] nft_supply_for_owner
--  [x] nft_transfer
--  [x] nft_transfer_call
+
+-  [x] nft_is_approved
 -  [x] nft_approve
 -  [x] nft_revoke
 -  [x] nft_revoke_all
+
+-  [x] nft_payout
+-  [x] nft_transfer_payout
+
+#### Paras
+
+-  [x] nft_approve (useParasNftApprove)
 
 #### FT
 
