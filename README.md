@@ -33,6 +33,7 @@
 ## Introduction
 
 Inspired by graphql (for the frontend) I decided to do the same for near.
+Including ready for use typed methods in popular smart contract [Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards). 
 
 ## Navigation
 
@@ -52,7 +53,7 @@ Inspired by graphql (for the frontend) I decided to do the same for near.
    -  [nft](#nft) Non Fungible Token Standard ([nep171](https://github.com/near/NEPs/blob/master/neps/nep-0171.md)) methods
    -  [mt](#mt) Multi Token Standard ([nep245](https://github.com/near/NEPs/blob/master/neps/nep-0245.md)) methods
    -  [storage](#storage) Storage Management ([nep145](https://github.com/near/NEPs/blob/master/neps/nep-0145.md)) methods
-
+   -  [Other Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards)
 ## Setup
 
 You'll need to install the package from npm `npm i react-near near-api-js`.
