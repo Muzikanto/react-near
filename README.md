@@ -35,6 +35,10 @@
 Inspired by graphql (for the frontend) I decided to do the same for near.
 Including ready for use typed methods in popular smart contract [Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards).
 
+<p align="left">
+    <img src="/standards.png" alt=""/>
+</p>
+
 ## Navigation
 
 -  [install](#setup)
