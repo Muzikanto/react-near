@@ -1,11 +1,12 @@
-import { MtCoreMethods } from '../mt-core/methods';
 import { MtBalanceOfArgs, MtBalanceOfResult } from '../mt-core/useMtBalanceOf';
 import { MtTotalSupplyArgs, MtTotalSupplyResult } from '../mt-core/useMtTotalSupply';
-import { MtBatchTransferArgs, MtBatchTransferResult } from '../mt-core/useMtBatchTransfer';
+import { MtBatchTransferArgs } from '../mt-core/useMtBatchTransfer';
 import {
    MtBatchTransferCallArgs,
    MtBatchTransferCallResult,
 } from '../mt-core/useMtBatchTransferCall';
+import { NearChangeMethod, NearViewMethod } from '../../types';
+import { Contract } from 'near-api-js';
 
 export interface MtContractMetadata {
    spec: string;
@@ -18,12 +19,10 @@ export interface MtContractMetadata {
 }
 
 export type MtContract = {
-   [MtCoreMethods.mt_balance_of]: (args: MtBalanceOfArgs) => Promise<MtBalanceOfResult>;
-   [MtCoreMethods.mt_total_supply]: (args: MtTotalSupplyArgs) => Promise<MtTotalSupplyResult>;
-   [MtCoreMethods.mt_batch_transfer]: (args: MtBatchTransferArgs) => Promise<MtBatchTransferResult>;
-   [MtCoreMethods.mt_batch_transfer_call]: (
-      args: MtBatchTransferCallArgs,
-   ) => Promise<MtBatchTransferCallResult>;
-};
+   mt_balance_of: NearViewMethod<MtBalanceOfArgs, MtBalanceOfResult>;
+   mt_total_supply: NearViewMethod<MtTotalSupplyArgs, MtTotalSupplyResult>;
+   mt_batch_transfer: NearChangeMethod<MtBatchTransferArgs, MtBatchTransferArgs>;
+   mt_batch_transfer_call: NearChangeMethod<MtBatchTransferCallArgs, MtBatchTransferCallResult>;
+} & Contract;
 
 export {};

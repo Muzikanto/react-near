@@ -1,14 +1,11 @@
-import { NftCoreMethods } from '../nft-core/methods';
 import { NftMetadataArgs, NftMetadataResult } from '../nft-core/useNftMetadata';
 import { NftTransferCallArgs, NftTransferCallResult } from '../nft-core/useNftTransferCall';
-import { NftTransferArgs } from '../nft-core/useNftTransfer';
+import { NftTransferArgs, NftTransferResult } from '../nft-core/useNftTransfer';
 import { NftTokenArgs, NftTokenResult } from '../nft-core/useNftToken';
-import { NftApproveMethods } from '../nft-approve/methods';
 import { NftRevokeAllArgs, NftRevokeAllResult } from '../nft-approve/useNftRevokeAll';
 import { NftRevokeArgs, NftRevokeResult } from '../nft-approve/useNftRevoke';
 import { NftIsApprovedArgs, NftIsApprovedResult } from '../nft-approve/useNftIsApproved';
 import { NftApproveArgs, NftApproveResult } from '../nft-approve/useNftApprove';
-import { NftEnumerationMethods } from '../nft-enumeration/methods';
 import { NftTotalSupplyArgs, NftTotalSupplyResult } from '../nft-enumeration/useNftTotalSupply';
 import {
    NftTokensForOwnerArgs,
@@ -19,9 +16,10 @@ import {
    NftSupplyForOwnerArgs,
    NftSupplyForOwnerResult,
 } from '../nft-enumeration/useNftSupplyForOwner';
-import { NftPayoutMethods } from '../nft-payout/methods';
 import { NftPayoutArgs, NftPayoutResult } from '../nft-payout/useNftPayout';
 import { NftTransferPayoutArgs, NftTransferPayoutResult } from '../nft-payout/useNftTransferPayout';
+import { NearChangeMethod, NearViewMethod } from '../../types';
+import { Contract } from 'near-api-js';
 
 export interface NftContractMetadata {
    base_uri: string;
@@ -53,33 +51,23 @@ export interface NftToken {
 }
 
 export type NftContract = {
-   [NftCoreMethods.nft_metadata]: (args: NftMetadataArgs) => Promise<NftMetadataResult>;
-   [NftCoreMethods.nft_token]: (args: NftTokenArgs) => Promise<NftTokenResult>;
-   [NftCoreMethods.nft_transfer]: (args: NftTransferArgs) => Promise<NftMetadataResult>;
-   [NftCoreMethods.nft_transfer_call]: (
-      args: NftTransferCallArgs,
-   ) => Promise<NftTransferCallResult>;
+   nft_metadata: NearViewMethod<NftMetadataArgs, NftMetadataResult>;
+   nft_token: NearViewMethod<NftTokenArgs, NftTokenResult>;
+   nft_transfer: NearChangeMethod<NftTransferArgs, NftTransferResult>;
+   nft_transfer_call: NearChangeMethod<NftTransferCallArgs, NftTransferCallResult>;
 
-   [NftApproveMethods.nft_approve]: (args: NftApproveArgs) => Promise<NftApproveResult>;
-   [NftApproveMethods.nft_is_approved]: (args: NftIsApprovedArgs) => Promise<NftIsApprovedResult>;
-   [NftApproveMethods.nft_revoke]: (args: NftRevokeArgs) => Promise<NftRevokeResult>;
-   [NftApproveMethods.nft_revoke_all]: (args: NftRevokeAllArgs) => Promise<NftRevokeAllResult>;
+   nft_approve: NearChangeMethod<NftApproveArgs, NftApproveResult>;
+   nft_is_approved: NearViewMethod<NftIsApprovedArgs, NftIsApprovedResult>;
+   nft_revoke: NearChangeMethod<NftRevokeArgs, NftRevokeResult>;
+   nft_revoke_all: NearChangeMethod<NftRevokeAllArgs, NftRevokeAllResult>;
 
-   [NftEnumerationMethods.nft_supply_for_owner]: (
-      args: NftSupplyForOwnerArgs,
-   ) => Promise<NftSupplyForOwnerResult>;
-   [NftEnumerationMethods.nft_tokens]: (args: NftTokensArgs) => Promise<NftTokensResult>;
-   [NftEnumerationMethods.nft_tokens_for_owner]: (
-      args: NftTokensForOwnerArgs,
-   ) => Promise<NftTokensForOwnerResult>;
-   [NftEnumerationMethods.nft_total_supply]: (
-      args: NftTotalSupplyArgs,
-   ) => Promise<NftTotalSupplyResult>;
+   nft_supply_for_owner: NearViewMethod<NftSupplyForOwnerArgs, NftSupplyForOwnerResult>;
+   nft_tokens: NearViewMethod<NftTokensArgs, NftTokensResult>;
+   nft_tokens_for_owner: NearViewMethod<NftTokensForOwnerArgs, NftTokensForOwnerResult>;
+   nft_total_supply: NearViewMethod<NftTotalSupplyArgs, NftTotalSupplyResult>;
 
-   [NftPayoutMethods.nft_payout]: (args: NftPayoutArgs) => Promise<NftPayoutResult>;
-   [NftPayoutMethods.nft_transfer_payout]: (
-      args: NftTransferPayoutArgs,
-   ) => Promise<NftTransferPayoutResult>;
-};
+   nft_payout: NearViewMethod<NftPayoutArgs, NftPayoutResult>;
+   nft_transfer_payout: NearChangeMethod<NftTransferPayoutArgs, NftTransferPayoutResult>;
+} & Contract;
 
 export {};

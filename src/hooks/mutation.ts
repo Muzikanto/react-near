@@ -12,6 +12,8 @@ export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = 
    debug?: boolean;
    gas?: number;
    skipRenders?: boolean;
+   callbackUrl?: string;
+   meta?: string;
    update?: (
       client: NearClient,
       res: {
@@ -89,6 +91,8 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                   attachedDeposit,
                   gas: gas || opts.gas,
                   args,
+                  walletCallbackUrl: opts.callbackUrl,
+                  walletMeta: opts.meta,
                });
             }
 

@@ -1,9 +1,10 @@
-import { FtCoreMethods } from '../ft-core/methods';
 import { FtBalanceOfArgs, FtBalanceOfResult } from '../ft-core/useFtBalanceOf';
 import { FtTransferCallArgs, FtTransferCallResult } from '../ft-core/useFtTransferCall';
 import { FtTransferArgs, FtTransferResult } from '../ft-core/useFtTransfer';
 import { FtTotalSupplyArgs, FtTotalSupplyResult } from '../ft-core/useFtTotalSupply';
 import { FtMetadataArgs, FtMetadataResult } from '../ft-core/useFtMetadata';
+import { NearChangeMethod, NearViewMethod } from '../../types';
+import { Contract } from 'near-api-js';
 
 export interface FtContractMetadata {
    spec: string;
@@ -16,11 +17,11 @@ export interface FtContractMetadata {
 }
 
 export type FtContract = {
-   [FtCoreMethods.ft_balance_of]: (args: FtBalanceOfArgs) => Promise<FtBalanceOfResult>;
-   [FtCoreMethods.ft_metadata]: (args: FtMetadataArgs) => Promise<FtMetadataResult>;
-   [FtCoreMethods.ft_total_supply]: (args: FtTotalSupplyArgs) => Promise<FtTotalSupplyResult>;
-   [FtCoreMethods.ft_transfer]: (args: FtTransferArgs) => Promise<FtTransferResult>;
-   [FtCoreMethods.ft_transfer_call]: (args: FtTransferCallArgs) => Promise<FtTransferCallResult>;
-};
+   ft_balance_of: NearViewMethod<FtBalanceOfArgs, FtBalanceOfResult>;
+   ft_metadata: NearViewMethod<FtMetadataArgs, FtMetadataResult>;
+   ft_total_supply: NearViewMethod<FtTotalSupplyArgs, FtTotalSupplyResult>;
+   ft_transfer: NearChangeMethod<FtTransferArgs, FtTransferResult>;
+   ft_transfer_call: NearChangeMethod<FtTransferCallArgs, FtTransferCallResult>;
+} & Contract;
 
 export {};

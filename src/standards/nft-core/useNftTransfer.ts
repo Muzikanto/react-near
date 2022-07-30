@@ -7,6 +7,7 @@ export type NftTransferArgs = {
    approval_id?: number;
    memo?: string;
 };
+export type NftTransferResult = void;
 
 function useNftTransfer<Res = void, Req extends NftTransferArgs = NftTransferArgs>(
    opts: NearMutationOptions<Res, Req>,

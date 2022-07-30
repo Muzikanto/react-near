@@ -4,12 +4,12 @@ import useNearWallet from '../core/wallet';
 import { NearContext } from '../NearProvider';
 import { encodeRequest } from '../core/client';
 
-export type NearContract = Contract;
+export type NearContract<T extends { [key: string]: any } = {}> = Contract & T;
 
-function useNearContract(
+function useNearContract<T extends { [key: string]: any } = {}>(
    contractId: string,
    contractMethods: { viewMethods: string[]; changeMethods: string[] },
-): NearContract | undefined {
+): NearContract<T> | undefined {
    const { client } = React.useContext(NearContext);
 
    const wallet = useNearWallet();
@@ -47,7 +47,7 @@ function useNearContract(
       return contract;
    }, [wallet]);
 
-   return (contract as NearContract | undefined) || undefined;
+   return (contract as NearContract<T> | undefined) || undefined;
 }
 
 export default useNearContract;

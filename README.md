@@ -33,7 +33,7 @@
 ## Introduction
 
 Inspired by graphql (for the frontend) I decided to do the same for near.
-Including ready for use typed methods in popular smart contract [Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards). 
+Including ready for use typed methods in popular smart contract [Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards).
 
 ## Navigation
 
@@ -54,6 +54,7 @@ Including ready for use typed methods in popular smart contract [Standards](http
    -  [mt](#mt) Multi Token Standard ([nep245](https://github.com/near/NEPs/blob/master/neps/nep-0245.md)) methods
    -  [storage](#storage) Storage Management ([nep145](https://github.com/near/NEPs/blob/master/neps/nep-0145.md)) methods
    -  [Other Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards)
+
 ## Setup
 
 You'll need to install the package from npm `npm i react-near near-api-js`.
@@ -65,9 +66,9 @@ You'll need to install the package from npm `npm i react-near near-api-js`.
 const FT_CONTRACT_NAME = 'mfight-ft.testnet';
 
 function useFtContract() {
-   return useNearContract(FT_CONTRACT_NAME, {
-      viewMethods: ['ft_balance_of'],
-      changeMethods: ['ft_transfer'],
+   return useNearContract<FtContract & StorageContract>(FT_CONTRACT_NAME, {
+      viewMethods: [...FT_METHODS.viewMethods, ...STORAGE_METHODS.viewMethods],
+      changeMethods: [...FT_METHODS.changeMethods, ...STORAGE_METHODS.changeMethods],
    });
 }
 
@@ -278,12 +279,21 @@ function useNftContract() {
 function Page() {
    const ftContract = useFtContract();
 
+   // use query hook
    const { data: balance = '0' } = useFtBalanceOf({
       contract: ftContract,
       variables: {
          account_id: 'account.near',
       },
    });
+   // or custom call
+   const getBalance = () => {
+      if (!ftContract) {
+         return 0;
+      }
+
+      return ftContract.ft_balance_of({ account_id: 'account.near' });
+   };
 
    return <span>FT balance: {formatNearAmount(balance, 24)}</span>;
 }
@@ -297,7 +307,12 @@ Run queries on nextjs server side (experimental)
 // app.tsx
 type MyAppProps = AppProps & { nearClient?: NearClient; nearState?: NearProviderState };
 
-const MyApp: React.FC<MyAppProps> = function ({ Component, pageProps, nearClient, nearState }: MyAppProps) {
+const MyApp: React.FC<MyAppProps> = function ({
+   Component,
+   pageProps,
+   nearClient,
+   nearState,
+}: MyAppProps) {
    return (
       <NearProvider defaultClient={nearClient} defaultState={nearState}>
          <Component {...pageProps} />
