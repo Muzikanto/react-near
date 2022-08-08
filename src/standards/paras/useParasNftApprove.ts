@@ -1,4 +1,5 @@
 import useNearMutation, { NearMutationOptions } from '../../hooks/mutation';
+import { NftApproveMethods } from '../nft-approve/methods';
 
 export function createParasNftApproveMsg(opts: {
    market_type: 'sale';
@@ -17,7 +18,7 @@ export type ParasNftApproveArgs = {
 function useParasNftApprove<Res = void, Req extends ParasNftApproveArgs = ParasNftApproveArgs>(
    opts: NearMutationOptions<Res, Req>,
 ) {
-   const [call, info] = useNearMutation<Res, Req>('nft_approve', opts);
+   const [call, info] = useNearMutation<Res, Req>(NftApproveMethods.nft_approve, opts);
 
    return [
       async (args: Req, attachedDeposit?: string, gas?: number): Promise<Res> =>

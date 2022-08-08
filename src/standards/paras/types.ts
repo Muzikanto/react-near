@@ -1,3 +1,7 @@
+import { Contract } from 'near-api-js';
+import { NearViewMethod } from '../../types';
+import { ParasMarketDataArgs, ParasMarketDataResult } from './useParasMarketData';
+
 export type ParasBid = {
    bidder_id: string;
    price: string;
@@ -17,3 +21,7 @@ export type ParasMarketData = {
    is_auction?: boolean;
    transaction_fee: string;
 };
+
+export type ParasContract = {
+   get_market_data: NearViewMethod<ParasMarketDataArgs, ParasMarketDataResult>;
+} & Contract;

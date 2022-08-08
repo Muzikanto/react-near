@@ -1,5 +1,4 @@
 import { RefFinanceGetPoolArgs, RefFinanceGetPoolResult } from './get_pool';
-import { RefFinancePoolMethods } from './methods';
 
 export type RefFinancePool = {
    amounts: [string, string];
@@ -11,9 +10,7 @@ export type RefFinancePool = {
 };
 
 export type RefFinancePoolContract = {
-   [RefFinancePoolMethods.get_pool]: (
-      args: RefFinanceGetPoolArgs,
-   ) => Promise<RefFinanceGetPoolResult>;
+   get_pool: (args: RefFinanceGetPoolArgs) => Promise<RefFinanceGetPoolResult>;
 };
 
 export {};
