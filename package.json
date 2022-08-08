@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "4.1.6",
+   "version": "4.1.7",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -17,7 +17,7 @@
       "postpublish": "npm run clean",
       "test": "jest",
       "test:info": "jest --coverage",
-      "pretty": "pretty-quick --staged"
+      "pretty": "pretty-quick --staged",
    },
    "husky": {
       "hooks": {
