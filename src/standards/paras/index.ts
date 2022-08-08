@@ -1,3 +1,4 @@
 import useParasNftApprove from './useParasNftApprove';
+import useParasMarketData from './useParasMarketData';
 
-export { useParasNftApprove };
+export { useParasNftApprove, useParasMarketData };

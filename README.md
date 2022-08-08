@@ -472,6 +472,7 @@ function Page() {
 #### Paras
 
 -  [x] nft_approve (useParasNftApprove)
+-  [x] get_market_data (useParasMarketData)
 
 #### FT
 
