@@ -205,51 +205,60 @@ function Page() {
 For example, if you need to transfer 2 coins into a liquidity pool in single call
 
 ```typescript jsx
+const MT_CONTRACT_ID = 'mt-token.testnet';
+const FT_CONTRACT_ID_1 = 'ft-token-one.testnet';
+const FT_CONTRACT_ID_2 = 'ft-token-two.testnet';
+
 function Page() {
    const nearUser = useNearUser('example-contract');
+   const ftContract1 = useFtContract(FT_CONTRACT_ID_1);
+   const ftContract2 = useFtContract(FT_CONTRACT_ID_2);
+   const mtContract = useFtContract(MT_CONTRACT_ID);
+
+   const [ftTransferCall1, ftTransferCallCtx1] = useFtTransferCall({
+      contract: ftContract1,
+      gas: GAS_FOR_FT_TRANSFER_CALL,
+   });
+   const [ftTransferCall2, ftTransferCallCtx2] = useFtTransferCall({
+      contract: ftContract2,
+      gas: GAS_FOR_FT_TRANSFER_CALL,
+   });
+   const [mtBatchTransferCall, mtTransferCallCtx] = useMtBatchTransferCall({
+      contract: mtContract,
+      gas: GAS_FOR_MT_TRANSFER_CALL,
+   });
+
+   const handleTransfer = async () => {
+      const amount1 = parseNearAmount('1') as string;
+      const amount2 = parseNearAmount('1') as string;
+
+      return nearUser.signTransactions([
+         await ftTransferCallCtx1.createTransaction(
+            {
+               receiver_id: MT_CONTRACT_ID,
+               amount: amount1,
+            },
+            parseNearAmount('0.01') as string,
+         ),
+         await ftTransferCallCtx2.createTransaction(
+            {
+               receiver_id: MT_CONTRACT_ID,
+               amount: amount2,
+            },
+            parseNearAmount('0.01') as string,
+         ),
+         await mtTransferCallCtx.createTransaction({
+            amounts: [amount1, amount2],
+            token_ids: [FT_CONTRACT_ID_1, FT_CONTRACT_ID_2],
+            receiver_id: POOL_CONTRACT_ID,
+            msg: JSON.stringify({}),
+         }),
+      ]);
+   };
 
    return (
       <>
-         <button
-            onClick={async () => {
-               const tx1 = await nearUser.createTransaction(
-                  contracts.ft,
-                  [
-                     nearApi.transactions.functionCall(
-                        'ft_transfer_call',
-                        {
-                           receiver_id: 'contract-1.near',
-                           amount: nearPriceFt,
-                           msg: JSON.stringify({}),
-                        },
-                        NEAR_GAS.toString() as any,
-                        nearApi.utils.format.parseNearAmount('0.01') as any,
-                     ),
-                  ],
-                  1,
-               );
-               const tx2 = await nearUser.createTransaction(
-                  contracts.ft,
-                  [
-                     nearApi.transactions.functionCall(
-                        'ft_transfer_call',
-                        {
-                           receiver_id: 'contract-2.near',
-                           amount: nearPriceFt,
-                           msg: JSON.stringify({}),
-                        },
-                        NEAR_GAS.toString() as any,
-                        nearApi.utils.format.parseNearAmount('0.01') as any,
-                     ),
-                  ],
-                  1,
-               );
-
-               await nearUser.signTransactions([tx1, tx2]);
-            }}
-         >
-            Batch Transactions
-         </button>
+         <button onClick={handleTransfer}>Batch Transactions</button>
       </>
    );
 }

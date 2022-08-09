@@ -13,7 +13,7 @@ export async function createNearTransaction(
    receiverId: string,
    actions: nearApi.transactions.Action[],
    nonceOffset: number = 1,
-) {
+): Promise<nearApi.transactions.Transaction> {
    const localKey = await near.connection.signer.getPublicKey(senderId, near.connection.networkId);
    let accessKey = await wallet._connectedAccount.accessKeyForTransaction(
       receiverId,

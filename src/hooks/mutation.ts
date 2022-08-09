@@ -3,6 +3,8 @@ import { encodeRequest, NearClient } from '../core/client';
 import { NearContext } from '../NearProvider';
 import { NearContract } from '../contract/useNearContract';
 import useNearContractProvided from '../contract/useNearContractProvided';
+import { createNearTransaction } from '../core/user';
+import * as nearApi from 'near-api-js';
 
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
@@ -30,7 +32,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    methodName: string,
    opts: NearMutationOptions<Res, Req>,
 ) {
-   const { client, account } = React.useContext(NearContext);
+   const { client, account, near, wallet } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
    const contractV = opts.contract || contractProvided;
    const contractId = contractV
@@ -136,10 +138,36 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
          }
       });
    };
+   const createTransaction = (
+      args: Req,
+      attachedDeposit?: string,
+      gas?: number,
+      nonceOffset: number = 1,
+   ): Promise<nearApi.transactions.Transaction> => {
+      if (!near || !wallet) {
+         throw new Error('Not found near ctx');
+      }
+      if (!account) {
+         throw new Error('Near account does not connected');
+      }
+
+      return createNearTransaction(
+         near,
+         wallet,
+         account.accountId,
+         contractId,
+         [nearApi.transactions.functionCall(methodName, args, gas || opts.gas, attachedDeposit)],
+         nonceOffset,
+      );
+   };
 
    return [
       callMethod,
-      { data: state.data === null ? undefined : state.data, loading: state.loading },
+      {
+         data: state.data === null ? undefined : state.data,
+         loading: state.loading,
+         createTransaction,
+      },
    ] as const;
 }
 

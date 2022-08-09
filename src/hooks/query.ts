@@ -234,7 +234,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    }, [methodName, opts.skip, opts.ssr, opts.onError, opts.variables, account, opts.contract]);
 
    if (typeof window === 'undefined') {
-      if (opts.ssr) {
+      if (opts.ssr && !opts.skip) {
          client.set(requestId, { contractId, methodName, args }, 'SSR');
       }
    }

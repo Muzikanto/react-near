@@ -11,7 +11,7 @@ import { NftContractMetadata } from '../../src/standards/nft/types';
 const Page: NextPage = function () {
    const nftContract = useNftContract();
    const ftContract = useFtContract();
-   const user = useNearUser(NFT_CONTRACT_NAME);
+   const nearUser = useNearUser(NFT_CONTRACT_NAME);
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(
@@ -39,31 +39,45 @@ const Page: NextPage = function () {
       error,
    } = useFtBalanceOf({
       contract: ftContract,
-      variables: { account_id: 'muzikant.testnet' },
+      variables: { account_id: nearUser.address as string },
       poolInterval: 1000 * 60 * 5,
       ssr: true,
+      skip: !nearUser.isConnected,
    });
 
    const [amountToTransfer, setAmountToTransfer] = React.useState(1);
-   const [ftTransfer] = useFtTransfer({ contract: ftContract, gas: NEAR_GAS });
+   const [ftTransfer] = useFtTransfer({
+      contract: ftContract,
+      gas: NEAR_GAS,
+   });
+
+   const handleTransfer = async () => {
+      return ftTransfer(
+         {
+            receiver_id: 'muzikant.testnet',
+            amount: parseNearAmount(amountToTransfer.toString()) as string,
+         },
+         parseNearAmount('0.01') as string,
+      );
+   };
 
    return (
       <div>
          <p>Data From SSR: {ftBalance} MFIGT</p>
 
-         {!user.isConnected ? (
+         {!nearUser.isConnected ? (
             <div>
-               <button onClick={() => user.connect('NEAR Example title')}>connect</button>
+               <button onClick={() => nearUser.connect('NEAR Example title')}>connect</button>
             </div>
          ) : (
             <div>
                <div>
                   <p>User</p>
 
-                  <p>Address: {user.address}</p>
-                  <p>{user.balance} NEAR</p>
+                  <p>Address: {nearUser.address}</p>
+                  <p>{nearUser.balance} NEAR</p>
                   <p>{formatNearPrice(ftBalance).toFixed(2)} MFIGT</p>
-                  <button onClick={() => user.disconnect()}>disconnect</button>
+                  <button onClick={() => nearUser.disconnect()}>disconnect</button>
                </div>
 
                <hr />
@@ -110,22 +124,7 @@ const Page: NextPage = function () {
                <div>
                   <p>Example call method</p>
 
-                  <button
-                     onClick={() => {
-                        ftTransfer(
-                           {
-                              receiver_id: 'muzikant.testnet',
-                              amount: parseNearAmount(amountToTransfer.toString()) as string,
-                           },
-                           parseNearAmount('0.01') as string,
-                        ).then(() => {
-                           refetchFtBalance().then();
-                           user.refreshBalance().then();
-                        });
-                     }}
-                  >
-                     Transfer FT
-                  </button>
+                  <button onClick={handleTransfer}>Transfer FT</button>
                </div>
             </div>
          )}
