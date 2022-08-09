@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "4.2.0",
+   "version": "4.2.1",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -13,7 +13,7 @@
       "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks  && rm -rf ./core && rm -rf ./environment && rm -rf ./contract && rm -rf ./standards",
       "build": "tsc -b",
       "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",
-      "prepublish": "npm run build",
+      "prepublishOnly": "npm run build",
       "postpublish": "npm run clean",
       "test": "jest",
       "test:info": "jest --coverage",

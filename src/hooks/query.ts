@@ -3,7 +3,7 @@ import { NearContext } from '../NearProvider';
 import { encodeRequest, NearClient } from '../core/client';
 import { NearContract } from '../contract/useNearContract';
 import useNearContractProvided from '../contract/useNearContractProvided';
-import {Contract} from "near-api-js";
+import { Contract } from 'near-api-js';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
@@ -107,7 +107,8 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
                }
                if (
                   !res &&
-                  contractV && contractV instanceof Contract &&
+                  contractV &&
+                  contractV instanceof Contract &&
                   methodName in (contractV as any)
                ) {
                   res = await (contractV as any)[methodName](variables);
@@ -194,7 +195,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       if (
          !opts.skip &&
          (opts.ssr === false ? typeof window !== 'undefined' : true) &&
-         (account || contractV instanceof Contract)
+         (account || contractV instanceof Contract || opts.mock)
       ) {
          callMethod()
             .then()

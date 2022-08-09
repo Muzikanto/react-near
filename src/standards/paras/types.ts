@@ -22,6 +22,22 @@ export type ParasMarketData = {
    transaction_fee: string;
 };
 
+export type ParasCollectionStats = {
+   floor_price?: string;
+   total_card_sale?: number;
+   total_card_not_sale?: number;
+   avg_price?: string;
+   avg_price_usd?: number;
+   collection_id?: string;
+   owner_ids?: string[];
+   total_cards?: number;
+   total_owners?: number;
+   total_sales?: number;
+   volume?: string;
+   volume_usd?: number;
+   _id?: string;
+};
+
 export type ParasContract = {
    get_market_data: NearViewMethod<ParasMarketDataArgs, ParasMarketDataResult>;
 } & Contract;

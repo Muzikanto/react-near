@@ -457,24 +457,16 @@ function Page() {
 -  [x] nft_token
 -  [x] nft_transfer
 -  [x] nft_transfer_call
-
 -  [x] nft_tokens
 -  [x] nft_tokens_for_owner
 -  [x] nft_total_supply
 -  [x] nft_supply_for_owner
-
 -  [x] nft_is_approved
 -  [x] nft_approve
 -  [x] nft_revoke
 -  [x] nft_revoke_all
-
 -  [x] nft_payout
 -  [x] nft_transfer_payout
-
-#### Paras
-
--  [x] nft_approve (useParasNftApprove)
--  [x] get_market_data (useParasMarketData)
 
 #### FT
 
@@ -498,6 +490,16 @@ function Page() {
 -  [x] storage_deposit
 -  [x] storage_withdraw
 -  [x] storage_unregister
+
+#### Paras
+
+-  [x] nft_approve (useParasNftApprove)
+-  [x] get_market_data (useParasMarketData)
+-  [x] api collection-stats (useParasCollectionStats)
+
+#### Ref Finance
+
+-  [x] get_pool (useRefFinancePool)
 
 ## Authors
 
