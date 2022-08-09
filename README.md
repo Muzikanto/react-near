@@ -94,13 +94,15 @@ function Page() {
       poolInterval: 1000 * 60 * 5,
       skip: !nearUser.isConnected,
    });
-   const [transfer] = useFtTransfer({
-      onError: console.log,
-      gas: NEAR_GAS,
+   const [transferCall] = useFtTransferCall({
+      gas: GAS_FOR_FT_TRANSFER_CALL,
    });
 
-   const handleTransfer = () =>
-      transfer({ receiver_id: 'example.near', amount: 1000 }, parseNearAmount('0.01'));
+   const handleTransferCall = () =>
+      transferCall(
+         { receiver_id: 'example.near', amount: 1000, msg: JSON.stringify({}) },
+         parseNearAmount('0.01'),
+      );
    const handleSignIn = () => nearUser.connect();
 
    return (
@@ -109,7 +111,7 @@ function Page() {
             <>
                <span>NEAR balance: {nearUser.balance}</span>
                <span>FT balance: {formatNearAmount(ftBalance, 24)}</span>
-               <button onClick={handleTransfer}>transfer ft</button>
+               <button onClick={handleTransferCall}>transfer ft</button>
             </>
          )}
          {!nearUser.isConnected && <button onClick={receiver_id}>Connect NEAR</button>}
