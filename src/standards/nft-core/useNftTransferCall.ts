@@ -1,5 +1,6 @@
 import useNearMutation, { NearMutationOptions } from '../../hooks/mutation';
 import { NftCoreMethods } from './methods';
+import { GAS_FOR_NFT_TRANSFER_CALL } from "../nft/gas";
 
 export type NftTransferCallArgs = {
    receiver_id: string;
@@ -14,7 +15,7 @@ function useNftTransferCall<
    Res = NftTransferCallResult,
    Req extends NftTransferCallArgs = NftTransferCallArgs,
 >(opts: NearMutationOptions<Res, Req>) {
-   return useNearMutation<Res, Req>(NftCoreMethods.nft_transfer_call, opts);
+   return useNearMutation<Res, Req>(NftCoreMethods.nft_transfer_call, { ...opts, gas: GAS_FOR_NFT_TRANSFER_CALL || opts.gas });
 }
 
 export default useNftTransferCall;

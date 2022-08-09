@@ -1,5 +1,6 @@
 import useNearMutation, { NearMutationOptions } from '../../hooks/mutation';
 import { FtCoreMethods } from './methods';
+import { GAS_FOR_FT_TRANSFER_CALL } from "../ft/gas";
 
 export type FtTransferCallArgs = {
    amount: string;
@@ -13,7 +14,7 @@ function useFtTransferCall<
    Res = FtTransferCallResult,
    Req extends FtTransferCallArgs = FtTransferCallArgs,
 >(opts: NearMutationOptions<Res, Req>) {
-   return useNearMutation<Res, Req>(FtCoreMethods.ft_transfer_call, opts);
+   return useNearMutation<Res, Req>(FtCoreMethods.ft_transfer_call, { ...opts, gas: GAS_FOR_FT_TRANSFER_CALL || opts.gas });
 }
 
 export default useFtTransferCall;
