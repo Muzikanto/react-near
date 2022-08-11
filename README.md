@@ -48,6 +48,7 @@ Including ready for use typed methods in popular smart contract [Standards](http
    -  [useNearUser](#batch-transactions) batch Transactions
    -  [useNearQuery](#usenearquery) use view methods
    -  [useNearMutation](#usenearmutation) use change methods
+   -  [useNearStatus](#usenearstatus) get result (transactions hashes or error)
 -  [contracts](#contracts)
    -  [ft](#ft) Fungible Token Standard ([nep141](https://github.com/near/NEPs/blob/master/neps/nep-0141.md)) methods
    -  [nft](#nft) Non Fungible Token Standard ([nep171](https://github.com/near/NEPs/blob/master/neps/nep-0171.md)) methods
@@ -208,6 +209,7 @@ For example, if you need to transfer 2 coins into a liquidity pool in single cal
 const MT_CONTRACT_ID = 'mt-token.testnet';
 const FT_CONTRACT_ID_1 = 'ft-token-one.testnet';
 const FT_CONTRACT_ID_2 = 'ft-token-two.testnet';
+const POOL_CONTRACT_ID = 'two-tokens-receiver.testnet';
 
 function Page() {
    const nearUser = useNearUser('example-contract');
@@ -247,12 +249,15 @@ function Page() {
             },
             parseNearAmount('0.01') as string,
          ),
-         await mtTransferCallCtx.createTransaction({
-            amounts: [amount1, amount2],
-            token_ids: [FT_CONTRACT_ID_1, FT_CONTRACT_ID_2],
-            receiver_id: POOL_CONTRACT_ID,
-            msg: JSON.stringify({}),
-         }),
+         await mtTransferCallCtx.createTransaction(
+            {
+               amounts: [amount1, amount2],
+               token_ids: [FT_CONTRACT_ID_1, FT_CONTRACT_ID_2],
+               receiver_id: POOL_CONTRACT_ID,
+               msg: JSON.stringify({}),
+            },
+            parseNearAmount('0.01') as string,
+         ),
       ]);
    };
 
@@ -453,6 +458,23 @@ function Page() {
          >
             Tranfer
          </button>
+      </>
+   );
+}
+```
+
+#### useNearStatus
+
+Get result transactions hashes if method is success, or get error if failure
+
+```typescript jsx
+function Page() {
+   const { transactionHashes, error } = useNearStatus();
+
+   return (
+      <>
+         {transactionHashes && <span>Success Tx List: {transactionHashes}</span>}
+         {error && <span>{error}</span>}
       </>
    );
 }

@@ -7,11 +7,13 @@ import { useNftTokens } from '../../src/standards';
 import { useFtBalanceOf, useFtTransfer } from '../../src/standards';
 import { formatNearPrice } from '../../src/utils';
 import { NftContractMetadata } from '../../src/standards/nft/types';
+import useNearStatus from '../../src/hooks/useNearStatus';
 
 const Page: NextPage = function () {
    const nftContract = useNftContract();
    const ftContract = useFtContract();
    const nearUser = useNearUser(NFT_CONTRACT_NAME);
+   // const nearStatus = useNearStatus();
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(
