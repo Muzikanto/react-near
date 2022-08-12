@@ -1,12 +1,12 @@
 import { Account } from 'near-api-js';
 import React from 'react';
-import { NearContext } from '../NearProvider';
+import { useNearContext } from '../NearProvider';
 
 function useNearAccount(): Account | null {
-   const { wallet } = React.useContext(NearContext);
+   const { wallet } = useNearContext();
 
    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-   return wallet ? wallet.account() : null;
+   return React.useMemo(() => (wallet ? wallet.account() : null), [wallet]);
 }
 
 export default useNearAccount;

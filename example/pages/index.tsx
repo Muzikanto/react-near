@@ -7,7 +7,7 @@ import { useNftTokens } from '../../src/standards';
 import { useFtBalanceOf, useFtTransfer } from '../../src/standards';
 import { formatNearPrice } from '../../src/utils';
 import { NftContractMetadata } from '../../src/standards/nft/types';
-import useNearStatus from '../../src/hooks/useNearStatus';
+import { useNearClient } from '../../src/core/client';
 
 const Page: NextPage = function () {
    const nftContract = useNftContract();

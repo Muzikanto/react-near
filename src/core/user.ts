@@ -1,5 +1,5 @@
 import React from 'react';
-import { NearContext } from '../NearProvider';
+import { useNearContext } from '../NearProvider';
 import { formatNearAmount } from 'near-api-js/lib/utils/format';
 import * as nearApi from 'near-api-js';
 import { Near, WalletConnection } from 'near-api-js';
@@ -45,7 +45,7 @@ export async function createNearTransaction(
 }
 
 function useNearUser(contractId: string) {
-   const { wallet, account, client, loading, near } = React.useContext(NearContext);
+   const { wallet, account, client, loading, near } = useNearContext();
 
    const signedIn = wallet && wallet.isSignedIn();
    const address: string | null = wallet ? wallet.getAccountId() : null;

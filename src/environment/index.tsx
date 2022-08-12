@@ -13,9 +13,9 @@ export type NearEnvironmentProviderProps = {
 };
 
 export function useNearEnvironment() {
-   const r = React.useContext(NearEnvironmentContext);
+   const ctx = React.useContext(NearEnvironmentContext);
 
-   return r;
+   return ctx;
 }
 
 export const NearEnvironmentContext = React.createContext<NearEnvironmentContextType>({

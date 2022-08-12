@@ -50,6 +50,10 @@ export async function makeNearProviderState({
    return { near: nearInstance, wallet: walletInstance, loading: false };
 }
 
+export function useNearContext() {
+   return React.useContext(NearContext);
+}
+
 const NearProvider: React.FC<React.PropsWithChildren<NearProviderProps>> = ({
    environment: forceEnvironment,
    children,

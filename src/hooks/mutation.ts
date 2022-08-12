@@ -35,11 +35,9 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    const { client, account, near, wallet } = React.useContext(NearContext);
    const contractProvided = useNearContractProvided();
    const contractV = opts.contract || contractProvided;
-   const contractId = contractV
-      ? typeof contractV === 'string'
-         ? contractV
-         : contractV.contractId
-      : '_';
+   const contractId = React.useMemo(() => {
+      return contractV ? (typeof contractV === 'string' ? contractV : contractV.contractId) : '_';
+   }, [contractV]);
 
    const [state, setState] = React.useState<{ data: Res | undefined; loading: boolean }>({
       loading: false,
@@ -47,6 +45,10 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    });
 
    const callMethod = async (args: Req, attachedDeposit?: string, gas?: number): Promise<Res> => {
+      const requestId = encodeRequest(contractId, methodName, args);
+
+      client.set(requestId, { data: null, loading: true, error: null }, 'ROOT_MUTATION');
+
       if (account && !opts.skipRenders) {
          setState({ data: undefined, loading: true });
       }
@@ -120,6 +122,8 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                setState({ data: res, loading: false });
             }
 
+            client.set(requestId, { data: res, loading: false, error: null }, 'ROOT_MUTATION');
+
             return resolve(res);
          } catch (e) {
             if (opts.debug) {
@@ -134,32 +138,37 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                setState({ data: undefined, loading: false });
             }
 
+            client.set(requestId, { data: null, loading: false, error: e }, 'ROOT_MUTATION');
+
             return reject(e);
          }
       });
    };
-   const createTransaction = (
-      args: Req,
-      attachedDeposit?: string,
-      gas?: number,
-      nonceOffset: number = 1,
-   ): Promise<nearApi.transactions.Transaction> => {
-      if (!near || !wallet) {
-         throw new Error('Not found near ctx');
-      }
-      if (!account) {
-         throw new Error('Near account does not connected');
-      }
+   const createTransaction = React.useCallback(
+      (
+         args: Req,
+         attachedDeposit?: string,
+         gas?: number,
+         nonceOffset: number = 1,
+      ): Promise<nearApi.transactions.Transaction> => {
+         if (!near || !wallet) {
+            throw new Error('Not found near ctx');
+         }
+         if (!account) {
+            throw new Error('Near account does not connected');
+         }
 
-      return createNearTransaction(
-         near,
-         wallet,
-         account.accountId,
-         contractId,
-         [nearApi.transactions.functionCall(methodName, args, gas || opts.gas, attachedDeposit)],
-         nonceOffset,
-      );
-   };
+         return createNearTransaction(
+            near,
+            wallet,
+            account.accountId,
+            contractId,
+            [nearApi.transactions.functionCall(methodName, args, gas || opts.gas, attachedDeposit)],
+            nonceOffset,
+         );
+      },
+      [near, wallet, account, contractId, opts.gas],
+   );
 
    return [
       callMethod,

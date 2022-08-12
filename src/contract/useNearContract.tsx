@@ -4,7 +4,7 @@ import useNearWallet from '../core/wallet';
 import { NearContext } from '../NearProvider';
 import { encodeRequest } from '../core/client';
 
-export type NearContract<T extends { [key: string]: any } = {}> = Contract & T;
+export type NearContract<T extends { [key: string]: any } = {}> = Omit<Contract, keyof T> & T;
 
 function useNearContract<T extends { [key: string]: any } = {}>(
    contractId: string,

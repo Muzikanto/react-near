@@ -1,5 +1,6 @@
 import { Contract } from 'near-api-js';
 import { NearQueryState } from '../hooks/query';
+import { useNearContext } from '../NearProvider';
 
 export function encodeRequest(
    contractId: string,
@@ -9,20 +10,13 @@ export function encodeRequest(
    return `${contractId}.${methodName}(${JSON.stringify(args)})`;
 }
 
-export class NearClient {
+class Observable {
    protected watchers: {
       [key: string]: {
          [key: string]: Array<(v: any) => void>;
       };
    } = {};
-
    public cache: { [key: string]: any } = {};
-
-   constructor(fromClient?: NearClient) {
-      if (fromClient) {
-         this.from(fromClient);
-      }
-   }
 
    public set = <T>(key: string, value: T, rootId: string = 'ROOT') => {
       const { watchers, cache } = this;
@@ -41,11 +35,6 @@ export class NearClient {
          watchers[rootId][key].forEach((watcher) => watcher(value));
       }
    };
-
-   public setContract = (requestId: string, contract: Contract) => {
-      this.set(requestId, contract, 'ROOT_CONTRACT');
-   };
-
    public get = <T>(key: string, rootId: string = 'ROOT'): T | undefined => {
       const { cache } = this;
 
@@ -55,10 +44,6 @@ export class NearClient {
          return cache[key];
       }
    };
-   public getContract = (requestId: string): Contract | undefined => {
-      return this.get<Contract | undefined>(requestId, 'ROOT_CONTRACT');
-   };
-
    public watch = (key: string, watcher: (v: any) => void, rootId: string = 'ROOT') => {
       const { watchers } = this;
 
@@ -76,11 +61,32 @@ export class NearClient {
       };
    };
 
+   public exists(key: string): boolean {
+      return key in this.cache;
+   }
+}
+
+export class NearClient extends Observable {
+   constructor(fromClient?: NearClient) {
+      super();
+
+      if (fromClient) {
+         this.from(fromClient);
+      }
+   }
+
    public setQuery = <R>(key: string, data: NearQueryState<R>) => {
       this.set(key, data, 'ROOT_QUERY');
    };
    public getQuery = <R>(requestId: string): NearQueryState<R> | undefined => {
       return this.get<NearQueryState<R>>(requestId, 'ROOT_QUERY');
+   };
+
+   public setContract = (requestId: string, contract: Contract) => {
+      this.set(requestId, contract, 'ROOT_CONTRACT');
+   };
+   public getContract = (requestId: string): Contract | undefined => {
+      return this.get<Contract | undefined>(requestId, 'ROOT_CONTRACT');
    };
 
    public from(fromClient: NearClient): NearClient {
@@ -90,10 +96,6 @@ export class NearClient {
       };
 
       return this;
-   }
-
-   public exists(key: string): boolean {
-      return key in this.cache;
    }
 }
 
@@ -107,5 +109,12 @@ const createNearClient = (fromClient?: NearClient): NearClient => {
 
    return client;
 };
+
+export function useNearClient(): NearClient {
+   const { client } = useNearContext();
+
+   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+   return client;
+}
 
 export default createNearClient;
