@@ -1,13 +1,13 @@
 import React from 'react';
 
-export type NearStatus = {
+export type UseNearStatus = {
    transactionHashes?: string[];
    error?: string;
    errorCode?: string;
 };
 
-function useNearStatus(): NearStatus {
-   const data = React.useMemo((): NearStatus => {
+function useNearStatus(): UseNearStatus {
+   const data = React.useMemo((): UseNearStatus => {
       if (typeof window !== 'undefined') {
          // @ts-ignore
          const params = Object.fromEntries(new URLSearchParams(window.location.search).entries());
