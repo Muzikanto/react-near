@@ -6,7 +6,7 @@ import {
    MtBatchTransferCallResult,
 } from '../mt-core/useMtBatchTransferCall';
 import { NearChangeMethod, NearViewMethod } from '../../types';
-import { Contract } from 'near-api-js';
+import { NearContract } from '../../contract/useNearContract';
 
 export interface MtContractMetadata {
    spec: string;
@@ -18,11 +18,11 @@ export interface MtContractMetadata {
    decimals: number;
 }
 
-export type MtContract = {
+export type MtContract = NearContract<{
    mt_balance_of: NearViewMethod<MtBalanceOfArgs, MtBalanceOfResult>;
    mt_total_supply: NearViewMethod<MtTotalSupplyArgs, MtTotalSupplyResult>;
    mt_batch_transfer: NearChangeMethod<MtBatchTransferArgs, MtBatchTransferArgs>;
    mt_batch_transfer_call: NearChangeMethod<MtBatchTransferCallArgs, MtBatchTransferCallResult>;
-} & Contract;
+}>;
 
 export {};

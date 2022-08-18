@@ -3,9 +3,6 @@
 <div align="center">
 
 <p align="center">
-  <a aria-label="Vercel logo" href="https://mfight.io">
-    <img src="https://img.shields.io/badge/MADE%20BY%20MFIGHT-000000.svg?style=for-the-badge&&labelColor=000">
-  </a>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/react-near">
     <img alt="" src="https://img.shields.io/npm/v/react-near.svg?style=for-the-badge&labelColor=000000">
   </a>

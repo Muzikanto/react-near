@@ -19,7 +19,7 @@ import {
 import { NftPayoutArgs, NftPayoutResult } from '../nft-payout/useNftPayout';
 import { NftTransferPayoutArgs, NftTransferPayoutResult } from '../nft-payout/useNftTransferPayout';
 import { NearChangeMethod, NearViewMethod } from '../../types';
-import { Contract } from 'near-api-js';
+import { NearContract } from '../../contract/useNearContract';
 
 export interface NftContractMetadata {
    base_uri: string;
@@ -50,7 +50,7 @@ export interface NftToken {
    token_id: string;
 }
 
-export type NftContract = {
+export type NftContract = NearContract<{
    nft_metadata: NearViewMethod<NftMetadataArgs, NftMetadataResult>;
    nft_token: NearViewMethod<NftTokenArgs, NftTokenResult>;
    nft_transfer: NearChangeMethod<NftTransferArgs, NftTransferResult>;
@@ -68,6 +68,6 @@ export type NftContract = {
 
    nft_payout: NearViewMethod<NftPayoutArgs, NftPayoutResult>;
    nft_transfer_payout: NearChangeMethod<NftTransferPayoutArgs, NftTransferPayoutResult>;
-} & Contract;
+}>;
 
 export {};
