@@ -37,3 +37,9 @@ export function formatNearPrice(price: string, decimals: number = 24): number {
 
    return +(+formatNearAmount(price, decimals).split(',').join(''));
 }
+
+export const NEAR_ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
+
+export function isValidNearAddress(address: string): boolean {
+   return NEAR_ACCOUNT_ID_REGEX.test(address);
+}
