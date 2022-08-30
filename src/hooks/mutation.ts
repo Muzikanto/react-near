@@ -44,8 +44,9 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
    });
 
-   const callMethod = async (args: Req, attachedDeposit?: string, gas?: number): Promise<Res> => {
-      const requestId = encodeRequest(contractId, methodName, args);
+   const callMethod = async (args: Req, attachedDeposit?: string, gas?: number, contractId2?: string): Promise<Res> => {
+      let localContractId = contractId2 || contractId;
+      const requestId = encodeRequest(localContractId, methodName, args);
 
       client.set(requestId, { data: null, loading: true, error: null }, 'ROOT_MUTATION');
 
@@ -54,10 +55,6 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return new Promise(async (resolve: (res: Res) => void, reject) => {
-         const contractV =
-            (typeof opts.contract === 'object' ? opts.contract.contractId : opts.contract) ||
-            (contractProvided && contractProvided.contractId);
-
          try {
             let res: any;
 
@@ -80,7 +77,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                   const err = new Error('Not found contract');
 
                   if (opts.debug) {
-                     console.error(`NEAR #${contractV}-${methodName}`, err);
+                     console.error(`NEAR #${localContractId}-${methodName}`, err);
                   }
                   if (opts.onError) {
                      opts.onError(err);
@@ -90,7 +87,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                }
 
                res = await account.functionCall({
-                  contractId: contractV,
+                  contractId: localContractId,
                   methodName,
                   attachedDeposit,
                   gas: gas || opts.gas,
@@ -101,7 +98,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             }
 
             if (opts.debug) {
-               console.log(`NEAR #${contractV}-${methodName}`, { ...args }, res);
+               console.log(`NEAR #${localContractId}-${methodName}`, { ...args }, res);
             }
 
             if (opts.update) {
@@ -127,7 +124,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             return resolve(res);
          } catch (e) {
             if (opts.debug) {
-               console.error(`NEAR #${contractV}-${methodName}`, { ...args }, e);
+               console.error(`NEAR #${localContractId}-${methodName}`, { ...args }, e);
             }
 
             if (opts.onError) {
