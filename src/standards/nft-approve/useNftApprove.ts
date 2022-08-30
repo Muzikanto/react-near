@@ -12,7 +12,7 @@ export type NftApproveResult = void;
 function useNftApprove<Res = NftApproveResult, Req extends NftApproveArgs = NftApproveArgs>(
    opts: NearMutationOptions<Res, Req>,
 ) {
-   return useNearMutation<Res, Req>(NftApproveMethods.nft_approve, { ...opts, gas: GAS_FOR_NFT_APPROVE || opts.gas });
+   return useNearMutation<Res, Req>(NftApproveMethods.nft_approve, { ...opts, gas: opts.gas || GAS_FOR_NFT_APPROVE });
 }
 
 export default useNftApprove;

@@ -15,7 +15,7 @@ function useMtBatchTransferCall<
    Res = MtBatchTransferCallResult,
    Req extends MtBatchTransferCallArgs = MtBatchTransferCallArgs,
 >(opts: NearMutationOptions<Res, Req>) {
-   return useNearMutation<Res, Req>(MtCoreMethods.mt_batch_transfer_call, { ...opts, gas: GAS_FOR_MT_TRANSFER_CALL || opts.gas });
+   return useNearMutation<Res, Req>(MtCoreMethods.mt_batch_transfer_call, { ...opts, gas: opts.gas || GAS_FOR_MT_TRANSFER_CALL });
 }
 
 export default useMtBatchTransferCall;
