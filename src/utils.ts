@@ -65,14 +65,19 @@ function trimLeadingZeroes(value: string) {
    return value;
 }
 
-export function parseNearAmount(amt: string, decimals: number = 24) {
+export function parseNearAmount(value: string | number, decimals: number = 24): string {
+   let amt = value.toString();
+
    if (!amt) {
-      return null;
+      return '0';
    }
+
    amt = cleanupAmount(amt);
+
    const split = amt.split('.');
    const wholePart = split[0];
    const fracPart = split[1] || '';
+
    if (split.length > 2 || fracPart.length > decimals) {
       throw new Error(`Cannot parse '${amt}' as NEAR amount`);
    }
