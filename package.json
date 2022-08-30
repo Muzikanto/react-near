@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "4.5.6",
+   "version": "4.6.0",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -50,7 +50,6 @@
       "cookie": "^0.5.0"
    },
    "devDependencies": {
-      "@storybook/react": "^6.3.10",
       "@types/react-dom": "^18.0.6",
       "near-api-js": "^0.43.1",
       "husky": "^7.0.2",

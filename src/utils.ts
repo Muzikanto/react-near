@@ -28,7 +28,13 @@ export const getNearCookie = (key: string) => {
    return parsed[key];
 };
 
-export const ONE_NEAR_YOCTO = formatNearAmount('1') as string;
+export const NEAR_ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
+
+export function isValidNearAddress(address: string): boolean {
+   return NEAR_ACCOUNT_ID_REGEX.test(address);
+}
+
+//
 
 export function formatNearPrice(price: string, decimals: number = 24): number {
    if (decimals === 0) {
@@ -38,8 +44,6 @@ export function formatNearPrice(price: string, decimals: number = 24): number {
    return +(+formatNearAmount(price, decimals).split(',').join(''));
 }
 
-export const NEAR_ACCOUNT_ID_REGEX = /^(([a-z\d]+[-_])*[a-z\d]+\.)*([a-z\d]+[-_])*[a-z\d]+$/;
-
-export function isValidNearAddress(address: string): boolean {
-   return NEAR_ACCOUNT_ID_REGEX.test(address);
+export function parseNearAmount(value: number, decimals: number = 24): string {
+   return BigInt(Number(value) * decimals).toString();
 }
