@@ -44,7 +44,12 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       data: undefined,
    });
 
-   const callMethod = async (args: Req, attachedDeposit?: string, gas?: number, contractId2?: string): Promise<Res> => {
+   const callMethod = async (
+      args: Req,
+      attachedDeposit?: string,
+      gas?: number,
+      contractId2?: string,
+   ): Promise<Res> => {
       let localContractId = contractId2 || contractId;
       const requestId = encodeRequest(localContractId, methodName, args);
 
@@ -66,18 +71,6 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
 
                   if (opts.debug) {
                      console.error(`NEAR #${contractV}-${methodName}`, err);
-                  }
-                  if (opts.onError) {
-                     opts.onError(err);
-                  }
-
-                  return reject(err);
-               }
-               if (!contractV) {
-                  const err = new Error('Not found contract');
-
-                  if (opts.debug) {
-                     console.error(`NEAR #${localContractId}-${methodName}`, err);
                   }
                   if (opts.onError) {
                      opts.onError(err);
