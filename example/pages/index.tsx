@@ -1,19 +1,16 @@
 import React from 'react';
-import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { NextPage } from 'next';
 import { NFT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
 import { NEAR_GAS, useNearQuery, useNearUser } from '../../src';
 import { useNftTokens } from '../../src/standards';
 import { useFtBalanceOf, useFtTransfer } from '../../src/standards';
-import { formatNearPrice } from '../../src/utils';
+import {formatNearPrice, parseNearAmount} from '../../src/utils';
 import { NftContractMetadata } from '../../src/standards/nft/types';
-import { useNearClient } from '../../src/core/client';
 
 const Page: NextPage = function () {
    const nftContract = useNftContract();
    const ftContract = useFtContract();
    const nearUser = useNearUser(NFT_CONTRACT_NAME);
-   // const nearStatus = useNearStatus();
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(
