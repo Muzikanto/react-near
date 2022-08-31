@@ -6,9 +6,17 @@ import useNearContractProvided from '../contract/useNearContractProvided';
 import { createNearTransaction } from '../core/user';
 import * as nearApi from 'near-api-js';
 
+export type NearMutationOverrideOpts = {
+   gas?: number;
+   contractId?: string;
+};
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
    contract?: string | NearContract;
-   mock?: (args: Req, attachedDeposit?: string, gas?: number) => Promise<Res>;
+   mock?: (
+      args: Req,
+      attachedDeposit?: string,
+      overrideOpts?: NearMutationOverrideOpts,
+   ) => Promise<Res>;
    onError?: (err: Error) => void;
    onCompleted?: (res: Res) => void;
    debug?: boolean;
@@ -47,10 +55,9 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    const callMethod = async (
       args: Req,
       attachedDeposit?: string,
-      gas?: number,
-      contractId2?: string,
+      overrideOpts: NearMutationOverrideOpts = {},
    ): Promise<Res> => {
-      let localContractId = contractId2 || contractId;
+      let localContractId = overrideOpts.contractId || contractId;
       const requestId = encodeRequest(localContractId, methodName, args);
 
       client.set(requestId, { data: null, loading: true, error: null }, 'ROOT_MUTATION');
@@ -64,7 +71,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             let res: any;
 
             if (opts.mock) {
-               res = await opts.mock(args, attachedDeposit, gas);
+               res = await opts.mock(args, attachedDeposit, overrideOpts);
             } else {
                if (!account) {
                   const err = new Error('Not found near account');
@@ -82,8 +89,8 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                res = await account.functionCall({
                   contractId: localContractId,
                   methodName,
-                  attachedDeposit,
-                  gas: gas || opts.gas,
+                  attachedDeposit: attachedDeposit,
+                  gas: overrideOpts.gas || opts.gas,
                   args,
                   walletCallbackUrl: opts.callbackUrl,
                   walletMeta: opts.meta,
@@ -98,7 +105,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                opts.update(client, {
                   data: res,
                   variables: args,
-                  attachedDeposit,
+                  attachedDeposit: attachedDeposit,
                   methodName,
                   requestId: encodeRequest(contractId, methodName, args),
                });
@@ -138,8 +145,11 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       (
          args: Req,
          attachedDeposit?: string,
-         gas?: number,
-         nonceOffset: number = 1,
+         overrideOpts: {
+            gas?: number;
+            nonceOffset?: number;
+            contractId?: string;
+         } = {},
       ): Promise<nearApi.transactions.Transaction> => {
          if (!near || !wallet) {
             throw new Error('Not found near ctx');
@@ -152,9 +162,16 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             near,
             wallet,
             account.accountId,
-            contractId,
-            [nearApi.transactions.functionCall(methodName, args, gas || opts.gas, attachedDeposit)],
-            nonceOffset,
+            overrideOpts.contractId || contractId,
+            [
+               nearApi.transactions.functionCall(
+                  methodName,
+                  args,
+                  overrideOpts.gas || opts.gas,
+                  attachedDeposit,
+               ),
+            ],
+            overrideOpts.nonceOffset || 1,
          );
       },
       [near, wallet, account, contractId, opts.gas],

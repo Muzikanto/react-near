@@ -4,7 +4,7 @@ import { NFT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
 import { NEAR_GAS, useNearQuery, useNearUser } from '../../src';
 import { useNftTokens } from '../../src/standards';
 import { useFtBalanceOf, useFtTransfer } from '../../src/standards';
-import {formatNearPrice, parseNearAmount} from '../../src/utils';
+import { formatNearPrice, parseNearAmount } from '../../src/utils';
 import { NftContractMetadata } from '../../src/standards/nft/types';
 
 const Page: NextPage = function () {
@@ -18,7 +18,6 @@ const Page: NextPage = function () {
       {
          contract: nftContract,
          variables: {},
-         // skip: true,
       },
    );
    const {
@@ -34,8 +33,6 @@ const Page: NextPage = function () {
    const {
       data: ftBalance = '0',
       refetch: refetchFtBalance,
-      loading,
-      error,
    } = useFtBalanceOf({
       contract: ftContract,
       variables: { account_id: nearUser.address as string },

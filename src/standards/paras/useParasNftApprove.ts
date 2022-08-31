@@ -21,8 +21,8 @@ function useParasNftApprove<Res = void, Req extends ParasNftApproveArgs = ParasN
    const [call, info] = useNearMutation<Res, Req>(NftApproveMethods.nft_approve, opts);
 
    return [
-      async (args: Req, attachedDeposit?: string, gas?: number): Promise<Res> =>
-         call({ ...args, msg: createParasNftApproveMsg(args.msg) }, attachedDeposit, gas),
+      async (args: Req, attachedDeposit?: string, gas?: number, overrideOpts?: NearMutationOptions): Promise<Res> =>
+         call({ ...args, msg: createParasNftApproveMsg(args.msg) }, attachedDeposit, overrideOpts),
       info,
    ] as const;
 }

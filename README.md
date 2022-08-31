@@ -52,6 +52,7 @@ Including ready for use typed methods in popular smart contract [Standards](http
    -  [mt](#mt) Multi Token Standard ([nep245](https://github.com/near/NEPs/blob/master/neps/nep-0245.md)) methods
    -  [storage](#storage) Storage Management ([nep145](https://github.com/near/NEPs/blob/master/neps/nep-0145.md)) methods
    -  [Other Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards)
+- [utils](#utils) Other utils
 
 ## Setup
 
@@ -528,6 +529,12 @@ function Page() {
 #### Ref Finance
 
 -  [x] get_pool (useRefFinancePool)
+
+### Utils
+
+- [x] parseNearAmount with decimals
+- [x] isValidNearAddress
+- [x] gas and more :)
 
 ## Authors
 
