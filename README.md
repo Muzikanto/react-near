@@ -534,6 +534,8 @@ function Page() {
 
 - [x] parseNearAmount with decimals
 - [x] isValidNearAddress
+- [x] parseNearDate
+- [x] formatNearAddress
 - [x] gas and more :)
 
 ## Authors

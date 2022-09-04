@@ -83,3 +83,13 @@ export function parseNearAmount(value: string | number, decimals: number = 24): 
    }
    return trimLeadingZeroes(wholePart + fracPart.padEnd(decimals, '0'));
 }
+
+//
+
+export function formatNearAddress(address: string): string {
+   return address.replace('.testnet', '').replace('.near', '');
+}
+
+export function parseNearDate(blockTimestamp: number): Date {
+   return new Date(blockTimestamp / 1_000_000);
+}
