@@ -8,7 +8,14 @@ import {
 } from './hooks';
 import NearProvider, { NearContext } from './NearProvider';
 import getNearConfig, { NEAR_GAS } from './config';
-import { getNearError } from './utils';
+import {
+   getNearError,
+   formatNearAddress,
+   formatNearPrice,
+   parseNearAmount,
+   isValidNearAddress,
+   parseNearDate,
+} from './utils';
 import NearEnvironmentProvider, { NearEnvironmentContext, useNearEnvironment } from './environment';
 import { NearEnvironment } from './config';
 import NearContractProvider from './contract/NearContractProvider';
@@ -28,6 +35,11 @@ export {
    NearEnvironment,
    getNearConfig,
    getNearError,
+   formatNearAddress,
+   formatNearPrice,
+   parseNearAmount,
+   isValidNearAddress,
+   parseNearDate,
    //
    useNearQuery,
    useNearMutation,

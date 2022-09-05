@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "4.7.1",
+   "version": "5.0.0",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -10,7 +10,7 @@
       }
    ],
    "scripts": {
-      "clean": "rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks  && rm -rf ./core && rm -rf ./environment && rm -rf ./contract && rm -rf ./standards",
+      "clean": "rm -rf *.js && rm -rf *.ts && rm -rf *.tsx && rm -rf *.js && rm -rf ./hooks  && rm -rf ./core && rm -rf ./environment && rm -rf ./contract && rm -rf ./standards",
       "build": "tsc -b",
       "lint": "tslint -c tslint.json 'example/**/*.ts' --fix",
       "prepublishOnly": "npm run build",
@@ -43,16 +43,18 @@
    "license": "MIT",
    "peerDependencies": {
       "@types/react": "^18.0.15",
-      "react": "^18.2.0",
-      "near-api-js": "^0.43.1"
+      "near-api-js": "^0.43.1",
+      "react": "^18.2.0"
    },
    "dependencies": {
       "cookie": "^0.5.0"
    },
    "devDependencies": {
+      "json-schema-to-typescript": "^11.0.2",
       "@types/react-dom": "^18.0.6",
-      "near-api-js": "^0.43.1",
+      "fzstd": "^0.0.4",
       "husky": "^7.0.2",
+      "near-api-js": "^0.43.1",
       "prettier": "^2.4.1",
       "pretty-quick": "^3.1.1",
       "react": "^18.2.0",
