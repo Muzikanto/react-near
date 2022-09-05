@@ -29,13 +29,14 @@
 
 ## Introduction
 
-Inspired by graphql (for the frontend) I decided to do the same for near.
+Quick implementation of near in your application.
 Including ready for use typed methods in popular smart contract [Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards).
 
 ## Navigation
 
 -  [install](#setup)
 -  [example](#quick-example) Quick example
+-  [codegen](#codegen) Generate methods of contract [example-codegen](https://github.com/Muzikanto/react-near/tree/master/example/near-api/game.ts)
 -  [api](#api)
    -  [NearProvider](#nearprovider) define near in app
    -  [NearEnvironmentProvider](#nearenvironmentprovider) switch env (TestNet, MainNet..)
@@ -57,6 +58,8 @@ Including ready for use typed methods in popular smart contract [Standards](http
 ## Setup
 
 You'll need to install the package from npm `npm i react-near near-api-js`.
+
+If you need to generate contract methods `npm i -D json-schema-to-typescript`.
 
 ## Quick Example
 
@@ -118,6 +121,33 @@ function Page() {
    );
 }
 ```
+
+## Codegen
+
+If you want to generate all the methods of your near contract, you have to:
+
+- you need to add the abi feature, as in this example [abi-example](https://github.com/near/abi-example)
+- run ```npm i -D json-schema-to-typescript``` 
+- add config to your project ```react-near.json```
+```json
+{
+   "dist": "near-api",
+   "contracts": [
+      {
+         "name": "Ft",
+         "contractId": "dev-1234567890",
+         "abi": "abi/test.json"
+      },
+      {
+         "name": "Game",
+         "contractId": "mfight.testnet"
+      }
+   ]
+}
+```
+- run script ```node ./node_modules/react-near/lib/codegen.js```
+
+There is also an example: [example-app](https://github.com/Muzikanto/react-near/tree/master/example)
 
 ## Api
 

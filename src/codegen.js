@@ -31,7 +31,7 @@ if (!fs.existsSync(path.resolve(dist))) {
 
 (async () => {
    for (const contract of config.contracts) {
-      const schema = contract.abi
+      let schema = contract.abi
          ? JSON.parse(fs.readFileSync(path.resolve(contract.abi), { encoding: 'utf-8' }))
          : await loadAbi(contract.contractId);
 
