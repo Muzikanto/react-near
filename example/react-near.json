@@ -1,0 +1,14 @@
+{
+   "dist": "near-api",
+   "contracts": [
+      {
+         "name": "Test",
+         "contractId": "dev-1234567890",
+         "abi": "abi/test.json"
+      },
+      {
+         "name": "Game",
+         "contractId": "mfight.testnet"
+      }
+   ]
+}

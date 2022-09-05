@@ -1,0 +1,293 @@
+{
+  "schema_version": "0.1.0",
+  "metadata": {
+    "name": "game",
+    "version": "0.1.0",
+    "authors": [
+      "Muzikanto <schiriy_maxim@icloud.com>"
+    ]
+  },
+  "body": {
+    "functions": [
+      {
+        "name": "block_account",
+        "params": [
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "blocked",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "name": "fix",
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "name": "ft_on_transfer",
+        "params": [
+          {
+            "name": "sender_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "amount",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/U128"
+            }
+          },
+          {
+            "name": "msg",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/PromiseOrValueU128"
+          }
+        }
+      },
+      {
+        "name": "game_clan",
+        "is_view": true,
+        "params": [
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/GameClan"
+          }
+        }
+      },
+      {
+        "name": "game_create_clan",
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/GameClan"
+          }
+        }
+      },
+      {
+        "name": "game_create_player",
+        "is_payable": true,
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/GamePlayer"
+          }
+        }
+      },
+      {
+        "name": "game_player",
+        "is_view": true,
+        "params": [
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/GamePlayer"
+          }
+        }
+      },
+      {
+        "name": "game_player_up_price",
+        "is_view": true,
+        "params": [
+          {
+            "name": "level",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/U128"
+          }
+        }
+      },
+      {
+        "name": "get_owner",
+        "is_view": true,
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/AccountId"
+          }
+        }
+      },
+      {
+        "name": "is_account_blocked",
+        "is_view": true,
+        "params": [
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "name": "is_paused",
+        "is_view": true,
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "name": "migrate",
+        "is_init": true,
+        "is_private": true
+      },
+      {
+        "name": "new",
+        "is_init": true,
+        "params": [
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "new_with_default_meta",
+        "is_init": true,
+        "params": [
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "set_is_paused",
+        "params": [
+          {
+            "name": "pause",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "boolean"
+          }
+        }
+      }
+    ],
+    "root_schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Test",
+      "type": "object",
+      "definitions": {
+        "AccountId": {
+          "description": "Account identifier. This is the human readable utf8 string which is used internally to index accounts on the network and their respective state.\n\nBecause these IDs have to be validated, they have to be converted from a string with [`FromStr`] or [`TryFrom`] a compatible type. To skip validation on initialization, [`AccountId::new_unchecked`] can be used.\n\n# Examples ``` use near_sdk::AccountId; use std::convert::{TryFrom, TryInto};\n\n// `FromStr` conversion let alice: AccountId = \"alice.near\".parse().unwrap(); assert!(\"invalid.\".parse::<AccountId>().is_err());\n\nlet alice_string = \"alice\".to_string();\n\n// From string with validation let alice = AccountId::try_from(alice_string.clone()).unwrap(); let alice: AccountId = alice_string.try_into().unwrap();\n\n// Initialize without validating let alice_unchecked = AccountId::new_unchecked(\"alice\".to_string()); assert_eq!(alice, alice_unchecked); ```\n\n[`FromStr`]: std::str::FromStr",
+          "type": "string"
+        },
+        "GameClan": {
+          "type": "object",
+          "required": [
+            "level"
+          ],
+          "properties": {
+            "level": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            }
+          }
+        },
+        "GamePlayer": {
+          "type": "object",
+          "required": [
+            "level"
+          ],
+          "properties": {
+            "level": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            }
+          }
+        },
+        "PromiseOrValueU128": {
+          "type": "integer",
+          "format": "uint128",
+          "minimum": 0.0
+        },
+        "U128": {
+          "type": "integer",
+          "format": "uint128",
+          "minimum": 0.0
+        }
+      }
+    }
+  }
+}
