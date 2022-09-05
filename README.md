@@ -30,6 +30,7 @@
 ## Introduction
 
 Quick implementation of near in your application.
+Generation of typed smart contract methods.
 Including ready for use typed methods in popular smart contract [Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards).
 
 ## Navigation
@@ -59,7 +60,7 @@ Including ready for use typed methods in popular smart contract [Standards](http
 
 You'll need to install the package from npm `npm i react-near near-api-js`.
 
-If you need to generate contract methods `npm i -D json-schema-to-typescript`.
+If you need to generate contract methods `npm i -D json-schema-to-typescript fzstd`.
 
 ## Quick Example
 
@@ -127,7 +128,7 @@ function Page() {
 If you want to generate all the methods of your near contract, you have to:
 
 - you need to add the abi feature, as in this example [abi-example](https://github.com/near/abi-example)
-- run ```npm i -D json-schema-to-typescript``` 
+- run ```npm i -D json-schema-to-typescript fzstd``` 
 - add config to your project ```react-near.json```
 ```json
 {
@@ -145,7 +146,7 @@ If you want to generate all the methods of your near contract, you have to:
    ]
 }
 ```
-- run script ```node ./node_modules/react-near/lib/codegen.js```
+- run script ```node ./node_modules/react-near/codegen.js```
 
 There is also an example: [example-app](https://github.com/Muzikanto/react-near/tree/master/example)
 

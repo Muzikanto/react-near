@@ -9,6 +9,9 @@
       {
          "name": "Game",
          "contractId": "mfight.testnet"
+      }, {
+         "name": "Market",
+         "contractId": "mfight-market.testnet"
       }
    ]
 }

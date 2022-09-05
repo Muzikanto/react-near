@@ -168,7 +168,17 @@ function getFunction(el, contractName) {
 }
 
 function formatParam(el) {
+   if (!el) {
+      return 'void';
+   }
    if (el.type_schema.type) {
+      if (el.type_schema.type === 'array') {
+         if (el.type_schema.items.type) {
+            return `${el.type_schema.items.type}[]`;
+         }
+         return `${el.type_schema.items.$ref.split('/').slice(-1)[0]}[]`;
+      }
+
       return el.type_schema.type;
    }
    if (el.type_schema.$ref) {
