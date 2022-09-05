@@ -182,7 +182,13 @@ function formatParam(el) {
       return el.type_schema.type;
    }
    if (el.type_schema.$ref) {
-      return el.type_schema.$ref.split('/').slice(-1)[0];
+      let res = el.type_schema.$ref.split('/').slice(-1)[0];
+
+      if (res === 'Promise') {
+         return 'Promise<void>';
+      }
+
+      return res;
    }
 
    return null;

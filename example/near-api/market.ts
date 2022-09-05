@@ -120,7 +120,7 @@ export type IMarketProcessPurchaseArgs = {
   "buyer_id": "AccountId"
 };
 
-export type IMarketProcessPurchaseResult = Promise;
+export type IMarketProcessPurchaseResult = Promise<void>;
 
 export function useMarketProcessPurchaseMutation(opts: NearMutationOptions<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>) {
     return useNearMutation<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>(MarketChangeMethods.market_process_purchase, opts);
