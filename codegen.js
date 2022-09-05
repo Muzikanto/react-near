@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { compile } = require('json-schema-to-typescript');
 const fs = require('fs');
 const path = require('path');
