@@ -21,6 +21,7 @@ const excludeMethods = [
    'migrate',
    'ft_on_transfer',
    'nft_on_transfer',
+   'nft_on_approve',
 ];
 
 if (!fs.existsSync(path.resolve(dist))) {
@@ -80,7 +81,7 @@ async function generate(abiSchema, contractName, contractId) {
    code += '\n\n' + generateMethods(methods, contractName);
 
    const ts = await compile(schema, 'MySchema', { additionalProperties: false, bannerComment: '' });
-   code += `\n\n` + ts;
+   code += `\n\n` + prepareTs(ts);
 
    fs.writeFileSync(schemaPath, code);
 
@@ -225,4 +226,13 @@ async function loadAbi(contractId) {
    let abi = JSON.parse(Buffer.from(decompressed_abi).toString());
 
    return abi;
+}
+function prepareTs(ts) {
+   return ts
+      .replace('export type U128 = number;', 'export type U128 = string;')
+      .replace('export type U64 = number;', 'export type U64 = string;')
+      .replace(
+         'export type PromiseOrValueU128 = number;',
+         'export type PromiseOrValueU128 = string;',
+      );
 }

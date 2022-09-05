@@ -24,7 +24,6 @@ export enum MarketChangeMethods {
   market_remove_sale = 'market_remove_sale', // payable
   market_resolve_purchase = 'market_resolve_purchase',
   market_update_price = 'market_update_price', // payable
-  nft_on_approve = 'nft_on_approve',
 }
 
 export function useMarketContract() {
@@ -49,7 +48,6 @@ export function useMarketContract() {
         MarketChangeMethods.market_remove_sale,
         MarketChangeMethods.market_resolve_purchase,
         MarketChangeMethods.market_update_price,
-        MarketChangeMethods.nft_on_approve,
       ],
     }
   ));
@@ -244,21 +242,6 @@ export function useMarketUpdatePriceMutation(opts: NearMutationOptions<IMarketUp
     return useNearMutation<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>(MarketChangeMethods.market_update_price, opts);
 }
 
-// nft_on_approve mutation
-
-export type INftOnApproveArgs = {
-  "token_id": "string",
-  "owner_id": "AccountId",
-  "approval_id": "integer",
-  "msg": "string"
-};
-
-export type INftOnApproveResult = void;
-
-export function useNftOnApproveMutation(opts: NearMutationOptions<INftOnApproveResult, INftOnApproveArgs>) {
-    return useNearMutation<INftOnApproveResult, INftOnApproveArgs>(MarketChangeMethods.nft_on_approve, opts);
-}
-
 // supported_ft_token_ids query
 
 export type ISupportedFtTokenIdsArgs = {};
@@ -299,9 +282,9 @@ export function useTestQuery(opts: NearQueryOptions<ITestResult, ITestArgs>) {
  * [`FromStr`]: std::str::FromStr
  */
 export type AccountId = string;
-export type U128 = number;
-export type PromiseOrValueU128 = number;
-export type U64 = number;
+export type U128 = string;
+export type PromiseOrValueU128 = string;
+export type U64 = string;
 
 export interface Definitions {
   AccountId?: AccountId;

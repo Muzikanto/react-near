@@ -184,8 +184,8 @@ export function useSetIsPausedMutation(opts: NearMutationOptions<ISetIsPausedRes
  * [`FromStr`]: std::str::FromStr
  */
 export type AccountId = string;
-export type PromiseOrValueU128 = number;
-export type U128 = number;
+export type PromiseOrValueU128 = string;
+export type U128 = string;
 
 export interface Definitions {
   AccountId?: AccountId;
