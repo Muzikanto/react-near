@@ -64,8 +64,8 @@ export function useGameMutationRaw<Res = any, Req = any>(
 // block_account mutation
 
 export type IBlockAccountArgs = {
-  "account_id": "AccountId",
-  "blocked": "boolean"
+   account_id: AccountId;
+   blocked: boolean;
 };
 
 export type IBlockAccountResult = boolean;
@@ -76,7 +76,9 @@ export function useBlockAccountMutation(opts: NearMutationOptions<IBlockAccountR
 
 // fix mutation
 
-export type IFixArgs = {};
+export type IFixArgs = {
+
+};
 
 export type IFixResult = string;
 
@@ -87,7 +89,7 @@ export function useFixMutation(opts: NearMutationOptions<IFixResult, IFixArgs>) 
 // game_clan query
 
 export type IGameClanArgs = {
-  "account_id": "AccountId"
+   account_id: AccountId;
 };
 
 export type IGameClanResult = GameClan;
@@ -98,7 +100,9 @@ export function useGameClanQuery(opts: NearQueryOptions<IGameClanResult, IGameCl
 
 // game_create_clan mutation
 
-export type IGameCreateClanArgs = {};
+export type IGameCreateClanArgs = {
+
+};
 
 export type IGameCreateClanResult = GameClan;
 
@@ -108,7 +112,9 @@ export function useGameCreateClanMutation(opts: NearMutationOptions<IGameCreateC
 
 // game_create_player mutation (payable)
 
-export type IGameCreatePlayerArgs = {};
+export type IGameCreatePlayerArgs = {
+
+};
 
 export type IGameCreatePlayerResult = GamePlayer;
 
@@ -119,7 +125,7 @@ export function useGameCreatePlayerMutation(opts: NearMutationOptions<IGameCreat
 // game_player query
 
 export type IGamePlayerArgs = {
-  "account_id": "AccountId"
+   account_id: AccountId;
 };
 
 export type IGamePlayerResult = GamePlayer;
@@ -131,7 +137,7 @@ export function useGamePlayerQuery(opts: NearQueryOptions<IGamePlayerResult, IGa
 // game_player_up_price query
 
 export type IGamePlayerUpPriceArgs = {
-  "level": "integer"
+   level: integer;
 };
 
 export type IGamePlayerUpPriceResult = U128;
@@ -142,7 +148,9 @@ export function useGamePlayerUpPriceQuery(opts: NearQueryOptions<IGamePlayerUpPr
 
 // get_owner query
 
-export type IGetOwnerArgs = {};
+export type IGetOwnerArgs = {
+
+};
 
 export type IGetOwnerResult = AccountId;
 
@@ -153,7 +161,7 @@ export function useGetOwnerQuery(opts: NearQueryOptions<IGetOwnerResult, IGetOwn
 // is_account_blocked query
 
 export type IIsAccountBlockedArgs = {
-  "account_id": "AccountId"
+   account_id: AccountId;
 };
 
 export type IIsAccountBlockedResult = boolean;
@@ -164,7 +172,9 @@ export function useIsAccountBlockedQuery(opts: NearQueryOptions<IIsAccountBlocke
 
 // is_paused query
 
-export type IIsPausedArgs = {};
+export type IIsPausedArgs = {
+
+};
 
 export type IIsPausedResult = boolean;
 
@@ -175,7 +185,7 @@ export function useIsPausedQuery(opts: NearQueryOptions<IIsPausedResult, IIsPaus
 // set_is_paused mutation
 
 export type ISetIsPausedArgs = {
-  "pause": "boolean"
+   pause: boolean;
 };
 
 export type ISetIsPausedResult = boolean;
@@ -218,3 +228,5 @@ export interface GameClan {
 export interface GamePlayer {
   level: number;
 }
+
+type integer = number;

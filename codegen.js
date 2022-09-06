@@ -156,7 +156,7 @@ export function use${contractName}MutationRaw<Res = any, Req = any>(
   const contract = use${contractName}Contract();
 
   return useNearMutation(methodName, { contract, ...opts });
-}`
+}`;
 }
 
 //
@@ -176,7 +176,9 @@ function getFunction(el, contractName) {
    return [
       `// ${el.name} ${isQuery ? 'query' : 'mutation'}${el.is_payable ? ' (payable)' : ''}`,
       '',
-      `export type ${interfaceName}Args = ${JSON.stringify(args, null, 2)};`,
+      `export type ${interfaceName}Args = {\n${Object.keys(args)
+         .map((k) => `   ${k}: ${args[k]};`)
+         .join('\n')}\n};`,
       '',
       `export type ${interfaceName}Result = ${formatParam(el.result)};`,
       '',
@@ -227,13 +229,15 @@ function formatParam(el) {
       return res;
    }
    if (el.type_schema.anyOf) {
-      return `${el.type_schema.anyOf.map(el => {
-         if (el.type) {
-            return el.type
-         } else if (el.$ref) {
-            return `${el.$ref.split('/').slice(-1)[0]}`;
-         }
-      }).join(' | ')}`
+      return `${el.type_schema.anyOf
+         .map((el) => {
+            if (el.type) {
+               return el.type;
+            } else if (el.$ref) {
+               return `${el.$ref.split('/').slice(-1)[0]}`;
+            }
+         })
+         .join(' | ')}`;
    }
 
    return null;
@@ -278,5 +282,5 @@ function prepareTs(ts) {
       .replace(
          'export type PromiseOrValueU128 = number;',
          'export type PromiseOrValueU128 = string;',
-      );
+      ) + '\ntype integer = number;';
 }

@@ -76,8 +76,8 @@ export function useTournamentMutationRaw<Res = any, Req = any>(
 // tournament query
 
 export type ITournamentArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
 };
 
 export type ITournamentResult = JsonTournament | null;
@@ -89,8 +89,8 @@ export function useTournamentQuery(opts: NearQueryOptions<ITournamentResult, ITo
 // tournament_add_nft_access mutation
 
 export type ITournamentAddNftAccessArgs = {
-  "tournament_id": "string",
-  "token_ids": "string[]"
+   tournament_id: string;
+   token_ids: string[];
 };
 
 export type ITournamentAddNftAccessResult = void;
@@ -102,10 +102,10 @@ export function useTournamentAddNftAccessMutation(opts: NearMutationOptions<ITou
 // tournament_add_prize mutation (payable)
 
 export type ITournamentAddPrizeArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId",
-  "place_number": "integer",
-  "prize_id": "string"
+   tournament_id: string;
+   owner_id: AccountId;
+   place_number: integer;
+   prize_id: string;
 };
 
 export type ITournamentAddPrizeResult = void;
@@ -117,8 +117,8 @@ export function useTournamentAddPrizeMutation(opts: NearMutationOptions<ITournam
 // tournament_add_whitelist_prize_owner mutation
 
 export type ITournamentAddWhitelistPrizeOwnerArgs = {
-  "tournament_id": "string",
-  "account_id": "AccountId"
+   tournament_id: string;
+   account_id: AccountId;
 };
 
 export type ITournamentAddWhitelistPrizeOwnerResult = void;
@@ -130,13 +130,13 @@ export function useTournamentAddWhitelistPrizeOwnerMutation(opts: NearMutationOp
 // tournament_create mutation
 
 export type ITournamentCreateArgs = {
-  "tournament_id": "string",
-  "players_number": "integer",
-  "price": "U128 | null",
-  "name": "string",
-  "media": "string | null",
-  "summary": "string | null",
-  "nft_access_contract": "AccountId | null"
+   tournament_id: string;
+   players_number: integer;
+   price: U128 | null;
+   name: string;
+   media: string | null;
+   summary: string | null;
+   nft_access_contract: AccountId | null;
 };
 
 export type ITournamentCreateResult = void;
@@ -148,7 +148,7 @@ export function useTournamentCreateMutation(opts: NearMutationOptions<ITournamen
 // tournament_end mutation
 
 export type ITournamentEndArgs = {
-  "tournament_id": "string"
+   tournament_id: string;
 };
 
 export type ITournamentEndResult = void;
@@ -160,10 +160,10 @@ export function useTournamentEndMutation(opts: NearMutationOptions<ITournamentEn
 // tournament_execute_reward mutation
 
 export type ITournamentExecuteRewardArgs = {
-  "tournament_id": "string",
-  "winner_place": "integer",
-  "account_id": "AccountId",
-  "prize_id": "string"
+   tournament_id: string;
+   winner_place: integer;
+   account_id: AccountId;
+   prize_id: string;
 };
 
 export type ITournamentExecuteRewardResult = void;
@@ -175,8 +175,8 @@ export function useTournamentExecuteRewardMutation(opts: NearMutationOptions<ITo
 // tournament_free_places query
 
 export type ITournamentFreePlacesArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
 };
 
 export type ITournamentFreePlacesResult = number | null;
@@ -188,9 +188,9 @@ export function useTournamentFreePlacesQuery(opts: NearQueryOptions<ITournamentF
 // tournament_is_whitelist_prize_owner query
 
 export type ITournamentIsWhitelistPrizeOwnerArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId",
-  "account_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
+   account_id: AccountId;
 };
 
 export type ITournamentIsWhitelistPrizeOwnerResult = boolean;
@@ -202,8 +202,8 @@ export function useTournamentIsWhitelistPrizeOwnerQuery(opts: NearQueryOptions<I
 // tournament_join mutation (payable)
 
 export type ITournamentJoinArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
 };
 
 export type ITournamentJoinResult = void;
@@ -215,9 +215,9 @@ export function useTournamentJoinMutation(opts: NearMutationOptions<ITournamentJ
 // tournament_member query
 
 export type ITournamentMemberArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId",
-  "account_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
+   account_id: AccountId;
 };
 
 export type ITournamentMemberResult = boolean;
@@ -228,7 +228,9 @@ export function useTournamentMemberQuery(opts: NearQueryOptions<ITournamentMembe
 
 // tournament_metadata query
 
-export type ITournamentMetadataArgs = {};
+export type ITournamentMetadataArgs = {
+
+};
 
 export type ITournamentMetadataResult = TournamentFactoryMetadata;
 
@@ -239,8 +241,8 @@ export function useTournamentMetadataQuery(opts: NearQueryOptions<ITournamentMet
 // tournament_nft_access query
 
 export type ITournamentNftAccessArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
 };
 
 export type ITournamentNftAccessResult = string[];
@@ -252,8 +254,8 @@ export function useTournamentNftAccessQuery(opts: NearQueryOptions<ITournamentNf
 // tournament_players query
 
 export type ITournamentPlayersArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
 };
 
 export type ITournamentPlayersResult = AccountId[];
@@ -265,8 +267,8 @@ export function useTournamentPlayersQuery(opts: NearQueryOptions<ITournamentPlay
 // tournament_prizes query
 
 export type ITournamentPrizesArgs = {
-  "tournament_id": "string",
-  "owner_id": "AccountId"
+   tournament_id: string;
+   owner_id: AccountId;
 };
 
 export type ITournamentPrizesResult = object;
@@ -278,7 +280,7 @@ export function useTournamentPrizesQuery(opts: NearQueryOptions<ITournamentPrize
 // tournament_start mutation
 
 export type ITournamentStartArgs = {
-  "tournament_id": "string"
+   tournament_id: string;
 };
 
 export type ITournamentStartResult = void;
@@ -290,9 +292,9 @@ export function useTournamentStartMutation(opts: NearMutationOptions<ITournament
 // tournaments query
 
 export type ITournamentsArgs = {
-  "owner_id": "AccountId",
-  "from_index": "U128 | null",
-  "limit": "number | null"
+   owner_id: AccountId;
+   from_index: U128 | null;
+   limit: number | null;
 };
 
 export type ITournamentsResult = JsonTournament[];
@@ -375,3 +377,5 @@ export interface TournamentFactoryMetadata {
   icon?: string | null;
   name: string;
 }
+
+type integer = number;

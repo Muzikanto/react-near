@@ -74,9 +74,9 @@ export function useMarketMutationRaw<Res = any, Req = any>(
 // market_accept_offer mutation
 
 export type IMarketAcceptOfferArgs = {
-  "nft_contract_id": "AccountId",
-  "token_id": "string",
-  "ft_token_id": "AccountId"
+   nft_contract_id: AccountId;
+   token_id: string;
+   ft_token_id: AccountId;
 };
 
 export type IMarketAcceptOfferResult = void;
@@ -88,11 +88,11 @@ export function useMarketAcceptOfferMutation(opts: NearMutationOptions<IMarketAc
 // market_add_bid mutation
 
 export type IMarketAddBidArgs = {
-  "contract_and_token_id": "string",
-  "amount": "integer",
-  "ft_token_id": "AccountId",
-  "buyer_id": "AccountId",
-  "sale": "Sale"
+   contract_and_token_id: string;
+   amount: integer;
+   ft_token_id: AccountId;
+   buyer_id: AccountId;
+   sale: Sale;
 };
 
 export type IMarketAddBidResult = void;
@@ -104,7 +104,7 @@ export function useMarketAddBidMutation(opts: NearMutationOptions<IMarketAddBidR
 // market_add_ft_token mutation
 
 export type IMarketAddFtTokenArgs = {
-  "nft_contract_id": "AccountId"
+   nft_contract_id: AccountId;
 };
 
 export type IMarketAddFtTokenResult = boolean;
@@ -116,8 +116,8 @@ export function useMarketAddFtTokenMutation(opts: NearMutationOptions<IMarketAdd
 // market_offer mutation (payable)
 
 export type IMarketOfferArgs = {
-  "nft_contract_id": "AccountId",
-  "token_id": "string"
+   nft_contract_id: AccountId;
+   token_id: string;
 };
 
 export type IMarketOfferResult = void;
@@ -129,11 +129,11 @@ export function useMarketOfferMutation(opts: NearMutationOptions<IMarketOfferRes
 // market_process_purchase mutation
 
 export type IMarketProcessPurchaseArgs = {
-  "nft_contract_id": "AccountId",
-  "token_id": "string",
-  "ft_token_id": "AccountId",
-  "price": "U128",
-  "buyer_id": "AccountId"
+   nft_contract_id: AccountId;
+   token_id: string;
+   ft_token_id: AccountId;
+   price: U128;
+   buyer_id: AccountId;
 };
 
 export type IMarketProcessPurchaseResult = Promise<void>;
@@ -145,8 +145,8 @@ export function useMarketProcessPurchaseMutation(opts: NearMutationOptions<IMark
 // market_remove_sale mutation (payable)
 
 export type IMarketRemoveSaleArgs = {
-  "nft_contract_id": "AccountId",
-  "token_id": "string"
+   nft_contract_id: AccountId;
+   token_id: string;
 };
 
 export type IMarketRemoveSaleResult = void;
@@ -158,10 +158,10 @@ export function useMarketRemoveSaleMutation(opts: NearMutationOptions<IMarketRem
 // market_resolve_purchase mutation
 
 export type IMarketResolvePurchaseArgs = {
-  "ft_token_id": "AccountId",
-  "buyer_id": "AccountId",
-  "sale": "Sale",
-  "price": "U128"
+   ft_token_id: AccountId;
+   buyer_id: AccountId;
+   sale: Sale;
+   price: U128;
 };
 
 export type IMarketResolvePurchaseResult = U128;
@@ -173,8 +173,8 @@ export function useMarketResolvePurchaseMutation(opts: NearMutationOptions<IMark
 // market_sale query
 
 export type IMarketSaleArgs = {
-  "contract_id": "AccountId",
-  "token_id": "string"
+   contract_id: AccountId;
+   token_id: string;
 };
 
 export type IMarketSaleResult = Sale | null;
@@ -186,9 +186,9 @@ export function useMarketSaleQuery(opts: NearQueryOptions<IMarketSaleResult, IMa
 // market_sales_by_nft_contract_id query
 
 export type IMarketSalesByNftContractIdArgs = {
-  "nft_contract_id": "AccountId",
-  "from_index": "U64",
-  "limit": "integer"
+   nft_contract_id: AccountId;
+   from_index: U64;
+   limit: integer;
 };
 
 export type IMarketSalesByNftContractIdResult = Sale[];
@@ -200,9 +200,9 @@ export function useMarketSalesByNftContractIdQuery(opts: NearQueryOptions<IMarke
 // market_sales_by_owner_id query
 
 export type IMarketSalesByOwnerIdArgs = {
-  "account_id": "AccountId",
-  "from_index": "U64",
-  "limit": "integer"
+   account_id: AccountId;
+   from_index: U64;
+   limit: integer;
 };
 
 export type IMarketSalesByOwnerIdResult = Sale[];
@@ -214,7 +214,7 @@ export function useMarketSalesByOwnerIdQuery(opts: NearQueryOptions<IMarketSales
 // market_supply_by_nft_contract_id query
 
 export type IMarketSupplyByNftContractIdArgs = {
-  "nft_contract_id": "AccountId"
+   nft_contract_id: AccountId;
 };
 
 export type IMarketSupplyByNftContractIdResult = U64;
@@ -226,7 +226,7 @@ export function useMarketSupplyByNftContractIdQuery(opts: NearQueryOptions<IMark
 // market_supply_by_owner_id query
 
 export type IMarketSupplyByOwnerIdArgs = {
-  "account_id": "AccountId"
+   account_id: AccountId;
 };
 
 export type IMarketSupplyByOwnerIdResult = U64;
@@ -237,7 +237,9 @@ export function useMarketSupplyByOwnerIdQuery(opts: NearQueryOptions<IMarketSupp
 
 // market_supply_sales query
 
-export type IMarketSupplySalesArgs = {};
+export type IMarketSupplySalesArgs = {
+
+};
 
 export type IMarketSupplySalesResult = U64;
 
@@ -248,10 +250,10 @@ export function useMarketSupplySalesQuery(opts: NearQueryOptions<IMarketSupplySa
 // market_update_price mutation (payable)
 
 export type IMarketUpdatePriceArgs = {
-  "nft_contract_id": "AccountId",
-  "token_id": "string",
-  "ft_token_id": "AccountId",
-  "price": "U128"
+   nft_contract_id: AccountId;
+   token_id: string;
+   ft_token_id: AccountId;
+   price: U128;
 };
 
 export type IMarketUpdatePriceResult = void;
@@ -262,7 +264,9 @@ export function useMarketUpdatePriceMutation(opts: NearMutationOptions<IMarketUp
 
 // supported_ft_token_ids query
 
-export type ISupportedFtTokenIdsArgs = {};
+export type ISupportedFtTokenIdsArgs = {
+
+};
 
 export type ISupportedFtTokenIdsResult = AccountId[];
 
@@ -273,7 +277,7 @@ export function useSupportedFtTokenIdsQuery(opts: NearQueryOptions<ISupportedFtT
 // test query
 
 export type ITestArgs = {
-  "account_id": "AccountId"
+   account_id: AccountId;
 };
 
 export type ITestResult = string[];
@@ -331,3 +335,5 @@ export interface Sale {
   };
   token_id: string;
 }
+
+type integer = number;
