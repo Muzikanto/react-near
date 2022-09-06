@@ -140,7 +140,7 @@ function generateConstants(contractId, contractName) {
 }
 
 function generateHooks(contractName) {
-   return `export function use${contractName}Query<Res = any, Req = any>(
+   return `export function use${contractName}QueryRaw<Res = any, Req = any>(
   methodName: ${contractName}ViewMethods,
   opts: NearQueryOptions<Res, Req> = {}
 ) {
@@ -149,7 +149,7 @@ function generateHooks(contractName) {
   return useNearQuery(methodName, { contract, ...opts });
 }
 
-export function use${contractName}Mutation<Res = any, Req = any>(
+export function use${contractName}MutationRaw<Res = any, Req = any>(
   methodName: ${contractName}ChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
@@ -184,7 +184,7 @@ function getFunction(el, contractName) {
          isQuery ? 'Query' : 'Mutation'
       }Options<${interfaceName}Result, ${interfaceName}Args>) {`,
       `    return use${contractName}${
-         isQuery ? 'Query' : 'Mutation'
+         isQuery ? 'QueryRaw' : 'MutationRaw'
       }<${interfaceName}Result, ${interfaceName}Args>(${contractName}${
          isQuery ? 'View' : 'Change'
       }Methods.${el.name}, opts);`,

@@ -43,7 +43,7 @@ export function useGameContract() {
   ));
 }
 
-export function useGameQuery<Res = any, Req = any>(
+export function useGameQueryRaw<Res = any, Req = any>(
   methodName: GameViewMethods,
   opts: NearQueryOptions<Res, Req> = {}
 ) {
@@ -52,7 +52,7 @@ export function useGameQuery<Res = any, Req = any>(
   return useNearQuery(methodName, { contract, ...opts });
 }
 
-export function useGameMutation<Res = any, Req = any>(
+export function useGameMutationRaw<Res = any, Req = any>(
   methodName: GameChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
@@ -71,7 +71,7 @@ export type IBlockAccountArgs = {
 export type IBlockAccountResult = boolean;
 
 export function useBlockAccountMutation(opts: NearMutationOptions<IBlockAccountResult, IBlockAccountArgs>) {
-    return useGameMutation<IBlockAccountResult, IBlockAccountArgs>(GameChangeMethods.block_account, opts);
+    return useGameMutationRaw<IBlockAccountResult, IBlockAccountArgs>(GameChangeMethods.block_account, opts);
 }
 
 // fix mutation
@@ -81,7 +81,7 @@ export type IFixArgs = {};
 export type IFixResult = string;
 
 export function useFixMutation(opts: NearMutationOptions<IFixResult, IFixArgs>) {
-    return useGameMutation<IFixResult, IFixArgs>(GameChangeMethods.fix, opts);
+    return useGameMutationRaw<IFixResult, IFixArgs>(GameChangeMethods.fix, opts);
 }
 
 // game_clan query
@@ -93,7 +93,7 @@ export type IGameClanArgs = {
 export type IGameClanResult = GameClan;
 
 export function useGameClanQuery(opts: NearQueryOptions<IGameClanResult, IGameClanArgs>) {
-    return useGameQuery<IGameClanResult, IGameClanArgs>(GameViewMethods.game_clan, opts);
+    return useGameQueryRaw<IGameClanResult, IGameClanArgs>(GameViewMethods.game_clan, opts);
 }
 
 // game_create_clan mutation
@@ -103,7 +103,7 @@ export type IGameCreateClanArgs = {};
 export type IGameCreateClanResult = GameClan;
 
 export function useGameCreateClanMutation(opts: NearMutationOptions<IGameCreateClanResult, IGameCreateClanArgs>) {
-    return useGameMutation<IGameCreateClanResult, IGameCreateClanArgs>(GameChangeMethods.game_create_clan, opts);
+    return useGameMutationRaw<IGameCreateClanResult, IGameCreateClanArgs>(GameChangeMethods.game_create_clan, opts);
 }
 
 // game_create_player mutation (payable)
@@ -113,7 +113,7 @@ export type IGameCreatePlayerArgs = {};
 export type IGameCreatePlayerResult = GamePlayer;
 
 export function useGameCreatePlayerMutation(opts: NearMutationOptions<IGameCreatePlayerResult, IGameCreatePlayerArgs>) {
-    return useGameMutation<IGameCreatePlayerResult, IGameCreatePlayerArgs>(GameChangeMethods.game_create_player, opts);
+    return useGameMutationRaw<IGameCreatePlayerResult, IGameCreatePlayerArgs>(GameChangeMethods.game_create_player, opts);
 }
 
 // game_player query
@@ -125,7 +125,7 @@ export type IGamePlayerArgs = {
 export type IGamePlayerResult = GamePlayer;
 
 export function useGamePlayerQuery(opts: NearQueryOptions<IGamePlayerResult, IGamePlayerArgs>) {
-    return useGameQuery<IGamePlayerResult, IGamePlayerArgs>(GameViewMethods.game_player, opts);
+    return useGameQueryRaw<IGamePlayerResult, IGamePlayerArgs>(GameViewMethods.game_player, opts);
 }
 
 // game_player_up_price query
@@ -137,7 +137,7 @@ export type IGamePlayerUpPriceArgs = {
 export type IGamePlayerUpPriceResult = U128;
 
 export function useGamePlayerUpPriceQuery(opts: NearQueryOptions<IGamePlayerUpPriceResult, IGamePlayerUpPriceArgs>) {
-    return useGameQuery<IGamePlayerUpPriceResult, IGamePlayerUpPriceArgs>(GameViewMethods.game_player_up_price, opts);
+    return useGameQueryRaw<IGamePlayerUpPriceResult, IGamePlayerUpPriceArgs>(GameViewMethods.game_player_up_price, opts);
 }
 
 // get_owner query
@@ -147,7 +147,7 @@ export type IGetOwnerArgs = {};
 export type IGetOwnerResult = AccountId;
 
 export function useGetOwnerQuery(opts: NearQueryOptions<IGetOwnerResult, IGetOwnerArgs>) {
-    return useGameQuery<IGetOwnerResult, IGetOwnerArgs>(GameViewMethods.get_owner, opts);
+    return useGameQueryRaw<IGetOwnerResult, IGetOwnerArgs>(GameViewMethods.get_owner, opts);
 }
 
 // is_account_blocked query
@@ -159,7 +159,7 @@ export type IIsAccountBlockedArgs = {
 export type IIsAccountBlockedResult = boolean;
 
 export function useIsAccountBlockedQuery(opts: NearQueryOptions<IIsAccountBlockedResult, IIsAccountBlockedArgs>) {
-    return useGameQuery<IIsAccountBlockedResult, IIsAccountBlockedArgs>(GameViewMethods.is_account_blocked, opts);
+    return useGameQueryRaw<IIsAccountBlockedResult, IIsAccountBlockedArgs>(GameViewMethods.is_account_blocked, opts);
 }
 
 // is_paused query
@@ -169,7 +169,7 @@ export type IIsPausedArgs = {};
 export type IIsPausedResult = boolean;
 
 export function useIsPausedQuery(opts: NearQueryOptions<IIsPausedResult, IIsPausedArgs>) {
-    return useGameQuery<IIsPausedResult, IIsPausedArgs>(GameViewMethods.is_paused, opts);
+    return useGameQueryRaw<IIsPausedResult, IIsPausedArgs>(GameViewMethods.is_paused, opts);
 }
 
 // set_is_paused mutation
@@ -181,7 +181,7 @@ export type ISetIsPausedArgs = {
 export type ISetIsPausedResult = boolean;
 
 export function useSetIsPausedMutation(opts: NearMutationOptions<ISetIsPausedResult, ISetIsPausedArgs>) {
-    return useGameMutation<ISetIsPausedResult, ISetIsPausedArgs>(GameChangeMethods.set_is_paused, opts);
+    return useGameMutationRaw<ISetIsPausedResult, ISetIsPausedArgs>(GameChangeMethods.set_is_paused, opts);
 }
 
 /**

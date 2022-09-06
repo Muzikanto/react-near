@@ -55,7 +55,7 @@ export function useTournamentContract() {
   ));
 }
 
-export function useTournamentQuery<Res = any, Req = any>(
+export function useTournamentQueryRaw<Res = any, Req = any>(
   methodName: TournamentViewMethods,
   opts: NearQueryOptions<Res, Req> = {}
 ) {
@@ -64,7 +64,7 @@ export function useTournamentQuery<Res = any, Req = any>(
   return useNearQuery(methodName, { contract, ...opts });
 }
 
-export function useTournamentMutation<Res = any, Req = any>(
+export function useTournamentMutationRaw<Res = any, Req = any>(
   methodName: TournamentChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
@@ -83,7 +83,7 @@ export type ITournamentArgs = {
 export type ITournamentResult = JsonTournament | null;
 
 export function useTournamentQuery(opts: NearQueryOptions<ITournamentResult, ITournamentArgs>) {
-    return useTournamentQuery<ITournamentResult, ITournamentArgs>(TournamentViewMethods.tournament, opts);
+    return useTournamentQueryRaw<ITournamentResult, ITournamentArgs>(TournamentViewMethods.tournament, opts);
 }
 
 // tournament_add_nft_access mutation
@@ -96,7 +96,7 @@ export type ITournamentAddNftAccessArgs = {
 export type ITournamentAddNftAccessResult = void;
 
 export function useTournamentAddNftAccessMutation(opts: NearMutationOptions<ITournamentAddNftAccessResult, ITournamentAddNftAccessArgs>) {
-    return useTournamentMutation<ITournamentAddNftAccessResult, ITournamentAddNftAccessArgs>(TournamentChangeMethods.tournament_add_nft_access, opts);
+    return useTournamentMutationRaw<ITournamentAddNftAccessResult, ITournamentAddNftAccessArgs>(TournamentChangeMethods.tournament_add_nft_access, opts);
 }
 
 // tournament_add_prize mutation (payable)
@@ -111,7 +111,7 @@ export type ITournamentAddPrizeArgs = {
 export type ITournamentAddPrizeResult = void;
 
 export function useTournamentAddPrizeMutation(opts: NearMutationOptions<ITournamentAddPrizeResult, ITournamentAddPrizeArgs>) {
-    return useTournamentMutation<ITournamentAddPrizeResult, ITournamentAddPrizeArgs>(TournamentChangeMethods.tournament_add_prize, opts);
+    return useTournamentMutationRaw<ITournamentAddPrizeResult, ITournamentAddPrizeArgs>(TournamentChangeMethods.tournament_add_prize, opts);
 }
 
 // tournament_add_whitelist_prize_owner mutation
@@ -124,7 +124,7 @@ export type ITournamentAddWhitelistPrizeOwnerArgs = {
 export type ITournamentAddWhitelistPrizeOwnerResult = void;
 
 export function useTournamentAddWhitelistPrizeOwnerMutation(opts: NearMutationOptions<ITournamentAddWhitelistPrizeOwnerResult, ITournamentAddWhitelistPrizeOwnerArgs>) {
-    return useTournamentMutation<ITournamentAddWhitelistPrizeOwnerResult, ITournamentAddWhitelistPrizeOwnerArgs>(TournamentChangeMethods.tournament_add_whitelist_prize_owner, opts);
+    return useTournamentMutationRaw<ITournamentAddWhitelistPrizeOwnerResult, ITournamentAddWhitelistPrizeOwnerArgs>(TournamentChangeMethods.tournament_add_whitelist_prize_owner, opts);
 }
 
 // tournament_create mutation
@@ -142,7 +142,7 @@ export type ITournamentCreateArgs = {
 export type ITournamentCreateResult = void;
 
 export function useTournamentCreateMutation(opts: NearMutationOptions<ITournamentCreateResult, ITournamentCreateArgs>) {
-    return useTournamentMutation<ITournamentCreateResult, ITournamentCreateArgs>(TournamentChangeMethods.tournament_create, opts);
+    return useTournamentMutationRaw<ITournamentCreateResult, ITournamentCreateArgs>(TournamentChangeMethods.tournament_create, opts);
 }
 
 // tournament_end mutation
@@ -154,7 +154,7 @@ export type ITournamentEndArgs = {
 export type ITournamentEndResult = void;
 
 export function useTournamentEndMutation(opts: NearMutationOptions<ITournamentEndResult, ITournamentEndArgs>) {
-    return useTournamentMutation<ITournamentEndResult, ITournamentEndArgs>(TournamentChangeMethods.tournament_end, opts);
+    return useTournamentMutationRaw<ITournamentEndResult, ITournamentEndArgs>(TournamentChangeMethods.tournament_end, opts);
 }
 
 // tournament_execute_reward mutation
@@ -169,7 +169,7 @@ export type ITournamentExecuteRewardArgs = {
 export type ITournamentExecuteRewardResult = void;
 
 export function useTournamentExecuteRewardMutation(opts: NearMutationOptions<ITournamentExecuteRewardResult, ITournamentExecuteRewardArgs>) {
-    return useTournamentMutation<ITournamentExecuteRewardResult, ITournamentExecuteRewardArgs>(TournamentChangeMethods.tournament_execute_reward, opts);
+    return useTournamentMutationRaw<ITournamentExecuteRewardResult, ITournamentExecuteRewardArgs>(TournamentChangeMethods.tournament_execute_reward, opts);
 }
 
 // tournament_free_places query
@@ -182,7 +182,7 @@ export type ITournamentFreePlacesArgs = {
 export type ITournamentFreePlacesResult = number | null;
 
 export function useTournamentFreePlacesQuery(opts: NearQueryOptions<ITournamentFreePlacesResult, ITournamentFreePlacesArgs>) {
-    return useTournamentQuery<ITournamentFreePlacesResult, ITournamentFreePlacesArgs>(TournamentViewMethods.tournament_free_places, opts);
+    return useTournamentQueryRaw<ITournamentFreePlacesResult, ITournamentFreePlacesArgs>(TournamentViewMethods.tournament_free_places, opts);
 }
 
 // tournament_is_whitelist_prize_owner query
@@ -196,7 +196,7 @@ export type ITournamentIsWhitelistPrizeOwnerArgs = {
 export type ITournamentIsWhitelistPrizeOwnerResult = boolean;
 
 export function useTournamentIsWhitelistPrizeOwnerQuery(opts: NearQueryOptions<ITournamentIsWhitelistPrizeOwnerResult, ITournamentIsWhitelistPrizeOwnerArgs>) {
-    return useTournamentQuery<ITournamentIsWhitelistPrizeOwnerResult, ITournamentIsWhitelistPrizeOwnerArgs>(TournamentViewMethods.tournament_is_whitelist_prize_owner, opts);
+    return useTournamentQueryRaw<ITournamentIsWhitelistPrizeOwnerResult, ITournamentIsWhitelistPrizeOwnerArgs>(TournamentViewMethods.tournament_is_whitelist_prize_owner, opts);
 }
 
 // tournament_join mutation (payable)
@@ -209,7 +209,7 @@ export type ITournamentJoinArgs = {
 export type ITournamentJoinResult = void;
 
 export function useTournamentJoinMutation(opts: NearMutationOptions<ITournamentJoinResult, ITournamentJoinArgs>) {
-    return useTournamentMutation<ITournamentJoinResult, ITournamentJoinArgs>(TournamentChangeMethods.tournament_join, opts);
+    return useTournamentMutationRaw<ITournamentJoinResult, ITournamentJoinArgs>(TournamentChangeMethods.tournament_join, opts);
 }
 
 // tournament_member query
@@ -223,7 +223,7 @@ export type ITournamentMemberArgs = {
 export type ITournamentMemberResult = boolean;
 
 export function useTournamentMemberQuery(opts: NearQueryOptions<ITournamentMemberResult, ITournamentMemberArgs>) {
-    return useTournamentQuery<ITournamentMemberResult, ITournamentMemberArgs>(TournamentViewMethods.tournament_member, opts);
+    return useTournamentQueryRaw<ITournamentMemberResult, ITournamentMemberArgs>(TournamentViewMethods.tournament_member, opts);
 }
 
 // tournament_metadata query
@@ -233,7 +233,7 @@ export type ITournamentMetadataArgs = {};
 export type ITournamentMetadataResult = TournamentFactoryMetadata;
 
 export function useTournamentMetadataQuery(opts: NearQueryOptions<ITournamentMetadataResult, ITournamentMetadataArgs>) {
-    return useTournamentQuery<ITournamentMetadataResult, ITournamentMetadataArgs>(TournamentViewMethods.tournament_metadata, opts);
+    return useTournamentQueryRaw<ITournamentMetadataResult, ITournamentMetadataArgs>(TournamentViewMethods.tournament_metadata, opts);
 }
 
 // tournament_nft_access query
@@ -246,7 +246,7 @@ export type ITournamentNftAccessArgs = {
 export type ITournamentNftAccessResult = string[];
 
 export function useTournamentNftAccessQuery(opts: NearQueryOptions<ITournamentNftAccessResult, ITournamentNftAccessArgs>) {
-    return useTournamentQuery<ITournamentNftAccessResult, ITournamentNftAccessArgs>(TournamentViewMethods.tournament_nft_access, opts);
+    return useTournamentQueryRaw<ITournamentNftAccessResult, ITournamentNftAccessArgs>(TournamentViewMethods.tournament_nft_access, opts);
 }
 
 // tournament_players query
@@ -259,7 +259,7 @@ export type ITournamentPlayersArgs = {
 export type ITournamentPlayersResult = AccountId[];
 
 export function useTournamentPlayersQuery(opts: NearQueryOptions<ITournamentPlayersResult, ITournamentPlayersArgs>) {
-    return useTournamentQuery<ITournamentPlayersResult, ITournamentPlayersArgs>(TournamentViewMethods.tournament_players, opts);
+    return useTournamentQueryRaw<ITournamentPlayersResult, ITournamentPlayersArgs>(TournamentViewMethods.tournament_players, opts);
 }
 
 // tournament_prizes query
@@ -272,7 +272,7 @@ export type ITournamentPrizesArgs = {
 export type ITournamentPrizesResult = object;
 
 export function useTournamentPrizesQuery(opts: NearQueryOptions<ITournamentPrizesResult, ITournamentPrizesArgs>) {
-    return useTournamentQuery<ITournamentPrizesResult, ITournamentPrizesArgs>(TournamentViewMethods.tournament_prizes, opts);
+    return useTournamentQueryRaw<ITournamentPrizesResult, ITournamentPrizesArgs>(TournamentViewMethods.tournament_prizes, opts);
 }
 
 // tournament_start mutation
@@ -284,7 +284,7 @@ export type ITournamentStartArgs = {
 export type ITournamentStartResult = void;
 
 export function useTournamentStartMutation(opts: NearMutationOptions<ITournamentStartResult, ITournamentStartArgs>) {
-    return useTournamentMutation<ITournamentStartResult, ITournamentStartArgs>(TournamentChangeMethods.tournament_start, opts);
+    return useTournamentMutationRaw<ITournamentStartResult, ITournamentStartArgs>(TournamentChangeMethods.tournament_start, opts);
 }
 
 // tournaments query
@@ -298,7 +298,7 @@ export type ITournamentsArgs = {
 export type ITournamentsResult = JsonTournament[];
 
 export function useTournamentsQuery(opts: NearQueryOptions<ITournamentsResult, ITournamentsArgs>) {
-    return useTournamentQuery<ITournamentsResult, ITournamentsArgs>(TournamentViewMethods.tournaments, opts);
+    return useTournamentQueryRaw<ITournamentsResult, ITournamentsArgs>(TournamentViewMethods.tournaments, opts);
 }
 
 /**
