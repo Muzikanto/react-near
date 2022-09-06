@@ -214,7 +214,7 @@ function camelToSnakeCase(str) {
 }
 
 async function loadAbi(contractId) {
-   const network = contractId.split('.').slice(-1)[0] || 'testnet';
+   const network = contractId.includes('.') && contractId.split('.').slice(-1)[0] || 'testnet';
 
    let near = await nearApi.connect({
       keyStore: nearApi.keyStores.InMemoryKeyStore,
