@@ -136,7 +136,7 @@ export type IMarketProcessPurchaseArgs = {
    buyer_id: AccountId;
 };
 
-export type IMarketProcessPurchaseResult = Promise<void>;
+export type IMarketProcessPurchaseResult = void;
 
 export function useMarketProcessPurchaseMutation(opts: NearMutationOptions<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>) {
     return useMarketMutationRaw<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>(MarketChangeMethods.market_process_purchase, opts);

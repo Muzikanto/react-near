@@ -85,9 +85,9 @@ async function generate(abiSchema, contractName, contractId) {
    code += '\n\n' + generateMethods(methods, contractName);
 
    const ts = await compile(schema, 'MySchema', { additionalProperties: false, bannerComment: '' });
-   code += `\n\n` + prepareTs(ts);
+   code += `\n\n` + ts;
 
-   fs.writeFileSync(schemaPath, code);
+   fs.writeFileSync(schemaPath, prepareCode(code));
 
    console.log(`${contractId} schema generated!`);
 }
@@ -223,7 +223,7 @@ function formatParam(el) {
       let res = el.type_schema.$ref.split('/').slice(-1)[0];
 
       if (res === 'Promise') {
-         return 'Promise<void>';
+         return 'void';
       }
 
       return res;
@@ -234,7 +234,13 @@ function formatParam(el) {
             if (el.type) {
                return el.type;
             } else if (el.$ref) {
-               return `${el.$ref.split('/').slice(-1)[0]}`;
+               const res = `${el.$ref.split('/').slice(-1)[0]}`;
+
+               if (res === 'Promise') {
+                  return 'void';
+               }
+
+               return res;
             }
          })
          .join(' | ')}`;
@@ -275,12 +281,19 @@ async function loadAbi(contractId) {
 
    return abi;
 }
-function prepareTs(ts) {
-   return ts
-      .replace('export type U128 = number;', 'export type U128 = string;')
-      .replace('export type U64 = number;', 'export type U64 = string;')
-      .replace(
-         'export type PromiseOrValueU128 = number;',
-         'export type PromiseOrValueU128 = string;',
-      ) + '\ntype integer = number;';
+
+function prepareCode(ts) {
+   return (
+      ts
+         .replace('export type U128 = number;', 'export type U128 = string;')
+         .replace('export type U64 = number;', 'export type U64 = string;')
+         .replace(
+            'export type PromiseOrValueU128 = number;',
+            'export type PromiseOrValueU128 = string;',
+         )
+         .split('PromiseOrValueArray_of')
+         .join('PromiseOrValueArrayOf') +
+      '\n' +
+      ['type integer = number;'].join('\n')
+   );
 }
