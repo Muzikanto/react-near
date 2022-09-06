@@ -2,9 +2,9 @@
    "dist": "near-api",
    "contracts": [
       {
-         "name": "Test",
-         "contractId": "dev-1234567890",
-         "abi": "abi/test.json"
+         "name": "Tournament",
+         "contractId": "mfight-tournament.testnet",
+         "abi": "abi/tournament_abi.json"
       },
       {
          "name": "Game",

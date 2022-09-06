@@ -53,6 +53,24 @@ export function useMarketContract() {
   ));
 }
 
+export function useMarketQuery<Res = any, Req = any>(
+  methodName: MarketViewMethods,
+  opts: NearQueryOptions<Res, Req> = {}
+) {
+  const contract = useMarketContract();
+
+  return useNearQuery(methodName, { contract, ...opts });
+}
+
+export function useMarketMutation<Res = any, Req = any>(
+  methodName: MarketChangeMethods,
+  opts: NearMutationOptions<Res, Req> = {}
+) {
+  const contract = useMarketContract();
+
+  return useNearMutation(methodName, { contract, ...opts });
+}
+
 // market_accept_offer mutation
 
 export type IMarketAcceptOfferArgs = {
@@ -64,7 +82,7 @@ export type IMarketAcceptOfferArgs = {
 export type IMarketAcceptOfferResult = void;
 
 export function useMarketAcceptOfferMutation(opts: NearMutationOptions<IMarketAcceptOfferResult, IMarketAcceptOfferArgs>) {
-    return useNearMutation<IMarketAcceptOfferResult, IMarketAcceptOfferArgs>(MarketChangeMethods.market_accept_offer, opts);
+    return useMarketMutation<IMarketAcceptOfferResult, IMarketAcceptOfferArgs>(MarketChangeMethods.market_accept_offer, opts);
 }
 
 // market_add_bid mutation
@@ -80,7 +98,7 @@ export type IMarketAddBidArgs = {
 export type IMarketAddBidResult = void;
 
 export function useMarketAddBidMutation(opts: NearMutationOptions<IMarketAddBidResult, IMarketAddBidArgs>) {
-    return useNearMutation<IMarketAddBidResult, IMarketAddBidArgs>(MarketChangeMethods.market_add_bid, opts);
+    return useMarketMutation<IMarketAddBidResult, IMarketAddBidArgs>(MarketChangeMethods.market_add_bid, opts);
 }
 
 // market_add_ft_token mutation
@@ -92,7 +110,7 @@ export type IMarketAddFtTokenArgs = {
 export type IMarketAddFtTokenResult = boolean;
 
 export function useMarketAddFtTokenMutation(opts: NearMutationOptions<IMarketAddFtTokenResult, IMarketAddFtTokenArgs>) {
-    return useNearMutation<IMarketAddFtTokenResult, IMarketAddFtTokenArgs>(MarketChangeMethods.market_add_ft_token, opts);
+    return useMarketMutation<IMarketAddFtTokenResult, IMarketAddFtTokenArgs>(MarketChangeMethods.market_add_ft_token, opts);
 }
 
 // market_offer mutation (payable)
@@ -105,7 +123,7 @@ export type IMarketOfferArgs = {
 export type IMarketOfferResult = void;
 
 export function useMarketOfferMutation(opts: NearMutationOptions<IMarketOfferResult, IMarketOfferArgs>) {
-    return useNearMutation<IMarketOfferResult, IMarketOfferArgs>(MarketChangeMethods.market_offer, opts);
+    return useMarketMutation<IMarketOfferResult, IMarketOfferArgs>(MarketChangeMethods.market_offer, opts);
 }
 
 // market_process_purchase mutation
@@ -121,7 +139,7 @@ export type IMarketProcessPurchaseArgs = {
 export type IMarketProcessPurchaseResult = Promise<void>;
 
 export function useMarketProcessPurchaseMutation(opts: NearMutationOptions<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>) {
-    return useNearMutation<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>(MarketChangeMethods.market_process_purchase, opts);
+    return useMarketMutation<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>(MarketChangeMethods.market_process_purchase, opts);
 }
 
 // market_remove_sale mutation (payable)
@@ -134,7 +152,7 @@ export type IMarketRemoveSaleArgs = {
 export type IMarketRemoveSaleResult = void;
 
 export function useMarketRemoveSaleMutation(opts: NearMutationOptions<IMarketRemoveSaleResult, IMarketRemoveSaleArgs>) {
-    return useNearMutation<IMarketRemoveSaleResult, IMarketRemoveSaleArgs>(MarketChangeMethods.market_remove_sale, opts);
+    return useMarketMutation<IMarketRemoveSaleResult, IMarketRemoveSaleArgs>(MarketChangeMethods.market_remove_sale, opts);
 }
 
 // market_resolve_purchase mutation
@@ -149,7 +167,7 @@ export type IMarketResolvePurchaseArgs = {
 export type IMarketResolvePurchaseResult = U128;
 
 export function useMarketResolvePurchaseMutation(opts: NearMutationOptions<IMarketResolvePurchaseResult, IMarketResolvePurchaseArgs>) {
-    return useNearMutation<IMarketResolvePurchaseResult, IMarketResolvePurchaseArgs>(MarketChangeMethods.market_resolve_purchase, opts);
+    return useMarketMutation<IMarketResolvePurchaseResult, IMarketResolvePurchaseArgs>(MarketChangeMethods.market_resolve_purchase, opts);
 }
 
 // market_sale query
@@ -159,10 +177,10 @@ export type IMarketSaleArgs = {
   "token_id": "string"
 };
 
-export type IMarketSaleResult = null;
+export type IMarketSaleResult = Sale | null;
 
 export function useMarketSaleQuery(opts: NearQueryOptions<IMarketSaleResult, IMarketSaleArgs>) {
-    return useNearQuery<IMarketSaleResult, IMarketSaleArgs>(MarketViewMethods.market_sale, opts);
+    return useMarketQuery<IMarketSaleResult, IMarketSaleArgs>(MarketViewMethods.market_sale, opts);
 }
 
 // market_sales_by_nft_contract_id query
@@ -176,7 +194,7 @@ export type IMarketSalesByNftContractIdArgs = {
 export type IMarketSalesByNftContractIdResult = Sale[];
 
 export function useMarketSalesByNftContractIdQuery(opts: NearQueryOptions<IMarketSalesByNftContractIdResult, IMarketSalesByNftContractIdArgs>) {
-    return useNearQuery<IMarketSalesByNftContractIdResult, IMarketSalesByNftContractIdArgs>(MarketViewMethods.market_sales_by_nft_contract_id, opts);
+    return useMarketQuery<IMarketSalesByNftContractIdResult, IMarketSalesByNftContractIdArgs>(MarketViewMethods.market_sales_by_nft_contract_id, opts);
 }
 
 // market_sales_by_owner_id query
@@ -190,7 +208,7 @@ export type IMarketSalesByOwnerIdArgs = {
 export type IMarketSalesByOwnerIdResult = Sale[];
 
 export function useMarketSalesByOwnerIdQuery(opts: NearQueryOptions<IMarketSalesByOwnerIdResult, IMarketSalesByOwnerIdArgs>) {
-    return useNearQuery<IMarketSalesByOwnerIdResult, IMarketSalesByOwnerIdArgs>(MarketViewMethods.market_sales_by_owner_id, opts);
+    return useMarketQuery<IMarketSalesByOwnerIdResult, IMarketSalesByOwnerIdArgs>(MarketViewMethods.market_sales_by_owner_id, opts);
 }
 
 // market_supply_by_nft_contract_id query
@@ -202,7 +220,7 @@ export type IMarketSupplyByNftContractIdArgs = {
 export type IMarketSupplyByNftContractIdResult = U64;
 
 export function useMarketSupplyByNftContractIdQuery(opts: NearQueryOptions<IMarketSupplyByNftContractIdResult, IMarketSupplyByNftContractIdArgs>) {
-    return useNearQuery<IMarketSupplyByNftContractIdResult, IMarketSupplyByNftContractIdArgs>(MarketViewMethods.market_supply_by_nft_contract_id, opts);
+    return useMarketQuery<IMarketSupplyByNftContractIdResult, IMarketSupplyByNftContractIdArgs>(MarketViewMethods.market_supply_by_nft_contract_id, opts);
 }
 
 // market_supply_by_owner_id query
@@ -214,7 +232,7 @@ export type IMarketSupplyByOwnerIdArgs = {
 export type IMarketSupplyByOwnerIdResult = U64;
 
 export function useMarketSupplyByOwnerIdQuery(opts: NearQueryOptions<IMarketSupplyByOwnerIdResult, IMarketSupplyByOwnerIdArgs>) {
-    return useNearQuery<IMarketSupplyByOwnerIdResult, IMarketSupplyByOwnerIdArgs>(MarketViewMethods.market_supply_by_owner_id, opts);
+    return useMarketQuery<IMarketSupplyByOwnerIdResult, IMarketSupplyByOwnerIdArgs>(MarketViewMethods.market_supply_by_owner_id, opts);
 }
 
 // market_supply_sales query
@@ -224,7 +242,7 @@ export type IMarketSupplySalesArgs = {};
 export type IMarketSupplySalesResult = U64;
 
 export function useMarketSupplySalesQuery(opts: NearQueryOptions<IMarketSupplySalesResult, IMarketSupplySalesArgs>) {
-    return useNearQuery<IMarketSupplySalesResult, IMarketSupplySalesArgs>(MarketViewMethods.market_supply_sales, opts);
+    return useMarketQuery<IMarketSupplySalesResult, IMarketSupplySalesArgs>(MarketViewMethods.market_supply_sales, opts);
 }
 
 // market_update_price mutation (payable)
@@ -239,7 +257,7 @@ export type IMarketUpdatePriceArgs = {
 export type IMarketUpdatePriceResult = void;
 
 export function useMarketUpdatePriceMutation(opts: NearMutationOptions<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>) {
-    return useNearMutation<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>(MarketChangeMethods.market_update_price, opts);
+    return useMarketMutation<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>(MarketChangeMethods.market_update_price, opts);
 }
 
 // supported_ft_token_ids query
@@ -249,7 +267,7 @@ export type ISupportedFtTokenIdsArgs = {};
 export type ISupportedFtTokenIdsResult = AccountId[];
 
 export function useSupportedFtTokenIdsQuery(opts: NearQueryOptions<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>) {
-    return useNearQuery<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>(MarketViewMethods.supported_ft_token_ids, opts);
+    return useMarketQuery<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>(MarketViewMethods.supported_ft_token_ids, opts);
 }
 
 // test query
@@ -261,7 +279,7 @@ export type ITestArgs = {
 export type ITestResult = string[];
 
 export function useTestQuery(opts: NearQueryOptions<ITestResult, ITestArgs>) {
-    return useNearQuery<ITestResult, ITestArgs>(MarketViewMethods.test, opts);
+    return useMarketQuery<ITestResult, ITestArgs>(MarketViewMethods.test, opts);
 }
 
 /**

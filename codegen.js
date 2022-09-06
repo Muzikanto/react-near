@@ -80,6 +80,8 @@ async function generate(abiSchema, contractName, contractId) {
 
    code += '\n\n' + generateContract(methods, contractName);
 
+   code += '\n\n' + generateHooks(contractName);
+
    code += '\n\n' + generateMethods(methods, contractName);
 
    const ts = await compile(schema, 'MySchema', { additionalProperties: false, bannerComment: '' });
@@ -137,6 +139,26 @@ function generateConstants(contractId, contractName) {
    return `export const ${getContractId(contractName)} = '${contractId}';`;
 }
 
+function generateHooks(contractName) {
+   return `export function use${contractName}Query<Res = any, Req = any>(
+  methodName: ${contractName}ViewMethods,
+  opts: NearQueryOptions<Res, Req> = {}
+) {
+  const contract = use${contractName}Contract();
+
+  return useNearQuery(methodName, { contract, ...opts });
+}
+
+export function use${contractName}Mutation<Res = any, Req = any>(
+  methodName: ${contractName}ChangeMethods,
+  opts: NearMutationOptions<Res, Req> = {}
+) {
+  const contract = use${contractName}Contract();
+
+  return useNearMutation(methodName, { contract, ...opts });
+}`
+}
+
 //
 
 function getFunction(el, contractName) {
@@ -161,7 +183,7 @@ function getFunction(el, contractName) {
       `export function use${name}${isQuery ? 'Query' : 'Mutation'}(opts: Near${
          isQuery ? 'Query' : 'Mutation'
       }Options<${interfaceName}Result, ${interfaceName}Args>) {`,
-      `    return useNear${
+      `    return use${contractName}${
          isQuery ? 'Query' : 'Mutation'
       }<${interfaceName}Result, ${interfaceName}Args>(${contractName}${
          isQuery ? 'View' : 'Change'
@@ -181,6 +203,17 @@ function formatParam(el) {
          }
          return `${el.type_schema.items.$ref.split('/').slice(-1)[0]}[]`;
       }
+      if (Array.isArray(el.type_schema.type)) {
+         return `${el.type_schema.type
+            .map((el) => {
+               if (el === 'integer') {
+                  return 'number';
+               }
+
+               return el;
+            })
+            .join(' | ')}`;
+      }
 
       return el.type_schema.type;
    }
@@ -192,6 +225,15 @@ function formatParam(el) {
       }
 
       return res;
+   }
+   if (el.type_schema.anyOf) {
+      return `${el.type_schema.anyOf.map(el => {
+         if (el.type) {
+            return el.type
+         } else if (el.$ref) {
+            return `${el.$ref.split('/').slice(-1)[0]}`;
+         }
+      }).join(' | ')}`
    }
 
    return null;
@@ -214,7 +256,7 @@ function camelToSnakeCase(str) {
 }
 
 async function loadAbi(contractId) {
-   const network = contractId.includes('.') && contractId.split('.').slice(-1)[0] || 'testnet';
+   const network = (contractId.includes('.') && contractId.split('.').slice(-1)[0]) || 'testnet';
 
    let near = await nearApi.connect({
       keyStore: nearApi.keyStores.InMemoryKeyStore,

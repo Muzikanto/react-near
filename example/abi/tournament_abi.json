@@ -1,0 +1,874 @@
+{
+  "schema_version": "0.1.0",
+  "metadata": {
+    "name": "tournament",
+    "version": "0.1.0",
+    "authors": [
+      "D G",
+      "Muzikanto <schiriy_maxim@icloud.com>"
+    ]
+  },
+  "body": {
+    "functions": [
+      {
+        "name": "ft_on_transfer",
+        "params": [
+          {
+            "name": "sender_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "amount",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/U128"
+            }
+          },
+          {
+            "name": "msg",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/PromiseOrValueU128"
+          }
+        }
+      },
+      {
+        "name": "migrate",
+        "is_init": true,
+        "is_private": true
+      },
+      {
+        "name": "new",
+        "is_init": true,
+        "params": [
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "metadata",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/TournamentFactoryMetadata"
+            }
+          }
+        ]
+      },
+      {
+        "name": "new_with_default_meta",
+        "is_init": true,
+        "params": [
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "nft_on_transfer",
+        "doc": " where we add the sale because we know nft owner can only call nft_approve",
+        "params": [
+          {
+            "name": "sender_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "previous_owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "token_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "msg",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/PromiseOrValueBoolean"
+          }
+        }
+      },
+      {
+        "name": "tournament",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/JsonTournament"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "name": "tournament_add_nft_access",
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_ids",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_add_prize",
+        "is_payable": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "place_number",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          },
+          {
+            "name": "prize_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_add_whitelist_prize_owner",
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_create",
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "players_number",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          },
+          {
+            "name": "price",
+            "serialization_type": "json",
+            "type_schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/U128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "media",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "summary",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          {
+            "name": "nft_access_contract",
+            "serialization_type": "json",
+            "type_schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/AccountId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_end",
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_execute_reward",
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "winner_place",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          },
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "prize_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_free_places",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "uint64",
+            "minimum": 0.0
+          }
+        }
+      },
+      {
+        "name": "tournament_is_whitelist_prize_owner",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "name": "tournament_join",
+        "is_payable": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournament_member",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "account_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "boolean"
+          }
+        }
+      },
+      {
+        "name": "tournament_metadata",
+        "is_view": true,
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "$ref": "#/definitions/TournamentFactoryMetadata"
+          }
+        }
+      },
+      {
+        "name": "tournament_nft_access",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "name": "tournament_players",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        }
+      },
+      {
+        "name": "tournament_prizes",
+        "is_view": true,
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RewardPrize"
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "tournament_start",
+        "params": [
+          {
+            "name": "tournament_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      {
+        "name": "tournaments",
+        "is_view": true,
+        "params": [
+          {
+            "name": "owner_id",
+            "serialization_type": "json",
+            "type_schema": {
+              "$ref": "#/definitions/AccountId"
+            }
+          },
+          {
+            "name": "from_index",
+            "serialization_type": "json",
+            "type_schema": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/U128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "serialization_type": "json",
+            "type_schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            }
+          }
+        ],
+        "result": {
+          "serialization_type": "json",
+          "type_schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/JsonTournament"
+            }
+          }
+        }
+      }
+    ],
+    "root_schema": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "String",
+      "type": "string",
+      "definitions": {
+        "AccountId": {
+          "description": "Account identifier. This is the human readable utf8 string which is used internally to index accounts on the network and their respective state.\n\nBecause these IDs have to be validated, they have to be converted from a string with [`FromStr`] or [`TryFrom`] a compatible type. To skip validation on initialization, [`AccountId::new_unchecked`] can be used.\n\n# Examples ``` use near_sdk::AccountId; use std::convert::{TryFrom, TryInto};\n\n// `FromStr` conversion let alice: AccountId = \"alice.near\".parse().unwrap(); assert!(\"invalid.\".parse::<AccountId>().is_err());\n\nlet alice_string = \"alice\".to_string();\n\n// From string with validation let alice = AccountId::try_from(alice_string.clone()).unwrap(); let alice: AccountId = alice_string.try_into().unwrap();\n\n// Initialize without validating let alice_unchecked = AccountId::new_unchecked(\"alice\".to_string()); assert_eq!(alice, alice_unchecked); ```\n\n[`FromStr`]: std::str::FromStr",
+          "type": "string"
+        },
+        "JsonTournament": {
+          "type": "object",
+          "required": [
+            "created_at",
+            "metadata",
+            "owner_id",
+            "players_current",
+            "players_total",
+            "tournament_id"
+          ],
+          "properties": {
+            "access_nft_contract": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/AccountId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "created_at": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "ended_at": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "metadata": {
+              "$ref": "#/definitions/TournamentMetadata"
+            },
+            "owner_id": {
+              "$ref": "#/definitions/AccountId"
+            },
+            "players_current": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "players_total": {
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "price": {
+              "anyOf": [
+                {
+                  "$ref": "#/definitions/U128"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "started_at": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "tournament_id": {
+              "type": "string"
+            }
+          }
+        },
+        "PromiseOrValueBoolean": {
+          "type": "boolean"
+        },
+        "PromiseOrValueU128": {
+          "type": "integer",
+          "format": "uint128",
+          "minimum": 0.0
+        },
+        "RewardPrize": {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": [
+                "Near"
+              ],
+              "properties": {
+                "Near": {
+                  "type": "object",
+                  "required": [
+                    "amount"
+                  ],
+                  "properties": {
+                    "amount": {
+                      "$ref": "#/definitions/U128"
+                    },
+                    "owner_id": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/AccountId"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "Ft"
+              ],
+              "properties": {
+                "Ft": {
+                  "type": "object",
+                  "required": [
+                    "amount",
+                    "ft_contract_id"
+                  ],
+                  "properties": {
+                    "amount": {
+                      "$ref": "#/definitions/U128"
+                    },
+                    "ft_contract_id": {
+                      "$ref": "#/definitions/AccountId"
+                    },
+                    "owner_id": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/AccountId"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "required": [
+                "Nft"
+              ],
+              "properties": {
+                "Nft": {
+                  "type": "object",
+                  "required": [
+                    "nft_contract_id",
+                    "token_id"
+                  ],
+                  "properties": {
+                    "nft_contract_id": {
+                      "$ref": "#/definitions/AccountId"
+                    },
+                    "owner_id": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/definitions/AccountId"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "token_id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "TournamentFactoryMetadata": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "icon": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "TournamentMetadata": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "media": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "summary": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          }
+        },
+        "U128": {
+          "type": "integer",
+          "format": "uint128",
+          "minimum": 0.0
+        }
+      }
+    }
+  }
+}
