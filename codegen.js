@@ -78,6 +78,8 @@ async function generate(abiSchema, contractName, contractId) {
          'Change',
       );
 
+   code += '\n\n' + generateContractInterface(methods, contractName);
+
    code += '\n\n' + generateContract(methods, contractName);
 
    code += '\n\n' + generateHooks(contractName);
@@ -90,6 +92,33 @@ async function generate(abiSchema, contractName, contractId) {
    fs.writeFileSync(schemaPath, prepareCode(code));
 
    console.log(`${contractId} schema generated!`);
+}
+
+function generateContractInterface(methods, contractName) {
+   return [
+      `export interface I${contractName}Contract {`,
+      '   // view methods',
+      methods
+         .filter((el) => el.is_view)
+         .map((el) => {
+            const name = formatFunctionName(el.name);
+            const interfaceName = 'I' + name;
+
+            return `   ${el.name}(args: ${interfaceName}Args): ${interfaceName}Result`;
+         })
+         .join('\n'),
+      '   // change methods',
+      methods
+         .filter((el) => !el.is_view)
+         .map((el) => {
+            const name = formatFunctionName(el.name);
+            const interfaceName = 'I' + name;
+
+            return `   ${el.name}(args: ${interfaceName}Args): ${interfaceName}Result`;
+         })
+         .join('\n'),
+      '}',
+   ].join('\n');
 }
 
 function generateImports() {
@@ -120,7 +149,7 @@ function generateContract(methods, contractName) {
    return [
       `export function use${contractName}Contract() {`,
       '  return (',
-      `    useNearContract(${getContractId(contractName)}, {`,
+      `    useNearContract<I${contractName}Contract>(${getContractId(contractName)}, {`,
       `      viewMethods: [\n${methods
          .filter((el) => el.is_view)
          .map((el) => `        ${contractName}ViewMethods.${el.name},`)

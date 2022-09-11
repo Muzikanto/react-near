@@ -43,9 +43,47 @@ export enum NftChangeMethods {
   set_royalty_value = 'set_royalty_value',
 }
 
+export interface INftContract {
+   // view methods
+   assert_approve(args: IAssertApproveArgs): IAssertApproveResult
+   assert_burn(args: IAssertBurnArgs): IAssertBurnResult
+   assert_owner(args: IAssertOwnerArgs): IAssertOwnerResult
+   assert_transfer(args: IAssertTransferArgs): IAssertTransferResult
+   is_blacklist(args: IIsBlacklistArgs): IIsBlacklistResult
+   is_paused(args: IIsPausedArgs): IIsPausedResult
+   nft_is_approved(args: INftIsApprovedArgs): INftIsApprovedResult
+   nft_is_bind_to_owner(args: INftIsBindToOwnerArgs): INftIsBindToOwnerResult
+   nft_metadata(args: INftMetadataArgs): INftMetadataResult
+   nft_payout(args: INftPayoutArgs): INftPayoutResult
+   nft_royalty_account(args: INftRoyaltyAccountArgs): INftRoyaltyAccountResult
+   nft_royalty_value(args: INftRoyaltyValueArgs): INftRoyaltyValueResult
+   nft_supply_for_owner(args: INftSupplyForOwnerArgs): INftSupplyForOwnerResult
+   nft_token(args: INftTokenArgs): INftTokenResult
+   nft_tokens(args: INftTokensArgs): INftTokensResult
+   nft_tokens_by_ids(args: INftTokensByIdsArgs): INftTokensByIdsResult
+   nft_tokens_for_owner(args: INftTokensForOwnerArgs): INftTokensForOwnerResult
+   nft_total_supply(args: INftTotalSupplyArgs): INftTotalSupplyResult
+   // change methods
+   blacklist_add(args: IBlacklistAddArgs): IBlacklistAddResult
+   blacklist_remove(args: IBlacklistRemoveArgs): IBlacklistRemoveResult
+   mt_on_transfer(args: IMtOnTransferArgs): IMtOnTransferResult
+   nft_approve(args: INftApproveArgs): INftApproveResult
+   nft_burn(args: INftBurnArgs): INftBurnResult
+   nft_mint(args: INftMintArgs): INftMintResult
+   nft_resolve_transfer(args: INftResolveTransferArgs): INftResolveTransferResult
+   nft_revoke(args: INftRevokeArgs): INftRevokeResult
+   nft_revoke_all(args: INftRevokeAllArgs): INftRevokeAllResult
+   nft_transfer(args: INftTransferArgs): INftTransferResult
+   nft_transfer_call(args: INftTransferCallArgs): INftTransferCallResult
+   nft_transfer_payout(args: INftTransferPayoutArgs): INftTransferPayoutResult
+   set_is_paused(args: ISetIsPausedArgs): ISetIsPausedResult
+   set_royalty_account(args: ISetRoyaltyAccountArgs): ISetRoyaltyAccountResult
+   set_royalty_value(args: ISetRoyaltyValueArgs): ISetRoyaltyValueResult
+}
+
 export function useNftContract() {
   return (
-    useNearContract(NFT_CONTRACT_NAME, {
+    useNearContract<INftContract>(NFT_CONTRACT_NAME, {
       viewMethods: [
         NftViewMethods.assert_approve,
         NftViewMethods.assert_burn,

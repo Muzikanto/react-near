@@ -27,9 +27,31 @@ export enum TournamentChangeMethods {
   tournament_start = 'tournament_start',
 }
 
+export interface ITournamentContract {
+   // view methods
+   tournament(args: ITournamentArgs): ITournamentResult
+   tournament_free_places(args: ITournamentFreePlacesArgs): ITournamentFreePlacesResult
+   tournament_is_whitelist_prize_owner(args: ITournamentIsWhitelistPrizeOwnerArgs): ITournamentIsWhitelistPrizeOwnerResult
+   tournament_member(args: ITournamentMemberArgs): ITournamentMemberResult
+   tournament_metadata(args: ITournamentMetadataArgs): ITournamentMetadataResult
+   tournament_nft_access(args: ITournamentNftAccessArgs): ITournamentNftAccessResult
+   tournament_players(args: ITournamentPlayersArgs): ITournamentPlayersResult
+   tournament_prizes(args: ITournamentPrizesArgs): ITournamentPrizesResult
+   tournaments(args: ITournamentsArgs): ITournamentsResult
+   // change methods
+   tournament_add_nft_access(args: ITournamentAddNftAccessArgs): ITournamentAddNftAccessResult
+   tournament_add_prize(args: ITournamentAddPrizeArgs): ITournamentAddPrizeResult
+   tournament_add_whitelist_prize_owner(args: ITournamentAddWhitelistPrizeOwnerArgs): ITournamentAddWhitelistPrizeOwnerResult
+   tournament_create(args: ITournamentCreateArgs): ITournamentCreateResult
+   tournament_end(args: ITournamentEndArgs): ITournamentEndResult
+   tournament_execute_reward(args: ITournamentExecuteRewardArgs): ITournamentExecuteRewardResult
+   tournament_join(args: ITournamentJoinArgs): ITournamentJoinResult
+   tournament_start(args: ITournamentStartArgs): ITournamentStartResult
+}
+
 export function useTournamentContract() {
   return (
-    useNearContract(TOURNAMENT_CONTRACT_NAME, {
+    useNearContract<ITournamentContract>(TOURNAMENT_CONTRACT_NAME, {
       viewMethods: [
         TournamentViewMethods.tournament,
         TournamentViewMethods.tournament_free_places,

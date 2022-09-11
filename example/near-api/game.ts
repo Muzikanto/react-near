@@ -21,9 +21,25 @@ export enum GameChangeMethods {
   set_is_paused = 'set_is_paused',
 }
 
+export interface IGameContract {
+   // view methods
+   game_clan(args: IGameClanArgs): IGameClanResult
+   game_player(args: IGamePlayerArgs): IGamePlayerResult
+   game_player_up_price(args: IGamePlayerUpPriceArgs): IGamePlayerUpPriceResult
+   get_owner(args: IGetOwnerArgs): IGetOwnerResult
+   is_account_blocked(args: IIsAccountBlockedArgs): IIsAccountBlockedResult
+   is_paused(args: IIsPausedArgs): IIsPausedResult
+   // change methods
+   block_account(args: IBlockAccountArgs): IBlockAccountResult
+   fix(args: IFixArgs): IFixResult
+   game_create_clan(args: IGameCreateClanArgs): IGameCreateClanResult
+   game_create_player(args: IGameCreatePlayerArgs): IGameCreatePlayerResult
+   set_is_paused(args: ISetIsPausedArgs): ISetIsPausedResult
+}
+
 export function useGameContract() {
   return (
-    useNearContract(GAME_CONTRACT_NAME, {
+    useNearContract<IGameContract>(GAME_CONTRACT_NAME, {
       viewMethods: [
         GameViewMethods.game_clan,
         GameViewMethods.game_player,

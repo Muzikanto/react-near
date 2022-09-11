@@ -12,7 +12,6 @@ export enum MarketViewMethods {
   market_supply_by_owner_id = 'market_supply_by_owner_id',
   market_supply_sales = 'market_supply_sales',
   supported_ft_token_ids = 'supported_ft_token_ids',
-  test = 'test',
 }
 
 export enum MarketChangeMethods {
@@ -26,9 +25,29 @@ export enum MarketChangeMethods {
   market_update_price = 'market_update_price', // payable
 }
 
+export interface IMarketContract {
+   // view methods
+   market_sale(args: IMarketSaleArgs): IMarketSaleResult
+   market_sales_by_nft_contract_id(args: IMarketSalesByNftContractIdArgs): IMarketSalesByNftContractIdResult
+   market_sales_by_owner_id(args: IMarketSalesByOwnerIdArgs): IMarketSalesByOwnerIdResult
+   market_supply_by_nft_contract_id(args: IMarketSupplyByNftContractIdArgs): IMarketSupplyByNftContractIdResult
+   market_supply_by_owner_id(args: IMarketSupplyByOwnerIdArgs): IMarketSupplyByOwnerIdResult
+   market_supply_sales(args: IMarketSupplySalesArgs): IMarketSupplySalesResult
+   supported_ft_token_ids(args: ISupportedFtTokenIdsArgs): ISupportedFtTokenIdsResult
+   // change methods
+   market_accept_offer(args: IMarketAcceptOfferArgs): IMarketAcceptOfferResult
+   market_add_bid(args: IMarketAddBidArgs): IMarketAddBidResult
+   market_add_ft_token(args: IMarketAddFtTokenArgs): IMarketAddFtTokenResult
+   market_offer(args: IMarketOfferArgs): IMarketOfferResult
+   market_process_purchase(args: IMarketProcessPurchaseArgs): IMarketProcessPurchaseResult
+   market_remove_sale(args: IMarketRemoveSaleArgs): IMarketRemoveSaleResult
+   market_resolve_purchase(args: IMarketResolvePurchaseArgs): IMarketResolvePurchaseResult
+   market_update_price(args: IMarketUpdatePriceArgs): IMarketUpdatePriceResult
+}
+
 export function useMarketContract() {
   return (
-    useNearContract(MARKET_CONTRACT_NAME, {
+    useNearContract<IMarketContract>(MARKET_CONTRACT_NAME, {
       viewMethods: [
         MarketViewMethods.market_sale,
         MarketViewMethods.market_sales_by_nft_contract_id,
@@ -37,7 +56,6 @@ export function useMarketContract() {
         MarketViewMethods.market_supply_by_owner_id,
         MarketViewMethods.market_supply_sales,
         MarketViewMethods.supported_ft_token_ids,
-        MarketViewMethods.test,
       ],
       changeMethods: [
         MarketChangeMethods.market_accept_offer,
@@ -274,18 +292,6 @@ export function useSupportedFtTokenIdsQuery(opts: NearQueryOptions<ISupportedFtT
     return useMarketQueryRaw<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>(MarketViewMethods.supported_ft_token_ids, opts);
 }
 
-// test query
-
-export type ITestArgs = {
-   account_id: AccountId;
-};
-
-export type ITestResult = string[];
-
-export function useTestQuery(opts: NearQueryOptions<ITestResult, ITestArgs>) {
-    return useMarketQueryRaw<ITestResult, ITestArgs>(MarketViewMethods.test, opts);
-}
-
 /**
  * Account identifier. This is the human readable utf8 string which is used internally to index accounts on the network and their respective state.
  *
@@ -305,6 +311,7 @@ export function useTestQuery(opts: NearQueryOptions<ITestResult, ITestArgs>) {
  */
 export type AccountId = string;
 export type U128 = string;
+export type PromiseOrValueString = string;
 export type PromiseOrValueU128 = string;
 export type U64 = string;
 
@@ -312,6 +319,7 @@ export interface Definitions {
   AccountId?: AccountId;
   Bid?: Bid;
   Promise?: true;
+  PromiseOrValueString?: PromiseOrValueString;
   PromiseOrValueU128?: PromiseOrValueU128;
   Sale?: Sale;
   U128?: U128;
