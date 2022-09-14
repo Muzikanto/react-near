@@ -32,6 +32,21 @@ if (!fs.existsSync(path.resolve(dist))) {
 
 //
 
+const parseConfigs = {
+   default: {
+      getMethod: getMethodDefault,
+      getContract: getContractDefault,
+      getStartCode: getStartCodeDefault,
+      getCoreCode: getCoreCodeDefault,
+   },
+   raw: {
+      getMethod: () => '',
+      getContract: getContractRaw,
+      getStartCode: getStartCodeRaw,
+      getCoreCode: () => '',
+   }
+};
+
 (async () => {
    for (const contract of config.contracts) {
       let schema = contract.abi
@@ -43,13 +58,19 @@ if (!fs.existsSync(path.resolve(dist))) {
          process.exit(1);
       }
 
-      await generate(schema, contract.name, contract.contractId);
+      const configParse = parseConfigs[config.type || 'default'];
+
+      if (!configParse) {
+         throw new Error('Invalid react-near config "type" field.')
+      }
+
+      await generate(schema, contract.name, contract.contractId, configParse);
    }
 })();
 
 //
 
-async function generate(abiSchema, contractName, contractId) {
+async function generate(abiSchema, contractName, contractId, opts) {
    const schemaPath = path.resolve(dist, `${camelToSnakeCase(contractName)}.ts`);
 
    const schema = {
@@ -60,9 +81,9 @@ async function generate(abiSchema, contractName, contractId) {
    };
    const methods = abiSchema.body.functions.filter((el) => !excludeMethods.includes(el.name));
 
-   let code = generateImports();
+   let code = opts.getStartCode({ contractName });
 
-   code += '\n\n' + generateConstants(contractId, contractName);
+   code = (code ? code + '\n\n' : '') + generateConstants(contractId, contractName);
 
    code +=
       '\n\n' +
@@ -80,11 +101,11 @@ async function generate(abiSchema, contractName, contractId) {
 
    code += '\n\n' + generateContractInterface(methods, contractName);
 
-   code += '\n\n' + generateContract(methods, contractName);
+   code += '\n\n' + generateContract({ methods, contractName, getContract: opts.getContract });
 
-   code += '\n\n' + generateHooks(contractName);
+   code += '\n\n' + opts.getCoreCode({ contractName });
 
-   code += '\n\n' + generateMethods(methods, contractName);
+   code += '\n\n' + generateMethods({ methods, contractName, getMethod: opts.getMethod });
 
    const ts = await compile(schema, 'MySchema', { additionalProperties: false, bannerComment: '' });
    code += `\n\n` + ts;
@@ -121,14 +142,6 @@ function generateContractInterface(methods, contractName) {
    ].join('\n');
 }
 
-function generateImports() {
-   return [
-      `import { useNearQuery, useNearMutation, useNearContract } from "react-near";`,
-      'import { NearQueryOptions } from "react-near/hooks/query";',
-      'import { NearMutationOptions } from "react-near/hooks/mutation";',
-   ].join('\n');
-}
-
 function generateEnumMethods(methods, contractName, prefix) {
    let methodsCode = `export enum ${contractName}${prefix}Methods {\n`;
 
@@ -141,56 +154,30 @@ function generateEnumMethods(methods, contractName, prefix) {
    return methodsCode;
 }
 
-function generateMethods(methods, contractName) {
-   return methods.map((el) => getFunction(el, contractName)).join('\n\n');
+function generateMethods({ methods, contractName, getMethod }) {
+   return methods.map((el) => getMethodWithTypes({ el, contractName, getMethod })).join('\n\n');
 }
 
-function generateContract(methods, contractName) {
-   return [
-      `export function use${contractName}Contract() {`,
-      '  return (',
-      `    useNearContract<I${contractName}Contract>(${getContractId(contractName)}, {`,
-      `      viewMethods: [\n${methods
+function generateContract({ methods, contractName, getContract }) {
+   return getContract({
+      contractName,
+      viewMethods: methods
          .filter((el) => el.is_view)
-         .map((el) => `        ${contractName}ViewMethods.${el.name},`)
-         .join('\n')}\n      ],`,
-      `      changeMethods: [\n${methods
+         .map((el) => `        ${contractName}ViewMethods.${el.name},`),
+      changeMethods: methods
          .filter((el) => !el.is_view)
-         .map((el) => `        ${contractName}ChangeMethods.${el.name},`)
-         .join('\n')}\n      ],`,
-      '    }',
-      '  ));',
-      '}',
-   ].join('\n');
+         .map((el) => `        ${contractName}ChangeMethods.${el.name},`),
+      interfaceName: `I${contractName}Contract`
+   });
 }
 
 function generateConstants(contractId, contractName) {
    return `export const ${getContractId(contractName)} = '${contractId}';`;
 }
 
-function generateHooks(contractName) {
-   return `export function use${contractName}QueryRaw<Res = any, Req = any>(
-  methodName: ${contractName}ViewMethods,
-  opts: NearQueryOptions<Res, Req> = {}
-) {
-  const contract = use${contractName}Contract();
-
-  return useNearQuery(methodName, { contract, ...opts });
-}
-
-export function use${contractName}MutationRaw<Res = any, Req = any>(
-  methodName: ${contractName}ChangeMethods,
-  opts: NearMutationOptions<Res, Req> = {}
-) {
-  const contract = use${contractName}Contract();
-
-  return useNearMutation(methodName, { contract, ...opts });
-}`;
-}
-
 //
 
-function getFunction(el, contractName) {
+function getMethodWithTypes({ el, contractName, getMethod }) {
    const name = formatFunctionName(el.name);
    const interfaceName = 'I' + name;
    const args = (el.params || []).reduce(
@@ -202,6 +189,18 @@ function getFunction(el, contractName) {
    );
    const isQuery = el.is_view;
 
+   const methodArgs = {
+      functionName: name,
+      methodName: el.name,
+      contractName,
+      isView: !!el.is_view,
+      isChange: !el.is_view,
+      isPayable: !!el.is_payable,
+      raw: el,
+      argsInterface: `${interfaceName}Args`,
+      resultInterface: `${interfaceName}Result`,
+   };
+
    return [
       `// ${el.name} ${isQuery ? 'query' : 'mutation'}${el.is_payable ? ' (payable)' : ''}`,
       '',
@@ -211,15 +210,7 @@ function getFunction(el, contractName) {
       '',
       `export type ${interfaceName}Result = ${formatParam(el.result)};`,
       '',
-      `export function use${name}${isQuery ? 'Query' : 'Mutation'}(opts: Near${
-         isQuery ? 'Query' : 'Mutation'
-      }Options<${interfaceName}Result, ${interfaceName}Args>) {`,
-      `    return use${contractName}${
-         isQuery ? 'QueryRaw' : 'MutationRaw'
-      }<${interfaceName}Result, ${interfaceName}Args>(${contractName}${
-         isQuery ? 'View' : 'Change'
-      }Methods.${el.name}, opts);`,
-      `}`,
+      getMethod(methodArgs),
    ].join('\n');
 }
 
@@ -325,4 +316,86 @@ function prepareCode(ts) {
       '\n' +
       ['type integer = number;'].join('\n')
    );
+}
+
+// override
+
+function getMethodDefault({
+   functionName,
+   methodName,
+   isView,
+   isChange,
+   isPayable,
+   contractName,
+   raw,
+   argsInterface,
+   resultInterface,
+}) {
+   return [
+      `export function use${functionName}${isView ? 'Query' : 'Mutation'}(opts: Near${
+         isView ? 'Query' : 'Mutation'
+      }Options<${resultInterface}, ${argsInterface}>) {`,
+      `    return use${contractName}${
+         isView ? 'QueryRaw' : 'MutationRaw'
+      }<${resultInterface}, ${argsInterface}>(${contractName}${
+         isView ? 'View' : 'Change'
+      }Methods.${methodName}, opts);`,
+      `}`,
+   ].join('\n');
+}
+
+function getContractDefault({ contractName, interfaceName, viewMethods, changeMethods }) {
+   return [
+      `export function use${contractName}Contract() {`,
+      '  return (',
+      `    useNearContract<I${contractName}Contract>(${getContractId(contractName)}, {`,
+      `      viewMethods: [\n${viewMethods.join('\n')}\n      ],`,
+      `      changeMethods: [\n${changeMethods.join('\n')}\n      ],`,
+      '    }',
+      '  ));',
+      '}',
+   ].join('\n');
+}
+
+function getCoreCodeDefault({ contractName }) {
+   return `export function use${contractName}QueryRaw<Res = any, Req = any>(
+  methodName: ${contractName}ViewMethods,
+  opts: NearQueryOptions<Res, Req> = {}
+) {
+  const contract = use${contractName}Contract();
+
+  return useNearQuery(methodName, { contract, ...opts });
+}
+
+export function use${contractName}MutationRaw<Res = any, Req = any>(
+  methodName: ${contractName}ChangeMethods,
+  opts: NearMutationOptions<Res, Req> = {}
+) {
+  const contract = use${contractName}Contract();
+
+  return useNearMutation(methodName, { contract, ...opts });
+}`;
+}
+
+function getStartCodeDefault({ contractName }) {
+   return [
+      `import { useNearQuery, useNearMutation, useNearContract } from "react-near";`,
+      'import { NearQueryOptions } from "react-near/hooks/query";',
+      'import { NearMutationOptions } from "react-near/hooks/mutation";',
+   ].join('\n');
+}
+
+function getContractRaw({ contractName, viewMethods, changeMethods, interfaceName }) {
+   return [
+      `export function get${contractName}Contract(account: Account): Contract & ${interfaceName} {`,
+      `  return new Contract(account, ${getContractId(contractName)}, {`,
+      `      viewMethods: [\n${viewMethods.join('\n')}\n      ],`,
+      `      changeMethods: [\n${changeMethods.join('\n')}\n      ],`,
+      `    }) as Contract & ${interfaceName};`,
+      '}',
+   ].join('\n');
+}
+
+function getStartCodeRaw({contractName}) {
+   return  `import { Contract, Account } from "near-api-js";`;
 }

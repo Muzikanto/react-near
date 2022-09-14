@@ -133,6 +133,7 @@ If you want to generate all the methods of your near contract, you have to:
 ```json
 {
    "dist": "near-api",
+   "type": "default", // or "raw", for exclude all hooks
    "contracts": [
       {
          "name": "Ft",
