@@ -22,6 +22,7 @@ const excludeMethods = [
    'new_with_default_meta',
    'migrate',
    'ft_on_transfer',
+   'mt_on_transfer',
    'nft_on_transfer',
    'nft_on_approve',
 ];
@@ -44,7 +45,7 @@ const parseConfigs = {
       getContract: getContractRaw,
       getStartCode: getStartCodeRaw,
       getCoreCode: () => '',
-   }
+   },
 };
 
 (async () => {
@@ -61,7 +62,7 @@ const parseConfigs = {
       const configParse = parseConfigs[config.type || 'default'];
 
       if (!configParse) {
-         throw new Error('Invalid react-near config "type" field.')
+         throw new Error('Invalid react-near config "type" field.');
       }
 
       await generate(schema, contract.name, contract.contractId, configParse);
@@ -167,7 +168,7 @@ function generateContract({ methods, contractName, getContract }) {
       changeMethods: methods
          .filter((el) => !el.is_view)
          .map((el) => `        ${contractName}ChangeMethods.${el.name},`),
-      interfaceName: `I${contractName}Contract`
+      interfaceName: `I${contractName}Contract`,
    });
 }
 
@@ -396,6 +397,6 @@ function getContractRaw({ contractName, viewMethods, changeMethods, interfaceNam
    ].join('\n');
 }
 
-function getStartCodeRaw({contractName}) {
-   return  `import { Contract, Account } from "near-api-js";`;
+function getStartCodeRaw({ contractName }) {
+   return `import { Contract, Account } from "near-api-js";`;
 }

@@ -28,7 +28,6 @@ export enum NftViewMethods {
 export enum NftChangeMethods {
   blacklist_add = 'blacklist_add',
   blacklist_remove = 'blacklist_remove',
-  mt_on_transfer = 'mt_on_transfer',
   nft_approve = 'nft_approve', // payable
   nft_burn = 'nft_burn', // payable
   nft_mint = 'nft_mint',
@@ -66,7 +65,6 @@ export interface INftContract {
    // change methods
    blacklist_add(args: IBlacklistAddArgs): IBlacklistAddResult
    blacklist_remove(args: IBlacklistRemoveArgs): IBlacklistRemoveResult
-   mt_on_transfer(args: IMtOnTransferArgs): IMtOnTransferResult
    nft_approve(args: INftApproveArgs): INftApproveResult
    nft_burn(args: INftBurnArgs): INftBurnResult
    nft_mint(args: INftMintArgs): INftMintResult
@@ -107,7 +105,6 @@ export function useNftContract() {
       changeMethods: [
         NftChangeMethods.blacklist_add,
         NftChangeMethods.blacklist_remove,
-        NftChangeMethods.mt_on_transfer,
         NftChangeMethods.nft_approve,
         NftChangeMethods.nft_burn,
         NftChangeMethods.nft_mint,
@@ -239,21 +236,6 @@ export type IIsPausedResult = boolean;
 
 export function useIsPausedQuery(opts: NearQueryOptions<IIsPausedResult, IIsPausedArgs>) {
     return useNftQueryRaw<IIsPausedResult, IIsPausedArgs>(NftViewMethods.is_paused, opts);
-}
-
-// mt_on_transfer mutation
-
-export type IMtOnTransferArgs = {
-   sender_id: AccountId;
-   token_ids: AccountId[];
-   amounts: U128[];
-   msg: string;
-};
-
-export type IMtOnTransferResult = PromiseOrValueArrayOf_U128;
-
-export function useMtOnTransferMutation(opts: NearMutationOptions<IMtOnTransferResult, IMtOnTransferArgs>) {
-    return useNftMutationRaw<IMtOnTransferResult, IMtOnTransferArgs>(NftChangeMethods.mt_on_transfer, opts);
 }
 
 // nft_approve mutation (payable)
