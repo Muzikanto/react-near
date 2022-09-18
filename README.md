@@ -54,7 +54,7 @@ Including ready for use typed methods in popular smart contract [Standards](http
    -  [mt](#mt) Multi Token Standard ([nep245](https://github.com/near/NEPs/blob/master/neps/nep-0245.md)) methods
    -  [storage](#storage) Storage Management ([nep145](https://github.com/near/NEPs/blob/master/neps/nep-0145.md)) methods
    -  [Other Standards](https://github.com/Muzikanto/react-near/tree/master/src/standards)
-- [utils](#utils) Other utils
+-  [utils](#utils) Other utils
 
 ## Setup
 
@@ -127,27 +127,31 @@ function Page() {
 
 If you want to generate all the methods of your near contract, you have to:
 
-- you need to add the abi feature, as in this example [abi-example](https://github.com/near/abi-example)
-- run ```npm i -D json-schema-to-typescript fzstd``` 
-- add config to your project ```react-near.json```
+-  you need to add the abi feature, as in this example [abi-example](https://github.com/near/abi-example)
+-  run `npm i -D json-schema-to-typescript fzstd`
+-  add config to your project `react-near.json`
+
 ```json
 {
    "dist": "near-api",
    "type": "default", // or "raw", for exclude all hooks
    "contracts": [
       {
-         "name": "Ft",
-         "contractId": "dev-1234567890",
-         "abi": "abi/test.json"
+         "name": "Nft",
+         "abi": "abi/nft.json",
+         "mainnet": "mfight-nft.near",
+         "testnet": "mfight-nft_v2.testnet"
       },
       {
-         "name": "Game",
-         "contractId": "mfight.testnet"
+         "name": "Market",
+         "mainnet": "mfight-nft.near",
+         "testnet": "mfight-nft_v2.testnet"
       }
    ]
 }
 ```
-- run script ```node ./node_modules/react-near/codegen.js```
+
+-  run script `node ./node_modules/react-near/codegen.js`
 
 There is also an example: [example-app](https://github.com/Muzikanto/react-near/tree/master/example)
 
@@ -564,11 +568,11 @@ function Page() {
 
 ### Utils
 
-- [x] parseNearAmount with decimals
-- [x] isValidNearAddress
-- [x] parseNearDate
-- [x] formatNearAddress
-- [x] gas and more :)
+-  [x] parseNearAmount with decimals
+-  [x] isValidNearAddress
+-  [x] parseNearDate
+-  [x] formatNearAddress
+-  [x] gas and more :)
 
 ## Authors
 

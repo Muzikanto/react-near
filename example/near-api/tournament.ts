@@ -1,8 +1,9 @@
-import { useNearQuery, useNearMutation, useNearContract } from "react-near";
+import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const TOURNAMENT_CONTRACT_NAME = 'mfight-tournament.testnet';
+export const TOURNAMENT_CONTRACT_NAME_MAINNET = 'mfight-tournament.near';
+export const TOURNAMENT_CONTRACT_NAME_TESTNET = 'mfight-tournament.testnet';
 
 export enum TournamentViewMethods {
   tournament = 'tournament',
@@ -49,9 +50,17 @@ export interface ITournamentContract {
    tournament_start(args: ITournamentStartArgs): ITournamentStartResult
 }
 
+export function useTournamentContractId() {
+  const nearEnv = useNearEnvironment();
+
+  return nearEnv.value === NearEnvironment.MainNet ? TOURNAMENT_CONTRACT_NAME_MAINNET : TOURNAMENT_CONTRACT_NAME_TESTNET;
+}
+
 export function useTournamentContract() {
+  const contractId = useTournamentContractId();
+
   return (
-    useNearContract<ITournamentContract>(TOURNAMENT_CONTRACT_NAME, {
+    useNearContract<ITournamentContract>(contractId, {
       viewMethods: [
         TournamentViewMethods.tournament,
         TournamentViewMethods.tournament_free_places,

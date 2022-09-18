@@ -1,8 +1,9 @@
-import { useNearQuery, useNearMutation, useNearContract } from "react-near";
+import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const GAME_CONTRACT_NAME = 'mfight.testnet';
+export const GAME_CONTRACT_NAME_MAINNET = '';
+export const GAME_CONTRACT_NAME_TESTNET = 'mfight.testnet';
 
 export enum GameViewMethods {
   game_clan = 'game_clan',
@@ -37,9 +38,17 @@ export interface IGameContract {
    set_is_paused(args: ISetIsPausedArgs): ISetIsPausedResult
 }
 
+export function useGameContractId() {
+  const nearEnv = useNearEnvironment();
+
+  return nearEnv.value === NearEnvironment.MainNet ? GAME_CONTRACT_NAME_MAINNET : GAME_CONTRACT_NAME_TESTNET;
+}
+
 export function useGameContract() {
+  const contractId = useGameContractId();
+
   return (
-    useNearContract<IGameContract>(GAME_CONTRACT_NAME, {
+    useNearContract<IGameContract>(contractId, {
       viewMethods: [
         GameViewMethods.game_clan,
         GameViewMethods.game_player,

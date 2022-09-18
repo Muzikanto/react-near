@@ -4,8 +4,9 @@
    "contracts": [
       {
          "name": "Tournament",
-         "contractId": "mfight-tournament.testnet",
-         "abi": "abi/tournament_abi.json"
+         "abi": "abi/tournament_abi.json",
+         "testnet": "mfight-tournament.testnet",
+         "mainnet": "mfight-tournament.near"
       },
       {
          "name": "Game",

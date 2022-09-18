@@ -1,8 +1,9 @@
-import { useNearQuery, useNearMutation, useNearContract } from "react-near";
+import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const NFT_CONTRACT_NAME = 'mfight-nft_v2.testnet';
+export const NFT_CONTRACT_NAME_MAINNET = '';
+export const NFT_CONTRACT_NAME_TESTNET = 'mfight-nft_v2.testnet';
 
 export enum NftViewMethods {
   assert_approve = 'assert_approve',
@@ -79,9 +80,17 @@ export interface INftContract {
    set_royalty_value(args: ISetRoyaltyValueArgs): ISetRoyaltyValueResult
 }
 
+export function useNftContractId() {
+  const nearEnv = useNearEnvironment();
+
+  return nearEnv.value === NearEnvironment.MainNet ? NFT_CONTRACT_NAME_MAINNET : NFT_CONTRACT_NAME_TESTNET;
+}
+
 export function useNftContract() {
+  const contractId = useNftContractId();
+
   return (
-    useNearContract<INftContract>(NFT_CONTRACT_NAME, {
+    useNearContract<INftContract>(contractId, {
       viewMethods: [
         NftViewMethods.assert_approve,
         NftViewMethods.assert_burn,
@@ -652,6 +661,8 @@ export type TokenSubType =
   | "Cup"
   | "Pen"
   | "Camera"
+  | "Mask"
+  | "Coin"
   | "Human"
   | "Elf"
   | "Dwarf"

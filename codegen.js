@@ -65,13 +65,22 @@ const parseConfigs = {
          throw new Error('Invalid react-near config "type" field.');
       }
 
-      await generate(schema, contract.name, contract.contractId, configParse);
+      if (!(contract.contractId || contract.testnet || contract.mainnet)) {
+         throw new Error('Invalid react-near.json config');
+      }
+
+      await generate(
+         schema,
+         contract.name,
+         { id: contract.contractId, testnet: contract.testnet, mainnet: contract.mainnet },
+         configParse,
+      );
    }
 })();
 
 //
 
-async function generate(abiSchema, contractName, contractId, opts) {
+async function generate(abiSchema, contractName, ids, opts) {
    const schemaPath = path.resolve(dist, `${camelToSnakeCase(contractName)}.ts`);
 
    const schema = {
@@ -84,7 +93,7 @@ async function generate(abiSchema, contractName, contractId, opts) {
 
    let code = opts.getStartCode({ contractName });
 
-   code = (code ? code + '\n\n' : '') + generateConstants(contractId, contractName);
+   code = (code ? code + '\n\n' : '') + generateConstants(ids, contractName);
 
    code +=
       '\n\n' +
@@ -113,7 +122,7 @@ async function generate(abiSchema, contractName, contractId, opts) {
 
    fs.writeFileSync(schemaPath, prepareCode(code));
 
-   console.log(`${contractId} schema generated!`);
+   console.log(`${contractName} schema generated!`);
 }
 
 function generateContractInterface(methods, contractName) {
@@ -172,8 +181,13 @@ function generateContract({ methods, contractName, getContract }) {
    });
 }
 
-function generateConstants(contractId, contractName) {
-   return `export const ${getContractId(contractName)} = '${contractId}';`;
+function generateConstants(ids, contractName) {
+   const res = [];
+
+   res.push(`export const ${getContractId(contractName)}_MAINNET = '${ids.mainnet || ''}';`);
+   res.push(`export const ${getContractId(contractName)}_TESTNET = '${ids.testnet || ids.id}';`);
+
+   return res.join('\n');
 }
 
 //
@@ -347,9 +361,17 @@ function getMethodDefault({
 
 function getContractDefault({ contractName, interfaceName, viewMethods, changeMethods }) {
    return [
+      `export function use${contractName}ContractId() {`,
+      `  const nearEnv = useNearEnvironment();`,
+      '',
+      `  return nearEnv.value === NearEnvironment.MainNet ? ${getContractId(contractName)}_MAINNET : ${getContractId(contractName)}_TESTNET;`,
+      `}`,
+      '',
       `export function use${contractName}Contract() {`,
+      `  const contractId = use${contractName}ContractId();`,
+      '',
       '  return (',
-      `    useNearContract<I${contractName}Contract>(${getContractId(contractName)}, {`,
+      `    useNearContract<I${contractName}Contract>(contractId, {`,
       `      viewMethods: [\n${viewMethods.join('\n')}\n      ],`,
       `      changeMethods: [\n${changeMethods.join('\n')}\n      ],`,
       '    }',
@@ -380,7 +402,7 @@ export function use${contractName}MutationRaw<Res = any, Req = any>(
 
 function getStartCodeDefault({ contractName }) {
    return [
-      `import { useNearQuery, useNearMutation, useNearContract } from "react-near";`,
+      `import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";`,
       'import { NearQueryOptions } from "react-near/hooks/query";',
       'import { NearMutationOptions } from "react-near/hooks/mutation";',
    ].join('\n');

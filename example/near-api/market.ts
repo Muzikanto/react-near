@@ -1,8 +1,9 @@
-import { useNearQuery, useNearMutation, useNearContract } from "react-near";
+import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const MARKET_CONTRACT_NAME = 'mfight-market.testnet';
+export const MARKET_CONTRACT_NAME_MAINNET = '';
+export const MARKET_CONTRACT_NAME_TESTNET = 'mfight-market.testnet';
 
 export enum MarketViewMethods {
   market_sale = 'market_sale',
@@ -45,9 +46,17 @@ export interface IMarketContract {
    market_update_price(args: IMarketUpdatePriceArgs): IMarketUpdatePriceResult
 }
 
+export function useMarketContractId() {
+  const nearEnv = useNearEnvironment();
+
+  return nearEnv.value === NearEnvironment.MainNet ? MARKET_CONTRACT_NAME_MAINNET : MARKET_CONTRACT_NAME_TESTNET;
+}
+
 export function useMarketContract() {
+  const contractId = useMarketContractId();
+
   return (
-    useNearContract<IMarketContract>(MARKET_CONTRACT_NAME, {
+    useNearContract<IMarketContract>(contractId, {
       viewMethods: [
         MarketViewMethods.market_sale,
         MarketViewMethods.market_sales_by_nft_contract_id,
