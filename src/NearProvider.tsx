@@ -11,6 +11,7 @@ export interface NearContextType {
    account?: Account;
    client: NearClient;
    loading?: boolean;
+   authContractId?: string;
 }
 export type NearProviderState = {
    near: Near | undefined;
@@ -22,6 +23,7 @@ export type NearProviderProps = Partial<ConnectConfig> & {
    environment?: NearEnvironment;
    defaultState?: NearProviderState;
    defaultClient?: NearClient;
+   authContractId: string;
 };
 
 export const NearContext = React.createContext<NearContextType>({ client: null as any });
@@ -59,6 +61,7 @@ const NearProvider: React.FC<React.PropsWithChildren<NearProviderProps>> = ({
    children,
    defaultState,
    defaultClient,
+   authContractId,
    ...props
 }) => {
    const env = useNearEnvironment();
@@ -104,6 +107,7 @@ const NearProvider: React.FC<React.PropsWithChildren<NearProviderProps>> = ({
             account: state.wallet ? state.wallet.account() : undefined,
             client,
             loading: state.loading,
+            authContractId,
          }}
       >
          {children}

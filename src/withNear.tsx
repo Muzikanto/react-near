@@ -9,19 +9,21 @@ function withNear<T = any>(
       defaultEnvironment = NearEnvironment.TestNet,
       environmentProps = {},
       providerProps = {},
+      authContractId,
    }: {
       defaultEnvironment?: NearEnvironment;
       providerProps?: Omit<
          NearProviderProps,
-         'defaultEnvironment' | 'defaultClient' | 'defaultState'
+         'defaultEnvironment' | 'defaultClient' | 'defaultState' | 'authContractId'
       >;
       environmentProps?: NearEnvironmentProviderProps;
+      authContractId: string;
    },
 ) {
    const Wrapper = (appProps: T) => {
       return (
          <NearEnvironmentProvider {...environmentProps} defaultEnvironment={defaultEnvironment}>
-            <NearProvider {...providerProps}>
+            <NearProvider {...providerProps} authContractId={authContractId}>
                <AppComponent {...appProps} />
             </NearProvider>
          </NearEnvironmentProvider>

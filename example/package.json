@@ -11,11 +11,11 @@
    },
    "dependencies": {
       "next": "12.0.2",
-      "react-near": "^4.7.1"
+      "react-near": "^5.4.1"
    },
    "devDependencies": {
       "@types/node": "16.11.6",
-      "@types/react": "17.0.34",
+      "@types/react": "^17.0.34",
       "eslint": "7.32.0",
       "eslint-config-next": "12.0.2",
       "fzstd": "^0.0.4",

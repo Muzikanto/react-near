@@ -1,11 +1,11 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { NFT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
-import { NEAR_GAS, useNearQuery, useNearUser } from '../../src';
-import { useNftTokens } from '../../src/standards';
-import { useFtBalanceOf, useFtTransfer } from '../../src/standards';
-import { formatNearPrice, parseNearAmount } from '../../src/utils';
-import { NftContractMetadata } from '../../src/standards/nft/types';
+import { NEAR_GAS, useNearQuery, useNearUser } from 'react-near';
+import { useNftTokens } from 'react-near/standards';
+import { useFtBalanceOf, useFtTransfer } from 'react-near/standards';
+import { formatNearPrice, parseNearAmount } from 'react-near/utils';
+import { NftContractMetadata } from 'react-near/standards/nft/types';
 
 const Page: NextPage = function () {
    const nftContract = useNftContract();

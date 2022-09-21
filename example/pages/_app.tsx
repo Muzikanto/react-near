@@ -1,15 +1,15 @@
 import React from 'react';
 import { AppInitialProps, AppProps } from 'next/app';
-import { NearEnvironment, NearEnvironmentProvider, NearProvider, useNearContract } from '../../src';
+import { NearEnvironment, NearEnvironmentProvider, NearProvider, useNearContract } from 'react-near';
 import { AppContext } from 'next/dist/pages/_app';
-import { makeNearProviderState, NearProviderState } from '../../src/NearProvider';
+import { makeNearProviderState, NearProviderState } from 'react-near/NearProvider';
 import * as nearApi from 'near-api-js';
-import createNearClient, { encodeRequest, NearClient } from '../../src/core/client';
-import { collectNearData } from '../../src/collectNearInfo';
-import { FtContract } from '../../src/standards/ft/types';
-import { StorageContract } from '../../src/standards/storage/types';
-import { FT_METHODS } from '../../src/standards/ft/config';
-import { STORAGE_METHODS } from '../../src/standards/storage/config';
+import createNearClient, { encodeRequest, NearClient } from 'react-near/core/client';
+import { collectNearData } from 'react-near/collectNearInfo';
+import { FtContract } from 'react-near/standards/ft/types';
+import { StorageContract } from 'react-near/standards/storage/types';
+import { FT_METHODS } from 'react-near/standards/ft/config';
+import { STORAGE_METHODS } from 'react-near/standards/storage/config';
 
 export const NFT_CONTRACT_NAME = 'mfight-nft_v2.testnet';
 export const FT_CONTRACT_NAME = 'mfight-ft.testnet';
@@ -38,7 +38,11 @@ const MyApp: React.FC<MyAppProps> = function ({
 }: MyAppProps) {
    return (
       <NearEnvironmentProvider defaultEnvironment={NearEnvironment.TestNet}>
-         <NearProvider defaultState={nearState} defaultClient={nearClient}>
+         <NearProvider
+            defaultState={nearState}
+            defaultClient={nearClient}
+            authContractId={NFT_CONTRACT_NAME}
+         >
             <Component {...pageProps} />
          </NearProvider>
       </NearEnvironmentProvider>
