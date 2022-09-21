@@ -10,7 +10,7 @@ import { NftContractMetadata } from 'react-near/standards/nft/types';
 const Page: NextPage = function () {
    const nftContract = useNftContract();
    const ftContract = useFtContract();
-   const nearUser = useNearUser(NFT_CONTRACT_NAME);
+   const nearUser = useNearUser();
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(

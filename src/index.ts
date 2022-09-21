@@ -6,7 +6,7 @@ import {
    useNearMutation,
    useNearQuery,
 } from './hooks';
-import NearProvider, { NearContext } from './NearProvider';
+import NearProvider, { NearContext, makeNearProviderState } from './NearProvider';
 import getNearConfig, { NEAR_GAS } from './config';
 import {
    getNearError,
@@ -20,6 +20,8 @@ import NearEnvironmentProvider, { NearEnvironmentContext, useNearEnvironment } f
 import { NearEnvironment } from './config';
 import NearContractProvider from './contract/NearContractProvider';
 import useNearContract from './contract/useNearContract';
+import { collectNearData } from './collectNearInfo';
+import createNearClient, { useNearClient, encodeRequest } from './core/client';
 
 export {
    useNear,
@@ -31,6 +33,7 @@ export {
    //
    NearProvider,
    NearContext,
+   makeNearProviderState,
    //
    NearEnvironment,
    getNearConfig,
@@ -50,4 +53,10 @@ export {
    //
    NearContractProvider,
    useNearContract,
+   //
+   collectNearData,
+   //
+   createNearClient,
+   encodeRequest,
+   useNearClient,
 };

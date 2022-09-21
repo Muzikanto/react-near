@@ -79,7 +79,7 @@ function useFtContract() {
 function MyApp({ Component, pageProps }: AppProps) {
    return (
       <NearEnvironmentProvider defaultEnvironment={NearEnvironment.TestNet}>
-         <NearProvider>
+         <NearProvider authContractId='my-contract.testnet'>
             <Component {...pageProps} />
          </NearProvider>
       </NearEnvironmentProvider>
@@ -88,7 +88,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 // page.tsx
 function Page() {
-   const nearUser = useNearUser(FT_CONTRACT_NAME);
+   const nearUser = useNearUser();
    const ftContract = useFtContract();
 
    const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
@@ -165,7 +165,7 @@ Create a context of NEAR in the application
 // app.tsx
 function MyApp({ Component, pageProps }: AppProps) {
    return (
-      <NearProvider>
+      <NearProvider authContractId='my-contract.testnet'>
          <Component {...pageProps} />
       </NearProvider>
    );
@@ -174,7 +174,7 @@ function Page() {
    const near = useNear(); // nearApi.Near
    const wallet = useNearWallet(); // nearApi.WalletConnection
    const account = useNearAccount(); // nearApi.Account
-   const nearUser = useNearUser('example-contract.near');
+   const nearUser = useNearUser();
 
    return (
       <>
@@ -218,7 +218,7 @@ Everything you need to manage your account
 
 ```typescript jsx
 function Page() {
-   const nearUser = useNearUser('example-contract');
+   const nearUser = useNearUser();
 
    return (
       <>
@@ -246,7 +246,7 @@ const FT_CONTRACT_ID_2 = 'ft-token-two.testnet';
 const POOL_CONTRACT_ID = 'two-tokens-receiver.testnet';
 
 function Page() {
-   const nearUser = useNearUser('example-contract');
+   const nearUser = useNearUser();
    const ftContract1 = useFtContract(FT_CONTRACT_ID_1);
    const ftContract2 = useFtContract(FT_CONTRACT_ID_2);
    const mtContract = useFtContract(MT_CONTRACT_ID);
@@ -364,7 +364,11 @@ const MyApp: React.FC<MyAppProps> = function ({
    nearState,
 }: MyAppProps) {
    return (
-      <NearProvider defaultClient={nearClient} defaultState={nearState}>
+      <NearProvider
+         defaultClient={nearClient}
+         defaultState={nearState}
+         authContractId='my-contract.testnet'
+      >
          <Component {...pageProps} />
       </NearProvider>
    );
@@ -427,7 +431,7 @@ Calling the view method from the contract
 
 ```typescript jsx
 function Page() {
-   const nearUser = useNearUser('contract.near');
+   const nearUser = useNearUser();
    const ftContract = useFtContract();
 
    const {
@@ -464,7 +468,7 @@ Calling the change method from the contract
 
 ```typescript jsx
 function Page() {
-   const nearUser = useNearUser('contract.near');
+   const nearUser = useNearUser();
    const ftContract = useFtContract();
 
    const [transfer, { loading, data }] = useNearMutation<
