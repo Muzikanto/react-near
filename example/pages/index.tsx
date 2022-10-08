@@ -1,16 +1,22 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { NFT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
-import { NEAR_GAS, useNearQuery, useNearUser } from 'react-near';
-import { useNftTokens } from 'react-near/standards';
-import { useFtBalanceOf, useFtTransfer } from 'react-near/standards';
-import { formatNearPrice, parseNearAmount } from 'react-near/utils';
-import { NftContractMetadata } from 'react-near/standards/nft/types';
+import {
+   formatNearPrice,
+   NEAR_GAS,
+   parseNearAmount,
+   useNearEnvironment,
+   useNearQuery,
+   useNearUser,
+} from '../../src';
+import { NftContractMetadata } from '../../src/standards/nft/types';
+import { useFtBalanceOf, useFtTransfer, useNftTokens } from '../../src/standards';
 
 const Page: NextPage = function () {
    const nftContract = useNftContract();
    const ftContract = useFtContract();
    const nearUser = useNearUser();
+   const nearEnv = useNearEnvironment();
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(
@@ -30,10 +36,7 @@ const Page: NextPage = function () {
       variables: { limit: 5, from_index: '0' },
       poolInterval: 1000 * 60 * 5,
    });
-   const {
-      data: ftBalance = '0',
-      refetch: refetchFtBalance,
-   } = useFtBalanceOf({
+   const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
       contract: ftContract,
       variables: { account_id: nearUser.address as string },
       poolInterval: 1000 * 60 * 5,
@@ -73,6 +76,7 @@ const Page: NextPage = function () {
                   <p>Address: {nearUser.address}</p>
                   <p>{nearUser.balance} NEAR</p>
                   <p>{formatNearPrice(ftBalance).toFixed(2)} MFIGT</p>
+                  <p>env: {nearEnv.value}</p>
                   <button onClick={() => nearUser.disconnect()}>disconnect</button>
                </div>
 

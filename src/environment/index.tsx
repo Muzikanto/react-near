@@ -29,8 +29,8 @@ const NearEnvironmentProvider: React.FC<React.PropsWithChildren<NearEnvironmentP
    children,
 }) => {
    let nearEnv =
-      (typeof window === 'undefined' ? NearEnvironment.TestNet : getNearCookie('near-env')) ||
-      NearEnvironment.TestNet;
+      (typeof window === 'undefined' ? defaultEnvironment : getNearCookie('near-env')) ||
+       defaultEnvironment;
 
    React.useEffect(() => {
       if (![NearEnvironment.MainNet, NearEnvironment.TestNet].includes(nearEnv as any)) {
