@@ -20,7 +20,7 @@ import NearEnvironmentProvider, { NearEnvironmentContext, useNearEnvironment } f
 import { NearEnvironment } from './config';
 import NearContractProvider from './contract/NearContractProvider';
 import useNearContract from './contract/useNearContract';
-import { collectNearData } from './collectNearInfo';
+import { collectNearData, collectNearDataWithoutRender } from './collectNearInfo';
 import createNearClient, { useNearClient, encodeRequest } from './core/client';
 
 export {
@@ -55,6 +55,7 @@ export {
    useNearContract,
    //
    collectNearData,
+   collectNearDataWithoutRender,
    //
    createNearClient,
    encodeRequest,

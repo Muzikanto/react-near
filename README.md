@@ -401,7 +401,7 @@ MyApp.getInitialProps = async ({
 
    // render for collect methods
    const { AppTree } = ctx;
-   await collectNearData(nearClient, <AppTree {...props} />);
+   await collectNearData(nearClient, <AppTree {...props} />); // or use collectNearDataWithoutRender
 
    return props;
 };

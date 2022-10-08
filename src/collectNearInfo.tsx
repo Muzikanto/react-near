@@ -1,9 +1,6 @@
 import { encodeRequest, NearClient } from './core/client';
 
-export async function collectNearData(nearClient: NearClient, element: JSX.Element) {
-   const render = await require('react-dom/server').renderToStaticMarkup;
-   render(element);
-
+export async function collectNearDataWithoutRender(nearClient: NearClient) {
    const SSR = nearClient.cache.SSR || {};
 
    for (const key in SSR) {
@@ -20,4 +17,11 @@ export async function collectNearData(nearClient: NearClient, element: JSX.Eleme
          nearClient.setQuery(key, { data: res, loading: false, error: undefined });
       }
    }
+}
+
+export async function collectNearData(nearClient: NearClient, element: JSX.Element) {
+   const render = await require('react-dom/server').renderToStaticMarkup;
+   render(element);
+
+   await collectNearDataWithoutRender(nearClient);
 }
