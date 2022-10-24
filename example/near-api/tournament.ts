@@ -212,7 +212,7 @@ export type ITournamentFreePlacesArgs = {
    owner_id: AccountId;
 };
 
-export type ITournamentFreePlacesResult = number | null;
+export type ITournamentFreePlacesResult = integer | null;
 
 export function useTournamentFreePlacesQuery(opts: NearQueryOptions<ITournamentFreePlacesResult, ITournamentFreePlacesArgs>) {
     return useTournamentQueryRaw<ITournamentFreePlacesResult, ITournamentFreePlacesArgs>(TournamentViewMethods.tournament_free_places, opts);
@@ -327,7 +327,7 @@ export function useTournamentStartMutation(opts: NearMutationOptions<ITournament
 export type ITournamentsArgs = {
    owner_id: AccountId;
    from_index: U128 | null;
-   limit: number | null;
+   limit: integer | null;
 };
 
 export type ITournamentsResult = JsonTournament[];

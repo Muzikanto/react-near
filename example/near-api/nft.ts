@@ -260,7 +260,7 @@ export function useNftBurnMutation(opts: NearMutationOptions<INftBurnResult, INf
 export type INftIsApprovedArgs = {
    token_id: string;
    approved_account_id: AccountId;
-   approval_id: number | null;
+   approval_id: integer | null;
 };
 
 export type INftIsApprovedResult = boolean;
@@ -301,8 +301,8 @@ export type INftMintArgs = {
    token_metadata: TokenMetadata;
    bind_to_owner: boolean | null;
    perpetual_royalties: object | null;
-   reveal_at: number | null;
-   rarity: number | null;
+   reveal_at: integer | null;
+   rarity: integer | null;
    collection: TokenCollection | null;
    token_type: TokenType | null;
    token_sub_type: TokenSubType | null;
@@ -446,7 +446,7 @@ export function useNftTokenQuery(opts: NearQueryOptions<INftTokenResult, INftTok
 
 export type INftTokensArgs = {
    from_index: U128 | null;
-   limit: number | null;
+   limit: integer | null;
 };
 
 export type INftTokensResult = Token[];
@@ -472,7 +472,7 @@ export function useNftTokensByIdsQuery(opts: NearQueryOptions<INftTokensByIdsRes
 export type INftTokensForOwnerArgs = {
    account_id: AccountId;
    from_index: U128 | null;
-   limit: number | null;
+   limit: integer | null;
 };
 
 export type INftTokensForOwnerResult = Token[];
@@ -498,7 +498,7 @@ export function useNftTotalSupplyQuery(opts: NearQueryOptions<INftTotalSupplyRes
 export type INftTransferArgs = {
    receiver_id: AccountId;
    token_id: string;
-   approval_id: number | null;
+   approval_id: integer | null;
    memo: string | null;
 };
 
@@ -513,7 +513,7 @@ export function useNftTransferMutation(opts: NearMutationOptions<INftTransferRes
 export type INftTransferCallArgs = {
    receiver_id: AccountId;
    token_id: string;
-   approval_id: number | null;
+   approval_id: integer | null;
    memo: string | null;
    msg: string;
 };
@@ -559,7 +559,7 @@ export type INftUpgradePriceArgs = {
    token_id: string;
 };
 
-export type INftUpgradePriceResult = array | null;
+export type INftUpgradePriceResult = [AccountId, U128] | null;
 
 export function useNftUpgradePriceQuery(opts: NearQueryOptions<INftUpgradePriceResult, INftUpgradePriceArgs>) {
     return useNftQueryRaw<INftUpgradePriceResult, INftUpgradePriceArgs>(NftViewMethods.nft_upgrade_price, opts);

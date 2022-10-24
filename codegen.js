@@ -224,6 +224,9 @@ function getMethodWithTypes({ el, contractName, getMethod }) {
    ].join('\n');
 }
 
+function getRefType(refStr) {
+   return refStr.split('/').slice(-1)[0]
+}
 function formatParam(el) {
    if (!el) {
       return 'void';
@@ -234,6 +237,14 @@ function formatParam(el) {
             return `${el.type_schema.items.type}[]`;
          }
          return `${el.type_schema.items.$ref.split('/').slice(-1)[0]}[]`;
+      }
+      if (Array.isArray(el.type_schema.type)) {
+         if (el.type_schema.type[0] !== 'array') {
+            return el.type_schema.type.join(' | ');
+         }
+
+         return `[${el.type_schema.items.map(el => getRefType(el.$ref)).join(', ')}] | ${el.type_schema.type[1]}`;
+
       }
       if (Array.isArray(el.type_schema.type)) {
          return `${el.type_schema.type
