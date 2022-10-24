@@ -10,14 +10,17 @@
       },
       {
          "name": "Game",
-         "contractId": "mfight.testnet"
+         "testnet": "mfight.testnet",
+         "mainnet": "mfight.near"
       }, {
          "name": "Market",
-         "contractId": "mfight-market.testnet"
+         "testnet": "mfight-market.testnet",
+         "mainnet": "mfight-market.near"
       },
       {
          "name": "Nft",
-         "contractId": "mfight-nft_v2.testnet"
+         "testnet": "mfight-nft_v2.testnet",
+         "mainnet": "mfight-nft.near"
       }
    ]
 }

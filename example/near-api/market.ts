@@ -4,7 +4,7 @@ import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, Nea
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const MARKET_CONTRACT_NAME_MAINNET = '';
+export const MARKET_CONTRACT_NAME_MAINNET = 'mfight-market.near';
 export const MARKET_CONTRACT_NAME_TESTNET = 'mfight-market.testnet';
 
 export enum MarketViewMethods {

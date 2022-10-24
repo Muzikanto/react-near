@@ -4,7 +4,7 @@ import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, Nea
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const GAME_CONTRACT_NAME_MAINNET = '';
+export const GAME_CONTRACT_NAME_MAINNET = 'mfight.near';
 export const GAME_CONTRACT_NAME_TESTNET = 'mfight.testnet';
 
 export enum GameViewMethods {

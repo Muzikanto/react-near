@@ -4,7 +4,7 @@ import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, Nea
 import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
-export const NFT_CONTRACT_NAME_MAINNET = '';
+export const NFT_CONTRACT_NAME_MAINNET = 'mfight-nft.near';
 export const NFT_CONTRACT_NAME_TESTNET = 'mfight-nft_v2.testnet';
 
 export enum NftViewMethods {

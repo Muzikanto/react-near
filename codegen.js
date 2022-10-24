@@ -39,12 +39,18 @@ if (!fs.existsSync(path.resolve(dist))) {
 
 (async () => {
    for (const contract of config.contracts) {
+      const contractId = contract.contractId || contract.testnet || contract.mainnet
+
+      if (!contractId) {
+         throw new Error('Invalid react-near.json config');
+      }
+
       let schema = contract.abi
          ? JSON.parse(fs.readFileSync(path.resolve(contract.abi), { encoding: 'utf-8' }))
-         : await loadAbi(contract.contractId);
+         : await loadAbi(contractId);
 
       if (!schema) {
-         console.log(`Invalid schema of ${contract.contractId}`);
+         console.log(`Invalid schema of ${contractId}`);
          process.exit(1);
       }
 
@@ -58,14 +64,12 @@ if (!fs.existsSync(path.resolve(dist))) {
          throw new Error('Invalid react-near config "type" field.');
       }
 
-      if (!(contract.contractId || contract.testnet || contract.mainnet)) {
-         throw new Error('Invalid react-near.json config');
-      }
+
 
       await generate(
          schema,
          contract.name,
-         { id: contract.contractId, testnet: contract.testnet, mainnet: contract.mainnet },
+         { id: contractId, testnet: contract.testnet, mainnet: contract.mainnet },
          configParse,
       );
    }
@@ -236,7 +240,7 @@ function formatParam(el) {
          if (el.type_schema.items.type) {
             return `${el.type_schema.items.type}[]`;
          }
-         return `${el.type_schema.items.$ref.split('/').slice(-1)[0]}[]`;
+         return `${getRefType(el.type_schema.items.$ref)}[]`;
       }
       if (Array.isArray(el.type_schema.type)) {
          if (el.type_schema.type[0] !== 'array') {
@@ -261,7 +265,7 @@ function formatParam(el) {
       return el.type_schema.type;
    }
    if (el.type_schema.$ref) {
-      let res = el.type_schema.$ref.split('/').slice(-1)[0];
+      let res = getRefType(el.type_schema.$ref);
 
       if (res === 'Promise') {
          return 'void';
@@ -275,7 +279,7 @@ function formatParam(el) {
             if (el.type) {
                return el.type;
             } else if (el.$ref) {
-               const res = `${el.$ref.split('/').slice(-1)[0]}`;
+               const res = `${getRefType(el.$ref)}`;
 
                if (res === 'Promise') {
                   return 'void';
