@@ -22,6 +22,7 @@ import NearContractProvider from './contract/NearContractProvider';
 import useNearContract from './contract/useNearContract';
 import { collectNearData, collectNearDataWithoutRender } from './collectNearInfo';
 import createNearClient, { useNearClient, encodeRequest } from './core/client';
+import { YoctoPrice } from './number';
 
 export {
    useNear,
@@ -60,4 +61,6 @@ export {
    createNearClient,
    encodeRequest,
    useNearClient,
+   //
+   YoctoPrice,
 };

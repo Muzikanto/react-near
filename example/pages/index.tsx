@@ -1,6 +1,6 @@
 import React from 'react';
 import { NextPage } from 'next';
-import { NFT_CONTRACT_NAME, useNftContract, useFtContract } from './_app';
+import { useNftContract, useFtContract } from './_app';
 import {
    formatNearPrice,
    NEAR_GAS,
