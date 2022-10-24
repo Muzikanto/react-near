@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const fzstd = require('fzstd');
 const nearApi = require('near-api-js');
+const { codegenNearReactTs } = require('./codegen-react-ts');
+const { codegenNearTs } = require('./codegen-ts');
 
 const networks = {
    mainnet: 'https://rpc.mainnet.near.org',
@@ -33,20 +35,7 @@ if (!fs.existsSync(path.resolve(dist))) {
 
 //
 
-const parseConfigs = {
-   default: {
-      getMethod: getMethodDefault,
-      getContract: getContractDefault,
-      getStartCode: getStartCodeDefault,
-      getCoreCode: getCoreCodeDefault,
-   },
-   raw: {
-      getMethod: () => '',
-      getContract: getContractRaw,
-      getStartCode: getStartCodeRaw,
-      getCoreCode: () => '',
-   },
-};
+
 
 (async () => {
    for (const contract of config.contracts) {
@@ -59,7 +48,11 @@ const parseConfigs = {
          process.exit(1);
       }
 
-      const configParse = parseConfigs[config.type || 'default'];
+      const codegenMap = {
+         default: codegenNearReactTs,
+         raw: codegenNearTs,
+      }
+      const configParse = codegenMap[config.type || 'default'];
 
       if (!configParse) {
          throw new Error('Invalid react-near config "type" field.');
@@ -171,6 +164,8 @@ function generateMethods({ methods, contractName, getMethod }) {
 function generateContract({ methods, contractName, getContract }) {
    return getContract({
       contractName,
+      contractId: contractName,
+      codegenName: getContractId(contractName),
       viewMethods: methods
          .filter((el) => el.is_view)
          .map((el) => `        ${contractName}ViewMethods.${el.name},`),
@@ -292,7 +287,7 @@ function formatFunctionName(str) {
    return res.slice(0, 1).toUpperCase() + res.slice(1);
 }
 
-function getContractId(contractId) {
+function getCodegenContractId(contractId) {
    return camelToSnakeCase(contractId).toUpperCase() + '_CONTRACT_NAME';
 }
 
@@ -333,92 +328,7 @@ function prepareCode(ts) {
    );
 }
 
-// override
-
-function getMethodDefault({
-   functionName,
-   methodName,
-   isView,
-   isChange,
-   isPayable,
-   contractName,
-   raw,
-   argsInterface,
-   resultInterface,
-}) {
-   return [
-      `export function use${functionName}${isView ? 'Query' : 'Mutation'}(opts: Near${
-         isView ? 'Query' : 'Mutation'
-      }Options<${resultInterface}, ${argsInterface}>) {`,
-      `    return use${contractName}${
-         isView ? 'QueryRaw' : 'MutationRaw'
-      }<${resultInterface}, ${argsInterface}>(${contractName}${
-         isView ? 'View' : 'Change'
-      }Methods.${methodName}, opts);`,
-      `}`,
-   ].join('\n');
+function getContractId(contractId) {
+   return camelToSnakeCase(contractId).toUpperCase() + '_CONTRACT_NAME';
 }
 
-function getContractDefault({ contractName, interfaceName, viewMethods, changeMethods }) {
-   return [
-      `export function use${contractName}ContractId() {`,
-      `  const nearEnv = useNearEnvironment();`,
-      '',
-      `  return nearEnv.value === NearEnvironment.MainNet ? ${getContractId(contractName)}_MAINNET : ${getContractId(contractName)}_TESTNET;`,
-      `}`,
-      '',
-      `export function use${contractName}Contract() {`,
-      `  const contractId = use${contractName}ContractId();`,
-      '',
-      '  return (',
-      `    useNearContract<I${contractName}Contract>(contractId, {`,
-      `      viewMethods: [\n${viewMethods.join('\n')}\n      ],`,
-      `      changeMethods: [\n${changeMethods.join('\n')}\n      ],`,
-      '    }',
-      '  ));',
-      '}',
-   ].join('\n');
-}
-
-function getCoreCodeDefault({ contractName }) {
-   return `export function use${contractName}QueryRaw<Res = any, Req = any>(
-  methodName: ${contractName}ViewMethods,
-  opts: NearQueryOptions<Res, Req> = {}
-) {
-  const contract = use${contractName}Contract();
-
-  return useNearQuery(methodName, { contract, ...opts });
-}
-
-export function use${contractName}MutationRaw<Res = any, Req = any>(
-  methodName: ${contractName}ChangeMethods,
-  opts: NearMutationOptions<Res, Req> = {}
-) {
-  const contract = use${contractName}Contract();
-
-  return useNearMutation(methodName, { contract, ...opts });
-}`;
-}
-
-function getStartCodeDefault({ contractName }) {
-   return [
-      `import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";`,
-      'import { NearQueryOptions } from "react-near/hooks/query";',
-      'import { NearMutationOptions } from "react-near/hooks/mutation";',
-   ].join('\n');
-}
-
-function getContractRaw({ contractName, viewMethods, changeMethods, interfaceName }) {
-   return [
-      `export function get${contractName}Contract(account: Account): Contract & ${interfaceName} {`,
-      `  return new Contract(account, ${getContractId(contractName)}, {`,
-      `      viewMethods: [\n${viewMethods.join('\n')}\n      ],`,
-      `      changeMethods: [\n${changeMethods.join('\n')}\n      ],`,
-      `    }) as Contract & ${interfaceName};`,
-      '}',
-   ].join('\n');
-}
-
-function getStartCodeRaw({ contractName }) {
-   return `import { Contract, Account } from "near-api-js";`;
-}

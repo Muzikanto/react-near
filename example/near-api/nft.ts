@@ -8,10 +8,8 @@ export const NFT_CONTRACT_NAME_MAINNET = '';
 export const NFT_CONTRACT_NAME_TESTNET = 'mfight-nft_v2.testnet';
 
 export enum NftViewMethods {
-  assert_approve = 'assert_approve',
-  assert_burn = 'assert_burn',
+  assert_action = 'assert_action',
   assert_owner = 'assert_owner',
-  assert_transfer = 'assert_transfer',
   is_blacklist = 'is_blacklist',
   is_paused = 'is_paused',
   nft_is_approved = 'nft_is_approved',
@@ -26,6 +24,7 @@ export enum NftViewMethods {
   nft_tokens_by_ids = 'nft_tokens_by_ids',
   nft_tokens_for_owner = 'nft_tokens_for_owner',
   nft_total_supply = 'nft_total_supply',
+  nft_upgrade_price = 'nft_upgrade_price',
 }
 
 export enum NftChangeMethods {
@@ -35,11 +34,14 @@ export enum NftChangeMethods {
   nft_burn = 'nft_burn', // payable
   nft_mint = 'nft_mint',
   nft_resolve_transfer = 'nft_resolve_transfer',
+  nft_reveal = 'nft_reveal', // payable
   nft_revoke = 'nft_revoke', // payable
   nft_revoke_all = 'nft_revoke_all', // payable
+  nft_set_upgrade_price = 'nft_set_upgrade_price',
   nft_transfer = 'nft_transfer', // payable
   nft_transfer_call = 'nft_transfer_call', // payable
   nft_transfer_payout = 'nft_transfer_payout', // payable
+  nft_upgrade = 'nft_upgrade', // payable
   set_is_paused = 'set_is_paused',
   set_royalty_account = 'set_royalty_account',
   set_royalty_value = 'set_royalty_value',
@@ -47,10 +49,8 @@ export enum NftChangeMethods {
 
 export interface INftContract {
    // view methods
-   assert_approve(args: IAssertApproveArgs): IAssertApproveResult
-   assert_burn(args: IAssertBurnArgs): IAssertBurnResult
+   assert_action(args: IAssertActionArgs): IAssertActionResult
    assert_owner(args: IAssertOwnerArgs): IAssertOwnerResult
-   assert_transfer(args: IAssertTransferArgs): IAssertTransferResult
    is_blacklist(args: IIsBlacklistArgs): IIsBlacklistResult
    is_paused(args: IIsPausedArgs): IIsPausedResult
    nft_is_approved(args: INftIsApprovedArgs): INftIsApprovedResult
@@ -65,6 +65,7 @@ export interface INftContract {
    nft_tokens_by_ids(args: INftTokensByIdsArgs): INftTokensByIdsResult
    nft_tokens_for_owner(args: INftTokensForOwnerArgs): INftTokensForOwnerResult
    nft_total_supply(args: INftTotalSupplyArgs): INftTotalSupplyResult
+   nft_upgrade_price(args: INftUpgradePriceArgs): INftUpgradePriceResult
    // change methods
    blacklist_add(args: IBlacklistAddArgs): IBlacklistAddResult
    blacklist_remove(args: IBlacklistRemoveArgs): IBlacklistRemoveResult
@@ -72,11 +73,14 @@ export interface INftContract {
    nft_burn(args: INftBurnArgs): INftBurnResult
    nft_mint(args: INftMintArgs): INftMintResult
    nft_resolve_transfer(args: INftResolveTransferArgs): INftResolveTransferResult
+   nft_reveal(args: INftRevealArgs): INftRevealResult
    nft_revoke(args: INftRevokeArgs): INftRevokeResult
    nft_revoke_all(args: INftRevokeAllArgs): INftRevokeAllResult
+   nft_set_upgrade_price(args: INftSetUpgradePriceArgs): INftSetUpgradePriceResult
    nft_transfer(args: INftTransferArgs): INftTransferResult
    nft_transfer_call(args: INftTransferCallArgs): INftTransferCallResult
    nft_transfer_payout(args: INftTransferPayoutArgs): INftTransferPayoutResult
+   nft_upgrade(args: INftUpgradeArgs): INftUpgradeResult
    set_is_paused(args: ISetIsPausedArgs): ISetIsPausedResult
    set_royalty_account(args: ISetRoyaltyAccountArgs): ISetRoyaltyAccountResult
    set_royalty_value(args: ISetRoyaltyValueArgs): ISetRoyaltyValueResult
@@ -94,10 +98,8 @@ export function useNftContract() {
   return (
     useNearContract<INftContract>(contractId, {
       viewMethods: [
-        NftViewMethods.assert_approve,
-        NftViewMethods.assert_burn,
+        NftViewMethods.assert_action,
         NftViewMethods.assert_owner,
-        NftViewMethods.assert_transfer,
         NftViewMethods.is_blacklist,
         NftViewMethods.is_paused,
         NftViewMethods.nft_is_approved,
@@ -112,6 +114,7 @@ export function useNftContract() {
         NftViewMethods.nft_tokens_by_ids,
         NftViewMethods.nft_tokens_for_owner,
         NftViewMethods.nft_total_supply,
+        NftViewMethods.nft_upgrade_price,
       ],
       changeMethods: [
         NftChangeMethods.blacklist_add,
@@ -120,11 +123,14 @@ export function useNftContract() {
         NftChangeMethods.nft_burn,
         NftChangeMethods.nft_mint,
         NftChangeMethods.nft_resolve_transfer,
+        NftChangeMethods.nft_reveal,
         NftChangeMethods.nft_revoke,
         NftChangeMethods.nft_revoke_all,
+        NftChangeMethods.nft_set_upgrade_price,
         NftChangeMethods.nft_transfer,
         NftChangeMethods.nft_transfer_call,
         NftChangeMethods.nft_transfer_payout,
+        NftChangeMethods.nft_upgrade,
         NftChangeMethods.set_is_paused,
         NftChangeMethods.set_royalty_account,
         NftChangeMethods.set_royalty_value,
@@ -151,29 +157,16 @@ export function useNftMutationRaw<Res = any, Req = any>(
   return useNearMutation(methodName, { contract, ...opts });
 }
 
-// assert_approve query
+// assert_action query
 
-export type IAssertApproveArgs = {
-   token_id: string;
-   contract_id: AccountId;
+export type IAssertActionArgs = {
+
 };
 
-export type IAssertApproveResult = void;
+export type IAssertActionResult = void;
 
-export function useAssertApproveQuery(opts: NearQueryOptions<IAssertApproveResult, IAssertApproveArgs>) {
-    return useNftQueryRaw<IAssertApproveResult, IAssertApproveArgs>(NftViewMethods.assert_approve, opts);
-}
-
-// assert_burn query
-
-export type IAssertBurnArgs = {
-   token_id: string;
-};
-
-export type IAssertBurnResult = void;
-
-export function useAssertBurnQuery(opts: NearQueryOptions<IAssertBurnResult, IAssertBurnArgs>) {
-    return useNftQueryRaw<IAssertBurnResult, IAssertBurnArgs>(NftViewMethods.assert_burn, opts);
+export function useAssertActionQuery(opts: NearQueryOptions<IAssertActionResult, IAssertActionArgs>) {
+    return useNftQueryRaw<IAssertActionResult, IAssertActionArgs>(NftViewMethods.assert_action, opts);
 }
 
 // assert_owner query
@@ -186,19 +179,6 @@ export type IAssertOwnerResult = void;
 
 export function useAssertOwnerQuery(opts: NearQueryOptions<IAssertOwnerResult, IAssertOwnerArgs>) {
     return useNftQueryRaw<IAssertOwnerResult, IAssertOwnerArgs>(NftViewMethods.assert_owner, opts);
-}
-
-// assert_transfer query
-
-export type IAssertTransferArgs = {
-   token_id: string;
-   receiver_id: AccountId;
-};
-
-export type IAssertTransferResult = void;
-
-export function useAssertTransferQuery(opts: NearQueryOptions<IAssertTransferResult, IAssertTransferArgs>) {
-    return useNftQueryRaw<IAssertTransferResult, IAssertTransferArgs>(NftViewMethods.assert_transfer, opts);
 }
 
 // blacklist_add mutation
@@ -319,12 +299,13 @@ export type INftMintArgs = {
    token_id: string;
    receiver_id: AccountId | null;
    token_metadata: TokenMetadata;
-   rarity: TokenRarity;
-   collection: TokenCollection;
-   token_type: TokenType;
-   token_sub_type: TokenSubType | null;
    bind_to_owner: boolean | null;
    perpetual_royalties: object | null;
+   reveal_at: number | null;
+   rarity: number | null;
+   collection: TokenCollection | null;
+   token_type: TokenType | null;
+   token_sub_type: TokenSubType | null;
 };
 
 export type INftMintResult = Token;
@@ -360,6 +341,18 @@ export type INftResolveTransferResult = boolean;
 
 export function useNftResolveTransferMutation(opts: NearMutationOptions<INftResolveTransferResult, INftResolveTransferArgs>) {
     return useNftMutationRaw<INftResolveTransferResult, INftResolveTransferArgs>(NftChangeMethods.nft_resolve_transfer, opts);
+}
+
+// nft_reveal mutation (payable)
+
+export type INftRevealArgs = {
+   token_id: string;
+};
+
+export type INftRevealResult = void;
+
+export function useNftRevealMutation(opts: NearMutationOptions<INftRevealResult, INftRevealArgs>) {
+    return useNftMutationRaw<INftRevealResult, INftRevealArgs>(NftChangeMethods.nft_reveal, opts);
 }
 
 // nft_revoke mutation (payable)
@@ -409,6 +402,20 @@ export type INftRoyaltyValueResult = integer;
 
 export function useNftRoyaltyValueQuery(opts: NearQueryOptions<INftRoyaltyValueResult, INftRoyaltyValueArgs>) {
     return useNftQueryRaw<INftRoyaltyValueResult, INftRoyaltyValueArgs>(NftViewMethods.nft_royalty_value, opts);
+}
+
+// nft_set_upgrade_price mutation
+
+export type INftSetUpgradePriceArgs = {
+   rarity: integer;
+   ft_token_id: AccountId;
+   price: U128;
+};
+
+export type INftSetUpgradePriceResult = void;
+
+export function useNftSetUpgradePriceMutation(opts: NearMutationOptions<INftSetUpgradePriceResult, INftSetUpgradePriceArgs>) {
+    return useNftMutationRaw<INftSetUpgradePriceResult, INftSetUpgradePriceArgs>(NftChangeMethods.nft_set_upgrade_price, opts);
 }
 
 // nft_supply_for_owner query
@@ -534,6 +541,30 @@ export function useNftTransferPayoutMutation(opts: NearMutationOptions<INftTrans
     return useNftMutationRaw<INftTransferPayoutResult, INftTransferPayoutArgs>(NftChangeMethods.nft_transfer_payout, opts);
 }
 
+// nft_upgrade mutation (payable)
+
+export type INftUpgradeArgs = {
+   token_id: string;
+};
+
+export type INftUpgradeResult = void;
+
+export function useNftUpgradeMutation(opts: NearMutationOptions<INftUpgradeResult, INftUpgradeArgs>) {
+    return useNftMutationRaw<INftUpgradeResult, INftUpgradeArgs>(NftChangeMethods.nft_upgrade, opts);
+}
+
+// nft_upgrade_price query
+
+export type INftUpgradePriceArgs = {
+   token_id: string;
+};
+
+export type INftUpgradePriceResult = array | null;
+
+export function useNftUpgradePriceQuery(opts: NearQueryOptions<INftUpgradePriceResult, INftUpgradePriceArgs>) {
+    return useNftQueryRaw<INftUpgradePriceResult, INftUpgradePriceArgs>(NftViewMethods.nft_upgrade_price, opts);
+}
+
 // set_is_paused mutation
 
 export type ISetIsPausedArgs = {
@@ -590,7 +621,6 @@ export function useSetRoyaltyValueMutation(opts: NearMutationOptions<ISetRoyalty
 export type AccountId = string;
 export type Base64VecU8 = string;
 export type U128 = string;
-export type PromiseOrValueArrayOf_U128 = U128[];
 export type PromiseOrValueBoolean = boolean;
 export type TokenCollection =
   | "Fantasy"
@@ -601,7 +631,6 @@ export type TokenCollection =
   | "Asian"
   | "CyberPunk"
   | "Unknown";
-export type TokenRarity = "Common" | "Uncommon" | "Rare" | "Uniq" | "Epic" | "Legendary" | "Artefact";
 export type TokenSubType =
   | "Unknown"
   | "Ring"
@@ -665,6 +694,7 @@ export type TokenSubType =
   | "Camera"
   | "Mask"
   | "Coin"
+  | "Brush"
   | "Human"
   | "Elf"
   | "Dwarf"
@@ -692,12 +722,10 @@ export interface Definitions {
   NFTContractMetadata?: NFTContractMetadata;
   Payout?: Payout;
   Promise?: true;
-  PromiseOrValueArrayOf_U128?: PromiseOrValueArrayOf_U128;
   PromiseOrValueBoolean?: PromiseOrValueBoolean;
   Token?: Token;
   TokenCollection?: TokenCollection;
   TokenMetadata?: TokenMetadata;
-  TokenRarity?: TokenRarity;
   TokenSubType?: TokenSubType;
   TokenType?: TokenType;
   U128?: U128;
@@ -730,7 +758,8 @@ export interface Token {
   collection?: TokenCollection | null;
   metadata?: TokenMetadata | null;
   owner_id: AccountId;
-  rarity?: TokenRarity | null;
+  rarity?: number | null;
+  reveal_at?: number | null;
   royalty?: {
     [k: string]: number;
   } | null;
