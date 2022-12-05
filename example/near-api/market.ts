@@ -14,6 +14,7 @@ export enum MarketViewMethods {
   market_supply_by_nft_contract_id = 'market_supply_by_nft_contract_id',
   market_supply_by_owner_id = 'market_supply_by_owner_id',
   market_supply_sales = 'market_supply_sales',
+  reputation = 'reputation',
   supported_ft_token_ids = 'supported_ft_token_ids',
 }
 
@@ -36,6 +37,7 @@ export interface IMarketContract {
    market_supply_by_nft_contract_id(args: IMarketSupplyByNftContractIdArgs): IMarketSupplyByNftContractIdResult
    market_supply_by_owner_id(args: IMarketSupplyByOwnerIdArgs): IMarketSupplyByOwnerIdResult
    market_supply_sales(args: IMarketSupplySalesArgs): IMarketSupplySalesResult
+   reputation(args: IReputationArgs): IReputationResult
    supported_ft_token_ids(args: ISupportedFtTokenIdsArgs): ISupportedFtTokenIdsResult
    // change methods
    market_accept_offer(args: IMarketAcceptOfferArgs): IMarketAcceptOfferResult
@@ -66,6 +68,7 @@ export function useMarketContract() {
         MarketViewMethods.market_supply_by_nft_contract_id,
         MarketViewMethods.market_supply_by_owner_id,
         MarketViewMethods.market_supply_sales,
+        MarketViewMethods.reputation,
         MarketViewMethods.supported_ft_token_ids,
       ],
       changeMethods: [
@@ -87,16 +90,13 @@ export function useMarketQueryRaw<Res = any, Req = any>(
   opts: NearQueryOptions<Res, Req> = {}
 ) {
   const contract = useMarketContract();
-
   return useNearQuery(methodName, { contract, ...opts });
 }
-
 export function useMarketMutationRaw<Res = any, Req = any>(
   methodName: MarketChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
   const contract = useMarketContract();
-
   return useNearMutation(methodName, { contract, ...opts });
 }
 
@@ -289,6 +289,18 @@ export type IMarketUpdatePriceResult = void;
 
 export function useMarketUpdatePriceMutation(opts: NearMutationOptions<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>) {
     return useMarketMutationRaw<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>(MarketChangeMethods.market_update_price, opts);
+}
+
+// reputation query
+
+export type IReputationArgs = {
+   account_id: AccountId;
+};
+
+export type IReputationResult = integer;
+
+export function useReputationQuery(opts: NearQueryOptions<IReputationResult, IReputationArgs>) {
+    return useMarketQueryRaw<IReputationResult, IReputationArgs>(MarketViewMethods.reputation, opts);
 }
 
 // supported_ft_token_ids query

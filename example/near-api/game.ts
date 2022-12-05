@@ -5,39 +5,105 @@ import { NearQueryOptions } from "react-near/hooks/query";
 import { NearMutationOptions } from "react-near/hooks/mutation";
 
 export const GAME_CONTRACT_NAME_MAINNET = 'mfight.near';
-export const GAME_CONTRACT_NAME_TESTNET = 'mfight.testnet';
+export const GAME_CONTRACT_NAME_TESTNET = 'dev-1670177534740-91620037641534';
 
 export enum GameViewMethods {
-  game_clan = 'game_clan',
+  ft_balance_of = 'ft_balance_of',
+  ft_metadata = 'ft_metadata',
+  ft_total_supply = 'ft_total_supply',
+  game_npc = 'game_npc',
   game_player = 'game_player',
-  game_player_up_price = 'game_player_up_price',
-  get_owner = 'get_owner',
-  is_account_blocked = 'is_account_blocked',
+  game_player_npc_count = 'game_player_npc_count',
+  game_player_npc_list = 'game_player_npc_list',
+  game_player_room_count = 'game_player_room_count',
+  game_player_room_list = 'game_player_room_list',
+  game_room = 'game_room',
+  game_upgrade_room_price = 'game_upgrade_room_price',
   is_paused = 'is_paused',
+  nft_is_approved = 'nft_is_approved',
+  nft_metadata = 'nft_metadata',
+  nft_payout = 'nft_payout',
+  nft_supply_for_owner = 'nft_supply_for_owner',
+  nft_token = 'nft_token',
+  nft_tokens = 'nft_tokens',
+  nft_tokens_for_owner = 'nft_tokens_for_owner',
+  nft_total_supply = 'nft_total_supply',
+  storage_balance_bounds = 'storage_balance_bounds',
+  storage_balance_of = 'storage_balance_of',
 }
 
 export enum GameChangeMethods {
-  block_account = 'block_account',
-  fix = 'fix',
-  game_create_clan = 'game_create_clan',
-  game_create_player = 'game_create_player', // payable
+  ft_resolve_transfer = 'ft_resolve_transfer',
+  ft_transfer = 'ft_transfer', // payable
+  ft_transfer_call = 'ft_transfer_call', // payable
+  game_npc_move = 'game_npc_move',
+  game_process = 'game_process',
+  game_register = 'game_register', // payable
+  game_room_claim = 'game_room_claim',
+  game_upgrade_room = 'game_upgrade_room',
+  market_buy_npc = 'market_buy_npc', // payable
+  market_buy_room = 'market_buy_room', // payable
+  new_default_meta = 'new_default_meta',
+  nft_approve = 'nft_approve', // payable
+  nft_resolve_transfer = 'nft_resolve_transfer',
+  nft_revoke = 'nft_revoke', // payable
+  nft_revoke_all = 'nft_revoke_all', // payable
+  nft_transfer = 'nft_transfer', // payable
+  nft_transfer_call = 'nft_transfer_call', // payable
+  nft_transfer_payout = 'nft_transfer_payout', // payable
   set_is_paused = 'set_is_paused',
+  storage_deposit = 'storage_deposit', // payable
+  storage_unregister = 'storage_unregister', // payable
+  storage_withdraw = 'storage_withdraw', // payable
 }
 
 export interface IGameContract {
    // view methods
-   game_clan(args: IGameClanArgs): IGameClanResult
+   ft_balance_of(args: IFtBalanceOfArgs): IFtBalanceOfResult
+   ft_metadata(args: IFtMetadataArgs): IFtMetadataResult
+   ft_total_supply(args: IFtTotalSupplyArgs): IFtTotalSupplyResult
+   game_npc(args: IGameNpcArgs): IGameNpcResult
    game_player(args: IGamePlayerArgs): IGamePlayerResult
-   game_player_up_price(args: IGamePlayerUpPriceArgs): IGamePlayerUpPriceResult
-   get_owner(args: IGetOwnerArgs): IGetOwnerResult
-   is_account_blocked(args: IIsAccountBlockedArgs): IIsAccountBlockedResult
+   game_player_npc_count(args: IGamePlayerNpcCountArgs): IGamePlayerNpcCountResult
+   game_player_npc_list(args: IGamePlayerNpcListArgs): IGamePlayerNpcListResult
+   game_player_room_count(args: IGamePlayerRoomCountArgs): IGamePlayerRoomCountResult
+   game_player_room_list(args: IGamePlayerRoomListArgs): IGamePlayerRoomListResult
+   game_room(args: IGameRoomArgs): IGameRoomResult
+   game_upgrade_room_price(args: IGameUpgradeRoomPriceArgs): IGameUpgradeRoomPriceResult
    is_paused(args: IIsPausedArgs): IIsPausedResult
+   nft_is_approved(args: INftIsApprovedArgs): INftIsApprovedResult
+   nft_metadata(args: INftMetadataArgs): INftMetadataResult
+   nft_payout(args: INftPayoutArgs): INftPayoutResult
+   nft_supply_for_owner(args: INftSupplyForOwnerArgs): INftSupplyForOwnerResult
+   nft_token(args: INftTokenArgs): INftTokenResult
+   nft_tokens(args: INftTokensArgs): INftTokensResult
+   nft_tokens_for_owner(args: INftTokensForOwnerArgs): INftTokensForOwnerResult
+   nft_total_supply(args: INftTotalSupplyArgs): INftTotalSupplyResult
+   storage_balance_bounds(args: IStorageBalanceBoundsArgs): IStorageBalanceBoundsResult
+   storage_balance_of(args: IStorageBalanceOfArgs): IStorageBalanceOfResult
    // change methods
-   block_account(args: IBlockAccountArgs): IBlockAccountResult
-   fix(args: IFixArgs): IFixResult
-   game_create_clan(args: IGameCreateClanArgs): IGameCreateClanResult
-   game_create_player(args: IGameCreatePlayerArgs): IGameCreatePlayerResult
+   ft_resolve_transfer(args: IFtResolveTransferArgs): IFtResolveTransferResult
+   ft_transfer(args: IFtTransferArgs): IFtTransferResult
+   ft_transfer_call(args: IFtTransferCallArgs): IFtTransferCallResult
+   game_npc_move(args: IGameNpcMoveArgs): IGameNpcMoveResult
+   game_process(args: IGameProcessArgs): IGameProcessResult
+   game_register(args: IGameRegisterArgs): IGameRegisterResult
+   game_room_claim(args: IGameRoomClaimArgs): IGameRoomClaimResult
+   game_upgrade_room(args: IGameUpgradeRoomArgs): IGameUpgradeRoomResult
+   market_buy_npc(args: IMarketBuyNpcArgs): IMarketBuyNpcResult
+   market_buy_room(args: IMarketBuyRoomArgs): IMarketBuyRoomResult
+   new_default_meta(args: INewDefaultMetaArgs): INewDefaultMetaResult
+   nft_approve(args: INftApproveArgs): INftApproveResult
+   nft_resolve_transfer(args: INftResolveTransferArgs): INftResolveTransferResult
+   nft_revoke(args: INftRevokeArgs): INftRevokeResult
+   nft_revoke_all(args: INftRevokeAllArgs): INftRevokeAllResult
+   nft_transfer(args: INftTransferArgs): INftTransferResult
+   nft_transfer_call(args: INftTransferCallArgs): INftTransferCallResult
+   nft_transfer_payout(args: INftTransferPayoutArgs): INftTransferPayoutResult
    set_is_paused(args: ISetIsPausedArgs): ISetIsPausedResult
+   storage_deposit(args: IStorageDepositArgs): IStorageDepositResult
+   storage_unregister(args: IStorageUnregisterArgs): IStorageUnregisterResult
+   storage_withdraw(args: IStorageWithdrawArgs): IStorageWithdrawResult
 }
 
 export function useGameContractId() {
@@ -52,19 +118,52 @@ export function useGameContract() {
   return (
     useNearContract<IGameContract>(contractId, {
       viewMethods: [
-        GameViewMethods.game_clan,
+        GameViewMethods.ft_balance_of,
+        GameViewMethods.ft_metadata,
+        GameViewMethods.ft_total_supply,
+        GameViewMethods.game_npc,
         GameViewMethods.game_player,
-        GameViewMethods.game_player_up_price,
-        GameViewMethods.get_owner,
-        GameViewMethods.is_account_blocked,
+        GameViewMethods.game_player_npc_count,
+        GameViewMethods.game_player_npc_list,
+        GameViewMethods.game_player_room_count,
+        GameViewMethods.game_player_room_list,
+        GameViewMethods.game_room,
+        GameViewMethods.game_upgrade_room_price,
         GameViewMethods.is_paused,
+        GameViewMethods.nft_is_approved,
+        GameViewMethods.nft_metadata,
+        GameViewMethods.nft_payout,
+        GameViewMethods.nft_supply_for_owner,
+        GameViewMethods.nft_token,
+        GameViewMethods.nft_tokens,
+        GameViewMethods.nft_tokens_for_owner,
+        GameViewMethods.nft_total_supply,
+        GameViewMethods.storage_balance_bounds,
+        GameViewMethods.storage_balance_of,
       ],
       changeMethods: [
-        GameChangeMethods.block_account,
-        GameChangeMethods.fix,
-        GameChangeMethods.game_create_clan,
-        GameChangeMethods.game_create_player,
+        GameChangeMethods.ft_resolve_transfer,
+        GameChangeMethods.ft_transfer,
+        GameChangeMethods.ft_transfer_call,
+        GameChangeMethods.game_npc_move,
+        GameChangeMethods.game_process,
+        GameChangeMethods.game_register,
+        GameChangeMethods.game_room_claim,
+        GameChangeMethods.game_upgrade_room,
+        GameChangeMethods.market_buy_npc,
+        GameChangeMethods.market_buy_room,
+        GameChangeMethods.new_default_meta,
+        GameChangeMethods.nft_approve,
+        GameChangeMethods.nft_resolve_transfer,
+        GameChangeMethods.nft_revoke,
+        GameChangeMethods.nft_revoke_all,
+        GameChangeMethods.nft_transfer,
+        GameChangeMethods.nft_transfer_call,
+        GameChangeMethods.nft_transfer_payout,
         GameChangeMethods.set_is_paused,
+        GameChangeMethods.storage_deposit,
+        GameChangeMethods.storage_unregister,
+        GameChangeMethods.storage_withdraw,
       ],
     }
   ));
@@ -75,78 +174,118 @@ export function useGameQueryRaw<Res = any, Req = any>(
   opts: NearQueryOptions<Res, Req> = {}
 ) {
   const contract = useGameContract();
-
   return useNearQuery(methodName, { contract, ...opts });
 }
-
 export function useGameMutationRaw<Res = any, Req = any>(
   methodName: GameChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
   const contract = useGameContract();
-
   return useNearMutation(methodName, { contract, ...opts });
 }
 
-// block_account mutation
+// ft_balance_of query
 
-export type IBlockAccountArgs = {
-   account_id: AccountId;
-   blocked: boolean;
-};
-
-export type IBlockAccountResult = boolean;
-
-export function useBlockAccountMutation(opts: NearMutationOptions<IBlockAccountResult, IBlockAccountArgs>) {
-    return useGameMutationRaw<IBlockAccountResult, IBlockAccountArgs>(GameChangeMethods.block_account, opts);
-}
-
-// fix mutation
-
-export type IFixArgs = {
-
-};
-
-export type IFixResult = string;
-
-export function useFixMutation(opts: NearMutationOptions<IFixResult, IFixArgs>) {
-    return useGameMutationRaw<IFixResult, IFixArgs>(GameChangeMethods.fix, opts);
-}
-
-// game_clan query
-
-export type IGameClanArgs = {
+export type IFtBalanceOfArgs = {
    account_id: AccountId;
 };
 
-export type IGameClanResult = GameClan;
+export type IFtBalanceOfResult = U128;
 
-export function useGameClanQuery(opts: NearQueryOptions<IGameClanResult, IGameClanArgs>) {
-    return useGameQueryRaw<IGameClanResult, IGameClanArgs>(GameViewMethods.game_clan, opts);
+export function useFtBalanceOfQuery(opts: NearQueryOptions<IFtBalanceOfResult, IFtBalanceOfArgs>) {
+    return useGameQueryRaw<IFtBalanceOfResult, IFtBalanceOfArgs>(GameViewMethods.ft_balance_of, opts);
 }
 
-// game_create_clan mutation
+// ft_metadata query
 
-export type IGameCreateClanArgs = {
+export type IFtMetadataArgs = {
 
 };
 
-export type IGameCreateClanResult = GameClan;
+export type IFtMetadataResult = FungibleTokenMetadata;
 
-export function useGameCreateClanMutation(opts: NearMutationOptions<IGameCreateClanResult, IGameCreateClanArgs>) {
-    return useGameMutationRaw<IGameCreateClanResult, IGameCreateClanArgs>(GameChangeMethods.game_create_clan, opts);
+export function useFtMetadataQuery(opts: NearQueryOptions<IFtMetadataResult, IFtMetadataArgs>) {
+    return useGameQueryRaw<IFtMetadataResult, IFtMetadataArgs>(GameViewMethods.ft_metadata, opts);
 }
 
-// game_create_player mutation (payable)
+// ft_resolve_transfer mutation
 
-export type IGameCreatePlayerArgs = {
+export type IFtResolveTransferArgs = {
+   sender_id: AccountId;
+   receiver_id: AccountId;
+   amount: U128;
+};
+
+export type IFtResolveTransferResult = U128;
+
+export function useFtResolveTransferMutation(opts: NearMutationOptions<IFtResolveTransferResult, IFtResolveTransferArgs>) {
+    return useGameMutationRaw<IFtResolveTransferResult, IFtResolveTransferArgs>(GameChangeMethods.ft_resolve_transfer, opts);
+}
+
+// ft_total_supply query
+
+export type IFtTotalSupplyArgs = {
 
 };
 
-export type IGameCreatePlayerResult = GamePlayer;
+export type IFtTotalSupplyResult = U128;
 
-export function useGameCreatePlayerMutation(opts: NearMutationOptions<IGameCreatePlayerResult, IGameCreatePlayerArgs>) {
-    return useGameMutationRaw<IGameCreatePlayerResult, IGameCreatePlayerArgs>(GameChangeMethods.game_create_player, opts);
+export function useFtTotalSupplyQuery(opts: NearQueryOptions<IFtTotalSupplyResult, IFtTotalSupplyArgs>) {
+    return useGameQueryRaw<IFtTotalSupplyResult, IFtTotalSupplyArgs>(GameViewMethods.ft_total_supply, opts);
+}
+
+// ft_transfer mutation (payable)
+
+export type IFtTransferArgs = {
+   receiver_id: AccountId;
+   amount: U128;
+   memo: string | null;
+};
+
+export type IFtTransferResult = void;
+
+export function useFtTransferMutation(opts: NearMutationOptions<IFtTransferResult, IFtTransferArgs>) {
+    return useGameMutationRaw<IFtTransferResult, IFtTransferArgs>(GameChangeMethods.ft_transfer, opts);
+}
+
+// ft_transfer_call mutation (payable)
+
+export type IFtTransferCallArgs = {
+   receiver_id: AccountId;
+   amount: U128;
+   memo: string | null;
+   msg: string;
+};
+
+export type IFtTransferCallResult = PromiseOrValueU128;
+
+export function useFtTransferCallMutation(opts: NearMutationOptions<IFtTransferCallResult, IFtTransferCallArgs>) {
+    return useGameMutationRaw<IFtTransferCallResult, IFtTransferCallArgs>(GameChangeMethods.ft_transfer_call, opts);
+}
+
+// game_npc query
+
+export type IGameNpcArgs = {
+   npc_id: string;
+};
+
+export type IGameNpcResult = JsonNpc | null;
+
+export function useGameNpcQuery(opts: NearQueryOptions<IGameNpcResult, IGameNpcArgs>) {
+    return useGameQueryRaw<IGameNpcResult, IGameNpcArgs>(GameViewMethods.game_npc, opts);
+}
+
+// game_npc_move mutation
+
+export type IGameNpcMoveArgs = {
+   npc_id: string;
+   to_room_id: string;
+};
+
+export type IGameNpcMoveResult = void;
+
+export function useGameNpcMoveMutation(opts: NearMutationOptions<IGameNpcMoveResult, IGameNpcMoveArgs>) {
+    return useGameMutationRaw<IGameNpcMoveResult, IGameNpcMoveArgs>(GameChangeMethods.game_npc_move, opts);
 }
 
 // game_player query
@@ -155,46 +294,130 @@ export type IGamePlayerArgs = {
    account_id: AccountId;
 };
 
-export type IGamePlayerResult = GamePlayer;
+export type IGamePlayerResult = Player | null;
 
 export function useGamePlayerQuery(opts: NearQueryOptions<IGamePlayerResult, IGamePlayerArgs>) {
     return useGameQueryRaw<IGamePlayerResult, IGamePlayerArgs>(GameViewMethods.game_player, opts);
 }
 
-// game_player_up_price query
+// game_player_npc_count query
 
-export type IGamePlayerUpPriceArgs = {
-   level: integer;
-};
-
-export type IGamePlayerUpPriceResult = U128;
-
-export function useGamePlayerUpPriceQuery(opts: NearQueryOptions<IGamePlayerUpPriceResult, IGamePlayerUpPriceArgs>) {
-    return useGameQueryRaw<IGamePlayerUpPriceResult, IGamePlayerUpPriceArgs>(GameViewMethods.game_player_up_price, opts);
-}
-
-// get_owner query
-
-export type IGetOwnerArgs = {
-
-};
-
-export type IGetOwnerResult = AccountId;
-
-export function useGetOwnerQuery(opts: NearQueryOptions<IGetOwnerResult, IGetOwnerArgs>) {
-    return useGameQueryRaw<IGetOwnerResult, IGetOwnerArgs>(GameViewMethods.get_owner, opts);
-}
-
-// is_account_blocked query
-
-export type IIsAccountBlockedArgs = {
+export type IGamePlayerNpcCountArgs = {
    account_id: AccountId;
 };
 
-export type IIsAccountBlockedResult = boolean;
+export type IGamePlayerNpcCountResult = integer;
 
-export function useIsAccountBlockedQuery(opts: NearQueryOptions<IIsAccountBlockedResult, IIsAccountBlockedArgs>) {
-    return useGameQueryRaw<IIsAccountBlockedResult, IIsAccountBlockedArgs>(GameViewMethods.is_account_blocked, opts);
+export function useGamePlayerNpcCountQuery(opts: NearQueryOptions<IGamePlayerNpcCountResult, IGamePlayerNpcCountArgs>) {
+    return useGameQueryRaw<IGamePlayerNpcCountResult, IGamePlayerNpcCountArgs>(GameViewMethods.game_player_npc_count, opts);
+}
+
+// game_player_npc_list query
+
+export type IGamePlayerNpcListArgs = {
+   account_id: AccountId;
+};
+
+export type IGamePlayerNpcListResult = JsonNpc[];
+
+export function useGamePlayerNpcListQuery(opts: NearQueryOptions<IGamePlayerNpcListResult, IGamePlayerNpcListArgs>) {
+    return useGameQueryRaw<IGamePlayerNpcListResult, IGamePlayerNpcListArgs>(GameViewMethods.game_player_npc_list, opts);
+}
+
+// game_player_room_count query
+
+export type IGamePlayerRoomCountArgs = {
+   account_id: AccountId;
+};
+
+export type IGamePlayerRoomCountResult = integer;
+
+export function useGamePlayerRoomCountQuery(opts: NearQueryOptions<IGamePlayerRoomCountResult, IGamePlayerRoomCountArgs>) {
+    return useGameQueryRaw<IGamePlayerRoomCountResult, IGamePlayerRoomCountArgs>(GameViewMethods.game_player_room_count, opts);
+}
+
+// game_player_room_list query
+
+export type IGamePlayerRoomListArgs = {
+   account_id: AccountId;
+};
+
+export type IGamePlayerRoomListResult = JsonRoom[];
+
+export function useGamePlayerRoomListQuery(opts: NearQueryOptions<IGamePlayerRoomListResult, IGamePlayerRoomListArgs>) {
+    return useGameQueryRaw<IGamePlayerRoomListResult, IGamePlayerRoomListArgs>(GameViewMethods.game_player_room_list, opts);
+}
+
+// game_process mutation
+
+export type IGameProcessArgs = {
+
+};
+
+export type IGameProcessResult = [];
+
+export function useGameProcessMutation(opts: NearMutationOptions<IGameProcessResult, IGameProcessArgs>) {
+    return useGameMutationRaw<IGameProcessResult, IGameProcessArgs>(GameChangeMethods.game_process, opts);
+}
+
+// game_register mutation (payable)
+
+export type IGameRegisterArgs = {
+
+};
+
+export type IGameRegisterResult = Player;
+
+export function useGameRegisterMutation(opts: NearMutationOptions<IGameRegisterResult, IGameRegisterArgs>) {
+    return useGameMutationRaw<IGameRegisterResult, IGameRegisterArgs>(GameChangeMethods.game_register, opts);
+}
+
+// game_room query
+
+export type IGameRoomArgs = {
+   room_id: string;
+};
+
+export type IGameRoomResult = JsonRoom | null;
+
+export function useGameRoomQuery(opts: NearQueryOptions<IGameRoomResult, IGameRoomArgs>) {
+    return useGameQueryRaw<IGameRoomResult, IGameRoomArgs>(GameViewMethods.game_room, opts);
+}
+
+// game_room_claim mutation
+
+export type IGameRoomClaimArgs = {
+   room_id: string;
+};
+
+export type IGameRoomClaimResult = boolean;
+
+export function useGameRoomClaimMutation(opts: NearMutationOptions<IGameRoomClaimResult, IGameRoomClaimArgs>) {
+    return useGameMutationRaw<IGameRoomClaimResult, IGameRoomClaimArgs>(GameChangeMethods.game_room_claim, opts);
+}
+
+// game_upgrade_room mutation
+
+export type IGameUpgradeRoomArgs = {
+   room_id: string;
+};
+
+export type IGameUpgradeRoomResult = JsonRoom;
+
+export function useGameUpgradeRoomMutation(opts: NearMutationOptions<IGameUpgradeRoomResult, IGameUpgradeRoomArgs>) {
+    return useGameMutationRaw<IGameUpgradeRoomResult, IGameUpgradeRoomArgs>(GameChangeMethods.game_upgrade_room, opts);
+}
+
+// game_upgrade_room_price query
+
+export type IGameUpgradeRoomPriceArgs = {
+   room_id: string;
+};
+
+export type IGameUpgradeRoomPriceResult = U128 | null;
+
+export function useGameUpgradeRoomPriceQuery(opts: NearQueryOptions<IGameUpgradeRoomPriceResult, IGameUpgradeRoomPriceArgs>) {
+    return useGameQueryRaw<IGameUpgradeRoomPriceResult, IGameUpgradeRoomPriceArgs>(GameViewMethods.game_upgrade_room_price, opts);
 }
 
 // is_paused query
@@ -209,6 +432,247 @@ export function useIsPausedQuery(opts: NearQueryOptions<IIsPausedResult, IIsPaus
     return useGameQueryRaw<IIsPausedResult, IIsPausedArgs>(GameViewMethods.is_paused, opts);
 }
 
+// market_buy_npc mutation (payable)
+
+export type IMarketBuyNpcArgs = {
+
+};
+
+export type IMarketBuyNpcResult = JsonNpc;
+
+export function useMarketBuyNpcMutation(opts: NearMutationOptions<IMarketBuyNpcResult, IMarketBuyNpcArgs>) {
+    return useGameMutationRaw<IMarketBuyNpcResult, IMarketBuyNpcArgs>(GameChangeMethods.market_buy_npc, opts);
+}
+
+// market_buy_room mutation (payable)
+
+export type IMarketBuyRoomArgs = {
+   room_type: RoomType;
+};
+
+export type IMarketBuyRoomResult = JsonRoom;
+
+export function useMarketBuyRoomMutation(opts: NearMutationOptions<IMarketBuyRoomResult, IMarketBuyRoomArgs>) {
+    return useGameMutationRaw<IMarketBuyRoomResult, IMarketBuyRoomArgs>(GameChangeMethods.market_buy_room, opts);
+}
+
+// new_default_meta mutation
+
+export type INewDefaultMetaArgs = {
+   owner_id: AccountId;
+};
+
+export type INewDefaultMetaResult = void;
+
+export function useNewDefaultMetaMutation(opts: NearMutationOptions<INewDefaultMetaResult, INewDefaultMetaArgs>) {
+    return useGameMutationRaw<INewDefaultMetaResult, INewDefaultMetaArgs>(GameChangeMethods.new_default_meta, opts);
+}
+
+// nft_approve mutation (payable)
+
+export type INftApproveArgs = {
+   token_id: string;
+   account_id: AccountId;
+   msg: string | null;
+};
+
+export type INftApproveResult = void | null;
+
+export function useNftApproveMutation(opts: NearMutationOptions<INftApproveResult, INftApproveArgs>) {
+    return useGameMutationRaw<INftApproveResult, INftApproveArgs>(GameChangeMethods.nft_approve, opts);
+}
+
+// nft_is_approved query
+
+export type INftIsApprovedArgs = {
+   token_id: string;
+   approved_account_id: AccountId;
+   approval_id: integer | null;
+};
+
+export type INftIsApprovedResult = boolean;
+
+export function useNftIsApprovedQuery(opts: NearQueryOptions<INftIsApprovedResult, INftIsApprovedArgs>) {
+    return useGameQueryRaw<INftIsApprovedResult, INftIsApprovedArgs>(GameViewMethods.nft_is_approved, opts);
+}
+
+// nft_metadata query
+
+export type INftMetadataArgs = {
+
+};
+
+export type INftMetadataResult = NFTContractMetadata;
+
+export function useNftMetadataQuery(opts: NearQueryOptions<INftMetadataResult, INftMetadataArgs>) {
+    return useGameQueryRaw<INftMetadataResult, INftMetadataArgs>(GameViewMethods.nft_metadata, opts);
+}
+
+// nft_payout query
+
+export type INftPayoutArgs = {
+   token_id: string;
+   balance: U128;
+   max_len_payout: integer;
+};
+
+export type INftPayoutResult = Payout;
+
+export function useNftPayoutQuery(opts: NearQueryOptions<INftPayoutResult, INftPayoutArgs>) {
+    return useGameQueryRaw<INftPayoutResult, INftPayoutArgs>(GameViewMethods.nft_payout, opts);
+}
+
+// nft_resolve_transfer mutation
+
+export type INftResolveTransferArgs = {
+   previous_owner_id: AccountId;
+   receiver_id: AccountId;
+   token_id: string;
+   approved_account_ids: object | null;
+};
+
+export type INftResolveTransferResult = boolean;
+
+export function useNftResolveTransferMutation(opts: NearMutationOptions<INftResolveTransferResult, INftResolveTransferArgs>) {
+    return useGameMutationRaw<INftResolveTransferResult, INftResolveTransferArgs>(GameChangeMethods.nft_resolve_transfer, opts);
+}
+
+// nft_revoke mutation (payable)
+
+export type INftRevokeArgs = {
+   token_id: string;
+   account_id: AccountId;
+};
+
+export type INftRevokeResult = void;
+
+export function useNftRevokeMutation(opts: NearMutationOptions<INftRevokeResult, INftRevokeArgs>) {
+    return useGameMutationRaw<INftRevokeResult, INftRevokeArgs>(GameChangeMethods.nft_revoke, opts);
+}
+
+// nft_revoke_all mutation (payable)
+
+export type INftRevokeAllArgs = {
+   token_id: string;
+};
+
+export type INftRevokeAllResult = void;
+
+export function useNftRevokeAllMutation(opts: NearMutationOptions<INftRevokeAllResult, INftRevokeAllArgs>) {
+    return useGameMutationRaw<INftRevokeAllResult, INftRevokeAllArgs>(GameChangeMethods.nft_revoke_all, opts);
+}
+
+// nft_supply_for_owner query
+
+export type INftSupplyForOwnerArgs = {
+   account_id: AccountId;
+};
+
+export type INftSupplyForOwnerResult = U128;
+
+export function useNftSupplyForOwnerQuery(opts: NearQueryOptions<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>) {
+    return useGameQueryRaw<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>(GameViewMethods.nft_supply_for_owner, opts);
+}
+
+// nft_token query
+
+export type INftTokenArgs = {
+   token_id: string;
+};
+
+export type INftTokenResult = Token | null;
+
+export function useNftTokenQuery(opts: NearQueryOptions<INftTokenResult, INftTokenArgs>) {
+    return useGameQueryRaw<INftTokenResult, INftTokenArgs>(GameViewMethods.nft_token, opts);
+}
+
+// nft_tokens query
+
+export type INftTokensArgs = {
+   from_index: U128 | null;
+   limit: integer | null;
+};
+
+export type INftTokensResult = Token[];
+
+export function useNftTokensQuery(opts: NearQueryOptions<INftTokensResult, INftTokensArgs>) {
+    return useGameQueryRaw<INftTokensResult, INftTokensArgs>(GameViewMethods.nft_tokens, opts);
+}
+
+// nft_tokens_for_owner query
+
+export type INftTokensForOwnerArgs = {
+   account_id: AccountId;
+   from_index: U128 | null;
+   limit: integer | null;
+};
+
+export type INftTokensForOwnerResult = Token[];
+
+export function useNftTokensForOwnerQuery(opts: NearQueryOptions<INftTokensForOwnerResult, INftTokensForOwnerArgs>) {
+    return useGameQueryRaw<INftTokensForOwnerResult, INftTokensForOwnerArgs>(GameViewMethods.nft_tokens_for_owner, opts);
+}
+
+// nft_total_supply query
+
+export type INftTotalSupplyArgs = {
+
+};
+
+export type INftTotalSupplyResult = U128;
+
+export function useNftTotalSupplyQuery(opts: NearQueryOptions<INftTotalSupplyResult, INftTotalSupplyArgs>) {
+    return useGameQueryRaw<INftTotalSupplyResult, INftTotalSupplyArgs>(GameViewMethods.nft_total_supply, opts);
+}
+
+// nft_transfer mutation (payable)
+
+export type INftTransferArgs = {
+   receiver_id: AccountId;
+   token_id: string;
+   approval_id: integer | null;
+   memo: string | null;
+};
+
+export type INftTransferResult = void;
+
+export function useNftTransferMutation(opts: NearMutationOptions<INftTransferResult, INftTransferArgs>) {
+    return useGameMutationRaw<INftTransferResult, INftTransferArgs>(GameChangeMethods.nft_transfer, opts);
+}
+
+// nft_transfer_call mutation (payable)
+
+export type INftTransferCallArgs = {
+   receiver_id: AccountId;
+   token_id: string;
+   approval_id: integer | null;
+   memo: string | null;
+   msg: string;
+};
+
+export type INftTransferCallResult = PromiseOrValueBoolean;
+
+export function useNftTransferCallMutation(opts: NearMutationOptions<INftTransferCallResult, INftTransferCallArgs>) {
+    return useGameMutationRaw<INftTransferCallResult, INftTransferCallArgs>(GameChangeMethods.nft_transfer_call, opts);
+}
+
+// nft_transfer_payout mutation (payable)
+
+export type INftTransferPayoutArgs = {
+   receiver_id: AccountId;
+   token_id: string;
+   approval_id: integer;
+   balance: U128;
+   max_len_payout: integer;
+   memo: string | null;
+};
+
+export type INftTransferPayoutResult = Payout;
+
+export function useNftTransferPayoutMutation(opts: NearMutationOptions<INftTransferPayoutResult, INftTransferPayoutArgs>) {
+    return useGameMutationRaw<INftTransferPayoutResult, INftTransferPayoutArgs>(GameChangeMethods.nft_transfer_payout, opts);
+}
+
 // set_is_paused mutation
 
 export type ISetIsPausedArgs = {
@@ -219,6 +683,67 @@ export type ISetIsPausedResult = boolean;
 
 export function useSetIsPausedMutation(opts: NearMutationOptions<ISetIsPausedResult, ISetIsPausedArgs>) {
     return useGameMutationRaw<ISetIsPausedResult, ISetIsPausedArgs>(GameChangeMethods.set_is_paused, opts);
+}
+
+// storage_balance_bounds query
+
+export type IStorageBalanceBoundsArgs = {
+
+};
+
+export type IStorageBalanceBoundsResult = StorageBalanceBounds;
+
+export function useStorageBalanceBoundsQuery(opts: NearQueryOptions<IStorageBalanceBoundsResult, IStorageBalanceBoundsArgs>) {
+    return useGameQueryRaw<IStorageBalanceBoundsResult, IStorageBalanceBoundsArgs>(GameViewMethods.storage_balance_bounds, opts);
+}
+
+// storage_balance_of query
+
+export type IStorageBalanceOfArgs = {
+   account_id: AccountId;
+};
+
+export type IStorageBalanceOfResult = StorageBalance | null;
+
+export function useStorageBalanceOfQuery(opts: NearQueryOptions<IStorageBalanceOfResult, IStorageBalanceOfArgs>) {
+    return useGameQueryRaw<IStorageBalanceOfResult, IStorageBalanceOfArgs>(GameViewMethods.storage_balance_of, opts);
+}
+
+// storage_deposit mutation (payable)
+
+export type IStorageDepositArgs = {
+   account_id: AccountId | null;
+   registration_only: boolean | null;
+};
+
+export type IStorageDepositResult = StorageBalance;
+
+export function useStorageDepositMutation(opts: NearMutationOptions<IStorageDepositResult, IStorageDepositArgs>) {
+    return useGameMutationRaw<IStorageDepositResult, IStorageDepositArgs>(GameChangeMethods.storage_deposit, opts);
+}
+
+// storage_unregister mutation (payable)
+
+export type IStorageUnregisterArgs = {
+   force: boolean | null;
+};
+
+export type IStorageUnregisterResult = boolean;
+
+export function useStorageUnregisterMutation(opts: NearMutationOptions<IStorageUnregisterResult, IStorageUnregisterArgs>) {
+    return useGameMutationRaw<IStorageUnregisterResult, IStorageUnregisterArgs>(GameChangeMethods.storage_unregister, opts);
+}
+
+// storage_withdraw mutation (payable)
+
+export type IStorageWithdrawArgs = {
+   amount: U128 | null;
+};
+
+export type IStorageWithdrawResult = StorageBalance;
+
+export function useStorageWithdrawMutation(opts: NearMutationOptions<IStorageWithdrawResult, IStorageWithdrawArgs>) {
+    return useGameMutationRaw<IStorageWithdrawResult, IStorageWithdrawArgs>(GameChangeMethods.storage_withdraw, opts);
 }
 
 /**
@@ -239,21 +764,137 @@ export function useSetIsPausedMutation(opts: NearMutationOptions<ISetIsPausedRes
  * [`FromStr`]: std::str::FromStr
  */
 export type AccountId = string;
-export type PromiseOrValueU128 = string;
+export type Base64VecU8 = string;
+export type RoomType = "Water" | "Food" | "Energy" | "Heal" | "AntiRad" | "Bedroom" | "Expedition";
 export type U128 = string;
+export type PromiseOrValueBoolean = boolean;
+export type PromiseOrValueU128 = string;
 
 export interface Definitions {
   AccountId?: AccountId;
-  GameClan?: GameClan;
-  GamePlayer?: GamePlayer;
+  Base64VecU8?: Base64VecU8;
+  FungibleTokenMetadata?: FungibleTokenMetadata;
+  JsonNpc?: JsonNpc;
+  JsonRoom?: JsonRoom;
+  NFTContractMetadata?: NFTContractMetadata;
+  Payout?: Payout;
+  Player?: Player;
+  Promise?: true;
+  PromiseOrValueBoolean?: PromiseOrValueBoolean;
   PromiseOrValueU128?: PromiseOrValueU128;
+  RoomType?: RoomType;
+  Special?: Special;
+  StorageBalance?: StorageBalance;
+  StorageBalanceBounds?: StorageBalanceBounds;
+  Token?: Token;
+  TokenMetadata?: TokenMetadata;
   U128?: U128;
 }
-export interface GameClan {
-  level: number;
+export interface FungibleTokenMetadata {
+  decimals: number;
+  icon?: string | null;
+  name: string;
+  reference?: string | null;
+  reference_hash?: Base64VecU8 | null;
+  spec: string;
+  symbol: string;
 }
-export interface GamePlayer {
+export interface JsonNpc {
+  hp: number;
+  id: string;
+  is_died: boolean;
   level: number;
+  power: number;
+  special: Special;
+}
+export interface Special {
+  agility: number;
+  charisma: number;
+  endurance: number;
+  intellect: number;
+  luck: number;
+  perception: number;
+  strength: number;
+}
+export interface JsonRoom {
+  claimed_at: number;
+  effectiveness: number;
+  enabled_time: number;
+  id: string;
+  level: number;
+  npc_list: string[];
+  power: number;
+  refresh_at: number;
+  room_type: RoomType;
+  size: number;
+}
+/**
+ * Metadata for the NFT contract itself.
+ */
+export interface NFTContractMetadata {
+  base_uri?: string | null;
+  icon?: string | null;
+  name: string;
+  reference?: string | null;
+  reference_hash?: Base64VecU8 | null;
+  spec: string;
+  symbol: string;
+}
+export interface Payout {
+  payout: {
+    [k: string]: U128;
+  };
+}
+export interface Player {
+  anti_rad: number;
+  anti_rad_max: number;
+  energy: number;
+  energy_max: number;
+  food: number;
+  food_max: number;
+  heal: number;
+  heal_max: number;
+  power: number;
+  process_at: number;
+  room_limit: number;
+  water: number;
+  water_max: number;
+}
+export interface StorageBalance {
+  available: U128;
+  total: U128;
+}
+export interface StorageBalanceBounds {
+  max?: U128 | null;
+  min: U128;
+}
+/**
+ * In this implementation, the Token struct takes two extensions standards (metadata and approval) as optional fields, as they are frequently used in modern NFTs.
+ */
+export interface Token {
+  approved_account_ids?: {
+    [k: string]: number;
+  } | null;
+  metadata?: TokenMetadata | null;
+  owner_id: AccountId;
+  token_id: string;
+}
+/**
+ * Metadata on the individual token level.
+ */
+export interface TokenMetadata {
+  copies?: number | null;
+  description?: string | null;
+  expires_at?: string | null;
+  extra?: string | null;
+  issued_at?: string | null;
+  media?: string | null;
+  media_hash?: Base64VecU8 | null;
+  reference?: string | null;
+  reference_hash?: Base64VecU8 | null;
+  starts_at?: string | null;
+  title?: string | null;
+  updated_at?: string | null;
 }
 
 type integer = number;

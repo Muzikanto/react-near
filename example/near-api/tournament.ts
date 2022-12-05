@@ -93,16 +93,13 @@ export function useTournamentQueryRaw<Res = any, Req = any>(
   opts: NearQueryOptions<Res, Req> = {}
 ) {
   const contract = useTournamentContract();
-
   return useNearQuery(methodName, { contract, ...opts });
 }
-
 export function useTournamentMutationRaw<Res = any, Req = any>(
   methodName: TournamentChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
   const contract = useTournamentContract();
-
   return useNearMutation(methodName, { contract, ...opts });
 }
 

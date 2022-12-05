@@ -10,7 +10,7 @@
       },
       {
          "name": "Game",
-         "testnet": "mfight.testnet",
+         "testnet": "dev-1670177534740-91620037641534",
          "mainnet": "mfight.near"
       }, {
          "name": "Market",

@@ -12,6 +12,7 @@ export enum NftViewMethods {
   assert_owner = 'assert_owner',
   is_blacklist = 'is_blacklist',
   is_paused = 'is_paused',
+  nft_burner_upgrade_price = 'nft_burner_upgrade_price',
   nft_is_approved = 'nft_is_approved',
   nft_is_bind_to_owner = 'nft_is_bind_to_owner',
   nft_metadata = 'nft_metadata',
@@ -32,11 +33,15 @@ export enum NftChangeMethods {
   blacklist_remove = 'blacklist_remove',
   nft_approve = 'nft_approve', // payable
   nft_burn = 'nft_burn', // payable
+  nft_burner_upgrade = 'nft_burner_upgrade',
   nft_mint = 'nft_mint',
+  nft_remove_burner_upgrade_price = 'nft_remove_burner_upgrade_price',
+  nft_remove_upgrade_price = 'nft_remove_upgrade_price',
   nft_resolve_transfer = 'nft_resolve_transfer',
   nft_reveal = 'nft_reveal', // payable
   nft_revoke = 'nft_revoke', // payable
   nft_revoke_all = 'nft_revoke_all', // payable
+  nft_set_burner_upgrade_price = 'nft_set_burner_upgrade_price',
   nft_set_upgrade_price = 'nft_set_upgrade_price',
   nft_transfer = 'nft_transfer', // payable
   nft_transfer_call = 'nft_transfer_call', // payable
@@ -53,6 +58,7 @@ export interface INftContract {
    assert_owner(args: IAssertOwnerArgs): IAssertOwnerResult
    is_blacklist(args: IIsBlacklistArgs): IIsBlacklistResult
    is_paused(args: IIsPausedArgs): IIsPausedResult
+   nft_burner_upgrade_price(args: INftBurnerUpgradePriceArgs): INftBurnerUpgradePriceResult
    nft_is_approved(args: INftIsApprovedArgs): INftIsApprovedResult
    nft_is_bind_to_owner(args: INftIsBindToOwnerArgs): INftIsBindToOwnerResult
    nft_metadata(args: INftMetadataArgs): INftMetadataResult
@@ -71,11 +77,15 @@ export interface INftContract {
    blacklist_remove(args: IBlacklistRemoveArgs): IBlacklistRemoveResult
    nft_approve(args: INftApproveArgs): INftApproveResult
    nft_burn(args: INftBurnArgs): INftBurnResult
+   nft_burner_upgrade(args: INftBurnerUpgradeArgs): INftBurnerUpgradeResult
    nft_mint(args: INftMintArgs): INftMintResult
+   nft_remove_burner_upgrade_price(args: INftRemoveBurnerUpgradePriceArgs): INftRemoveBurnerUpgradePriceResult
+   nft_remove_upgrade_price(args: INftRemoveUpgradePriceArgs): INftRemoveUpgradePriceResult
    nft_resolve_transfer(args: INftResolveTransferArgs): INftResolveTransferResult
    nft_reveal(args: INftRevealArgs): INftRevealResult
    nft_revoke(args: INftRevokeArgs): INftRevokeResult
    nft_revoke_all(args: INftRevokeAllArgs): INftRevokeAllResult
+   nft_set_burner_upgrade_price(args: INftSetBurnerUpgradePriceArgs): INftSetBurnerUpgradePriceResult
    nft_set_upgrade_price(args: INftSetUpgradePriceArgs): INftSetUpgradePriceResult
    nft_transfer(args: INftTransferArgs): INftTransferResult
    nft_transfer_call(args: INftTransferCallArgs): INftTransferCallResult
@@ -102,6 +112,7 @@ export function useNftContract() {
         NftViewMethods.assert_owner,
         NftViewMethods.is_blacklist,
         NftViewMethods.is_paused,
+        NftViewMethods.nft_burner_upgrade_price,
         NftViewMethods.nft_is_approved,
         NftViewMethods.nft_is_bind_to_owner,
         NftViewMethods.nft_metadata,
@@ -121,11 +132,15 @@ export function useNftContract() {
         NftChangeMethods.blacklist_remove,
         NftChangeMethods.nft_approve,
         NftChangeMethods.nft_burn,
+        NftChangeMethods.nft_burner_upgrade,
         NftChangeMethods.nft_mint,
+        NftChangeMethods.nft_remove_burner_upgrade_price,
+        NftChangeMethods.nft_remove_upgrade_price,
         NftChangeMethods.nft_resolve_transfer,
         NftChangeMethods.nft_reveal,
         NftChangeMethods.nft_revoke,
         NftChangeMethods.nft_revoke_all,
+        NftChangeMethods.nft_set_burner_upgrade_price,
         NftChangeMethods.nft_set_upgrade_price,
         NftChangeMethods.nft_transfer,
         NftChangeMethods.nft_transfer_call,
@@ -144,16 +159,13 @@ export function useNftQueryRaw<Res = any, Req = any>(
   opts: NearQueryOptions<Res, Req> = {}
 ) {
   const contract = useNftContract();
-
   return useNearQuery(methodName, { contract, ...opts });
 }
-
 export function useNftMutationRaw<Res = any, Req = any>(
   methodName: NftChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
   const contract = useNftContract();
-
   return useNearMutation(methodName, { contract, ...opts });
 }
 
@@ -255,6 +267,31 @@ export function useNftBurnMutation(opts: NearMutationOptions<INftBurnResult, INf
     return useNftMutationRaw<INftBurnResult, INftBurnArgs>(NftChangeMethods.nft_burn, opts);
 }
 
+// nft_burner_upgrade mutation
+
+export type INftBurnerUpgradeArgs = {
+   token_id: string;
+   burning_tokens: string[];
+};
+
+export type INftBurnerUpgradeResult = void;
+
+export function useNftBurnerUpgradeMutation(opts: NearMutationOptions<INftBurnerUpgradeResult, INftBurnerUpgradeArgs>) {
+    return useNftMutationRaw<INftBurnerUpgradeResult, INftBurnerUpgradeArgs>(NftChangeMethods.nft_burner_upgrade, opts);
+}
+
+// nft_burner_upgrade_price query
+
+export type INftBurnerUpgradePriceArgs = {
+   token_id: string;
+};
+
+export type INftBurnerUpgradePriceResult = integer | null;
+
+export function useNftBurnerUpgradePriceQuery(opts: NearQueryOptions<INftBurnerUpgradePriceResult, INftBurnerUpgradePriceArgs>) {
+    return useNftQueryRaw<INftBurnerUpgradePriceResult, INftBurnerUpgradePriceArgs>(NftViewMethods.nft_burner_upgrade_price, opts);
+}
+
 // nft_is_approved query
 
 export type INftIsApprovedArgs = {
@@ -303,9 +340,9 @@ export type INftMintArgs = {
    perpetual_royalties: object | null;
    reveal_at: integer | null;
    rarity: integer | null;
-   collection: TokenCollection | null;
-   token_type: TokenType | null;
-   token_sub_type: TokenSubType | null;
+   collection: string | null;
+   token_type: string | null;
+   token_sub_type: string | null;
 };
 
 export type INftMintResult = Token;
@@ -326,6 +363,32 @@ export type INftPayoutResult = Payout;
 
 export function useNftPayoutQuery(opts: NearQueryOptions<INftPayoutResult, INftPayoutArgs>) {
     return useNftQueryRaw<INftPayoutResult, INftPayoutArgs>(NftViewMethods.nft_payout, opts);
+}
+
+// nft_remove_burner_upgrade_price mutation
+
+export type INftRemoveBurnerUpgradePriceArgs = {
+   types: object | null;
+   rarity: integer;
+};
+
+export type INftRemoveBurnerUpgradePriceResult = void;
+
+export function useNftRemoveBurnerUpgradePriceMutation(opts: NearMutationOptions<INftRemoveBurnerUpgradePriceResult, INftRemoveBurnerUpgradePriceArgs>) {
+    return useNftMutationRaw<INftRemoveBurnerUpgradePriceResult, INftRemoveBurnerUpgradePriceArgs>(NftChangeMethods.nft_remove_burner_upgrade_price, opts);
+}
+
+// nft_remove_upgrade_price mutation
+
+export type INftRemoveUpgradePriceArgs = {
+   types: object | null;
+   rarity: integer;
+};
+
+export type INftRemoveUpgradePriceResult = void;
+
+export function useNftRemoveUpgradePriceMutation(opts: NearMutationOptions<INftRemoveUpgradePriceResult, INftRemoveUpgradePriceArgs>) {
+    return useNftMutationRaw<INftRemoveUpgradePriceResult, INftRemoveUpgradePriceArgs>(NftChangeMethods.nft_remove_upgrade_price, opts);
 }
 
 // nft_resolve_transfer mutation
@@ -404,9 +467,24 @@ export function useNftRoyaltyValueQuery(opts: NearQueryOptions<INftRoyaltyValueR
     return useNftQueryRaw<INftRoyaltyValueResult, INftRoyaltyValueArgs>(NftViewMethods.nft_royalty_value, opts);
 }
 
+// nft_set_burner_upgrade_price mutation
+
+export type INftSetBurnerUpgradePriceArgs = {
+   types: object | null;
+   rarity: integer;
+   burning_rarity_sum: integer;
+};
+
+export type INftSetBurnerUpgradePriceResult = void;
+
+export function useNftSetBurnerUpgradePriceMutation(opts: NearMutationOptions<INftSetBurnerUpgradePriceResult, INftSetBurnerUpgradePriceArgs>) {
+    return useNftMutationRaw<INftSetBurnerUpgradePriceResult, INftSetBurnerUpgradePriceArgs>(NftChangeMethods.nft_set_burner_upgrade_price, opts);
+}
+
 // nft_set_upgrade_price mutation
 
 export type INftSetUpgradePriceArgs = {
+   types: object | null;
    rarity: integer;
    ft_token_id: AccountId;
    price: U128;
@@ -621,100 +699,8 @@ export function useSetRoyaltyValueMutation(opts: NearMutationOptions<ISetRoyalty
 export type AccountId = string;
 export type Base64VecU8 = string;
 export type U128 = string;
+export type PromiseOrValueArrayOf_U128 = U128[];
 export type PromiseOrValueBoolean = boolean;
-export type TokenCollection =
-  | "Fantasy"
-  | "Medieval"
-  | "Nordic"
-  | "PostApoc"
-  | "SteamPunk"
-  | "Asian"
-  | "CyberPunk"
-  | "Unknown";
-export type TokenSubType =
-  | "Unknown"
-  | "Ring"
-  | "Earring"
-  | "Necklace"
-  | "Helmet"
-  | "HelmetLight"
-  | "HelmetHeavy"
-  | "Body"
-  | "BodyLight"
-  | "BodyHeavy"
-  | "Pants"
-  | "PantsLight"
-  | "PantsHeavy"
-  | "Boots"
-  | "BootsLight"
-  | "BootsHeavy"
-  | "Gloves"
-  | "GlovesLight"
-  | "GlovesHeavy"
-  | "Cloak"
-  | "Wristband"
-  | "WristbandLight"
-  | "WristbandHeavy"
-  | "Belt"
-  | "BeltLight"
-  | "BeltHeavy"
-  | "Wand"
-  | "Castet"
-  | "Knife"
-  | "Sword"
-  | "Sword2"
-  | "Hatchet"
-  | "Hatchet2"
-  | "Cudgel"
-  | "Cudgel2"
-  | "Staff"
-  | "Shield"
-  | "Pet"
-  | "Race"
-  | "Class"
-  | "MagCrit"
-  | "MagDodge"
-  | "Tank"
-  | "Warrior"
-  | "MonkBuff"
-  | "MonkParry"
-  | "Bear"
-  | "Boar"
-  | "Chicken"
-  | "Wolf"
-  | "Bandit"
-  | "Raptor"
-  | "Tester"
-  | "Ladder"
-  | "PreAlphaTester"
-  | "AlphaTester"
-  | "BetaTester"
-  | "Cup"
-  | "Pen"
-  | "Camera"
-  | "Mask"
-  | "Coin"
-  | "Brush"
-  | "Human"
-  | "Elf"
-  | "Dwarf"
-  | "Giant"
-  | "BeastMan"
-  | "Werewolf";
-export type TokenType =
-  | "Sketch"
-  | "Badge"
-  | "Skin"
-  | "Avatar"
-  | "Pet"
-  | "Race"
-  | "Class"
-  | "Weapon"
-  | "Armor"
-  | "Jewelry"
-  | "Shield"
-  | "Access"
-  | "Present";
 
 export interface Definitions {
   AccountId?: AccountId;
@@ -722,12 +708,10 @@ export interface Definitions {
   NFTContractMetadata?: NFTContractMetadata;
   Payout?: Payout;
   Promise?: true;
+  PromiseOrValueArrayOf_U128?: PromiseOrValueArrayOf_U128;
   PromiseOrValueBoolean?: PromiseOrValueBoolean;
   Token?: Token;
-  TokenCollection?: TokenCollection;
   TokenMetadata?: TokenMetadata;
-  TokenSubType?: TokenSubType;
-  TokenType?: TokenType;
   U128?: U128;
 }
 /**
@@ -755,7 +739,6 @@ export interface Token {
     [k: string]: number;
   } | null;
   bind_to_owner?: boolean | null;
-  collection?: TokenCollection | null;
   metadata?: TokenMetadata | null;
   owner_id: AccountId;
   rarity?: number | null;
@@ -764,8 +747,9 @@ export interface Token {
     [k: string]: number;
   } | null;
   token_id: string;
-  token_sub_type?: TokenSubType | null;
-  token_type?: TokenType | null;
+  types?: {
+    [k: string]: string;
+  } | null;
 }
 /**
  * Metadata on the individual token level.

@@ -229,6 +229,10 @@ function getMethodWithTypes({ el, contractName, getMethod }) {
 }
 
 function getRefType(refStr) {
+   if (!refStr) {
+      return '';
+   }
+
    return refStr.split('/').slice(-1)[0]
 }
 function formatParam(el) {
