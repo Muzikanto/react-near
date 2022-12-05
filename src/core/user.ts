@@ -45,7 +45,8 @@ export async function createNearTransaction(
 }
 
 function useNearUser(contractId?: string) {
-   const { wallet, account, client, loading, near, authContractId } = useNearContext();
+   const { wallet, account, client, loading, near, authContractId: authContractIdInner } = useNearContext();
+   const authContractId = contractId || authContractIdInner;
 
    const signedIn = wallet && wallet.isSignedIn();
    const address: string | null = wallet ? wallet.getAccountId() : null;
@@ -64,9 +65,9 @@ function useNearUser(contractId?: string) {
       }
    }, [wallet]);
    const connect = React.useCallback(
-      async (title?: string, successUrl?: string, failureUrl?: string) => {
+      async (title?: string, successUrl?: string, failureUrl?: string, methodNames?: string[]) => {
          if (wallet) {
-            await wallet.requestSignIn(contractId || authContractId, title, successUrl, failureUrl);
+            await wallet.requestSignIn({ contractId: authContractId, successUrl, failureUrl, methodNames }, title);
          }
       },
       [wallet],
