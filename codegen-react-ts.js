@@ -53,14 +53,14 @@ function getContractDefault({ contractName, viewMethods, changeMethods, codegenN
 }
 
 function getCoreCodeDefault({ contractName }) {
-    return `export function use${contractName}QueryRaw<Res = any, Req = any>(
+    return `export function use${contractName}QueryRaw<Res = any, Req extends { [key: string]: any } = any>(
   methodName: ${contractName}ViewMethods,
   opts: NearQueryOptions<Res, Req> = {}
 ) {
   const contract = use${contractName}Contract();
   return useNearQuery(methodName, { contract, ...opts });
 }
-export function use${contractName}MutationRaw<Res = any, Req = any>(
+export function use${contractName}MutationRaw<Res = any, Req extends { [key: string]: any } = any>(
   methodName: ${contractName}ChangeMethods,
   opts: NearMutationOptions<Res, Req> = {}
 ) {
