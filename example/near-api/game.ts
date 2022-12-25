@@ -136,7 +136,7 @@ export type IFtBalanceOfArgs = {
 
 export type IFtBalanceOfResult = U128;
 
-export function useFtBalanceOfQuery(opts: NearQueryOptions<IFtBalanceOfResult, IFtBalanceOfArgs>) {
+export function useFtBalanceOfQuery(opts: Omit<NearQueryOptions<IFtBalanceOfResult, IFtBalanceOfArgs>, 'contract'>) {
     return useGameQueryRaw<IFtBalanceOfResult, IFtBalanceOfArgs>(GameViewMethods.ft_balance_of, opts);
 }
 
@@ -148,7 +148,7 @@ export type IFtMetadataArgs = {
 
 export type IFtMetadataResult = FungibleTokenMetadata;
 
-export function useFtMetadataQuery(opts: NearQueryOptions<IFtMetadataResult, IFtMetadataArgs>) {
+export function useFtMetadataQuery(opts: Omit<NearQueryOptions<IFtMetadataResult, IFtMetadataArgs>, 'contract'>) {
     return useGameQueryRaw<IFtMetadataResult, IFtMetadataArgs>(GameViewMethods.ft_metadata, opts);
 }
 
@@ -162,7 +162,7 @@ export type IFtResolveTransferArgs = {
 
 export type IFtResolveTransferResult = U128;
 
-export function useFtResolveTransferMutation(opts: NearMutationOptions<IFtResolveTransferResult, IFtResolveTransferArgs>) {
+export function useFtResolveTransferMutation(opts: Omit<NearMutationOptions<IFtResolveTransferResult, IFtResolveTransferArgs>, 'contract'>) {
     return useGameMutationRaw<IFtResolveTransferResult, IFtResolveTransferArgs>(GameChangeMethods.ft_resolve_transfer, opts);
 }
 
@@ -174,7 +174,7 @@ export type IFtTotalSupplyArgs = {
 
 export type IFtTotalSupplyResult = U128;
 
-export function useFtTotalSupplyQuery(opts: NearQueryOptions<IFtTotalSupplyResult, IFtTotalSupplyArgs>) {
+export function useFtTotalSupplyQuery(opts: Omit<NearQueryOptions<IFtTotalSupplyResult, IFtTotalSupplyArgs>, 'contract'>) {
     return useGameQueryRaw<IFtTotalSupplyResult, IFtTotalSupplyArgs>(GameViewMethods.ft_total_supply, opts);
 }
 
@@ -188,7 +188,7 @@ export type IFtTransferArgs = {
 
 export type IFtTransferResult = void;
 
-export function useFtTransferMutation(opts: NearMutationOptions<IFtTransferResult, IFtTransferArgs>) {
+export function useFtTransferMutation(opts: Omit<NearMutationOptions<IFtTransferResult, IFtTransferArgs>, 'contract'>) {
     return useGameMutationRaw<IFtTransferResult, IFtTransferArgs>(GameChangeMethods.ft_transfer, opts);
 }
 
@@ -203,7 +203,7 @@ export type IFtTransferCallArgs = {
 
 export type IFtTransferCallResult = PromiseOrValueU128;
 
-export function useFtTransferCallMutation(opts: NearMutationOptions<IFtTransferCallResult, IFtTransferCallArgs>) {
+export function useFtTransferCallMutation(opts: Omit<NearMutationOptions<IFtTransferCallResult, IFtTransferCallArgs>, 'contract'>) {
     return useGameMutationRaw<IFtTransferCallResult, IFtTransferCallArgs>(GameChangeMethods.ft_transfer_call, opts);
 }
 
@@ -215,7 +215,7 @@ export type IGameNpcArgs = {
 
 export type IGameNpcResult = JsonNpc | null;
 
-export function useGameNpcQuery(opts: NearQueryOptions<IGameNpcResult, IGameNpcArgs>) {
+export function useGameNpcQuery(opts: Omit<NearQueryOptions<IGameNpcResult, IGameNpcArgs>, 'contract'>) {
     return useGameQueryRaw<IGameNpcResult, IGameNpcArgs>(GameViewMethods.game_npc, opts);
 }
 
@@ -228,7 +228,7 @@ export type IGameNpcMoveArgs = {
 
 export type IGameNpcMoveResult = void;
 
-export function useGameNpcMoveMutation(opts: NearMutationOptions<IGameNpcMoveResult, IGameNpcMoveArgs>) {
+export function useGameNpcMoveMutation(opts: Omit<NearMutationOptions<IGameNpcMoveResult, IGameNpcMoveArgs>, 'contract'>) {
     return useGameMutationRaw<IGameNpcMoveResult, IGameNpcMoveArgs>(GameChangeMethods.game_npc_move, opts);
 }
 
@@ -240,7 +240,7 @@ export type IGamePlayerArgs = {
 
 export type IGamePlayerResult = Player | null;
 
-export function useGamePlayerQuery(opts: NearQueryOptions<IGamePlayerResult, IGamePlayerArgs>) {
+export function useGamePlayerQuery(opts: Omit<NearQueryOptions<IGamePlayerResult, IGamePlayerArgs>, 'contract'>) {
     return useGameQueryRaw<IGamePlayerResult, IGamePlayerArgs>(GameViewMethods.game_player, opts);
 }
 
@@ -252,7 +252,7 @@ export type IGamePlayerNpcCountArgs = {
 
 export type IGamePlayerNpcCountResult = integer;
 
-export function useGamePlayerNpcCountQuery(opts: NearQueryOptions<IGamePlayerNpcCountResult, IGamePlayerNpcCountArgs>) {
+export function useGamePlayerNpcCountQuery(opts: Omit<NearQueryOptions<IGamePlayerNpcCountResult, IGamePlayerNpcCountArgs>, 'contract'>) {
     return useGameQueryRaw<IGamePlayerNpcCountResult, IGamePlayerNpcCountArgs>(GameViewMethods.game_player_npc_count, opts);
 }
 
@@ -264,7 +264,7 @@ export type IGamePlayerNpcListArgs = {
 
 export type IGamePlayerNpcListResult = JsonNpc[];
 
-export function useGamePlayerNpcListQuery(opts: NearQueryOptions<IGamePlayerNpcListResult, IGamePlayerNpcListArgs>) {
+export function useGamePlayerNpcListQuery(opts: Omit<NearQueryOptions<IGamePlayerNpcListResult, IGamePlayerNpcListArgs>, 'contract'>) {
     return useGameQueryRaw<IGamePlayerNpcListResult, IGamePlayerNpcListArgs>(GameViewMethods.game_player_npc_list, opts);
 }
 
@@ -276,7 +276,7 @@ export type IGamePlayerRoomCountArgs = {
 
 export type IGamePlayerRoomCountResult = integer;
 
-export function useGamePlayerRoomCountQuery(opts: NearQueryOptions<IGamePlayerRoomCountResult, IGamePlayerRoomCountArgs>) {
+export function useGamePlayerRoomCountQuery(opts: Omit<NearQueryOptions<IGamePlayerRoomCountResult, IGamePlayerRoomCountArgs>, 'contract'>) {
     return useGameQueryRaw<IGamePlayerRoomCountResult, IGamePlayerRoomCountArgs>(GameViewMethods.game_player_room_count, opts);
 }
 
@@ -288,7 +288,7 @@ export type IGamePlayerRoomListArgs = {
 
 export type IGamePlayerRoomListResult = JsonRoom[];
 
-export function useGamePlayerRoomListQuery(opts: NearQueryOptions<IGamePlayerRoomListResult, IGamePlayerRoomListArgs>) {
+export function useGamePlayerRoomListQuery(opts: Omit<NearQueryOptions<IGamePlayerRoomListResult, IGamePlayerRoomListArgs>, 'contract'>) {
     return useGameQueryRaw<IGamePlayerRoomListResult, IGamePlayerRoomListArgs>(GameViewMethods.game_player_room_list, opts);
 }
 
@@ -300,7 +300,7 @@ export type IGameProcessArgs = {
 
 export type IGameProcessResult = boolean;
 
-export function useGameProcessMutation(opts: NearMutationOptions<IGameProcessResult, IGameProcessArgs>) {
+export function useGameProcessMutation(opts: Omit<NearMutationOptions<IGameProcessResult, IGameProcessArgs>, 'contract'>) {
     return useGameMutationRaw<IGameProcessResult, IGameProcessArgs>(GameChangeMethods.game_process, opts);
 }
 
@@ -312,7 +312,7 @@ export type IGameRegisterArgs = {
 
 export type IGameRegisterResult = Player;
 
-export function useGameRegisterMutation(opts: NearMutationOptions<IGameRegisterResult, IGameRegisterArgs>) {
+export function useGameRegisterMutation(opts: Omit<NearMutationOptions<IGameRegisterResult, IGameRegisterArgs>, 'contract'>) {
     return useGameMutationRaw<IGameRegisterResult, IGameRegisterArgs>(GameChangeMethods.game_register, opts);
 }
 
@@ -324,7 +324,7 @@ export type IGameRoomArgs = {
 
 export type IGameRoomResult = JsonRoom | null;
 
-export function useGameRoomQuery(opts: NearQueryOptions<IGameRoomResult, IGameRoomArgs>) {
+export function useGameRoomQuery(opts: Omit<NearQueryOptions<IGameRoomResult, IGameRoomArgs>, 'contract'>) {
     return useGameQueryRaw<IGameRoomResult, IGameRoomArgs>(GameViewMethods.game_room, opts);
 }
 
@@ -336,7 +336,7 @@ export type IGameRoomClaimArgs = {
 
 export type IGameRoomClaimResult = boolean;
 
-export function useGameRoomClaimMutation(opts: NearMutationOptions<IGameRoomClaimResult, IGameRoomClaimArgs>) {
+export function useGameRoomClaimMutation(opts: Omit<NearMutationOptions<IGameRoomClaimResult, IGameRoomClaimArgs>, 'contract'>) {
     return useGameMutationRaw<IGameRoomClaimResult, IGameRoomClaimArgs>(GameChangeMethods.game_room_claim, opts);
 }
 
@@ -348,7 +348,7 @@ export type IGameUpgradeRoomArgs = {
 
 export type IGameUpgradeRoomResult = JsonRoom;
 
-export function useGameUpgradeRoomMutation(opts: NearMutationOptions<IGameUpgradeRoomResult, IGameUpgradeRoomArgs>) {
+export function useGameUpgradeRoomMutation(opts: Omit<NearMutationOptions<IGameUpgradeRoomResult, IGameUpgradeRoomArgs>, 'contract'>) {
     return useGameMutationRaw<IGameUpgradeRoomResult, IGameUpgradeRoomArgs>(GameChangeMethods.game_upgrade_room, opts);
 }
 
@@ -360,7 +360,7 @@ export type IGameUpgradeRoomPriceArgs = {
 
 export type IGameUpgradeRoomPriceResult = U128 | null;
 
-export function useGameUpgradeRoomPriceQuery(opts: NearQueryOptions<IGameUpgradeRoomPriceResult, IGameUpgradeRoomPriceArgs>) {
+export function useGameUpgradeRoomPriceQuery(opts: Omit<NearQueryOptions<IGameUpgradeRoomPriceResult, IGameUpgradeRoomPriceArgs>, 'contract'>) {
     return useGameQueryRaw<IGameUpgradeRoomPriceResult, IGameUpgradeRoomPriceArgs>(GameViewMethods.game_upgrade_room_price, opts);
 }
 
@@ -372,7 +372,7 @@ export type IIsPausedArgs = {
 
 export type IIsPausedResult = boolean;
 
-export function useIsPausedQuery(opts: NearQueryOptions<IIsPausedResult, IIsPausedArgs>) {
+export function useIsPausedQuery(opts: Omit<NearQueryOptions<IIsPausedResult, IIsPausedArgs>, 'contract'>) {
     return useGameQueryRaw<IIsPausedResult, IIsPausedArgs>(GameViewMethods.is_paused, opts);
 }
 
@@ -384,7 +384,7 @@ export type IMarketBuyNpcArgs = {
 
 export type IMarketBuyNpcResult = JsonNpc;
 
-export function useMarketBuyNpcMutation(opts: NearMutationOptions<IMarketBuyNpcResult, IMarketBuyNpcArgs>) {
+export function useMarketBuyNpcMutation(opts: Omit<NearMutationOptions<IMarketBuyNpcResult, IMarketBuyNpcArgs>, 'contract'>) {
     return useGameMutationRaw<IMarketBuyNpcResult, IMarketBuyNpcArgs>(GameChangeMethods.market_buy_npc, opts);
 }
 
@@ -396,7 +396,7 @@ export type IMarketBuyRoomArgs = {
 
 export type IMarketBuyRoomResult = JsonRoom;
 
-export function useMarketBuyRoomMutation(opts: NearMutationOptions<IMarketBuyRoomResult, IMarketBuyRoomArgs>) {
+export function useMarketBuyRoomMutation(opts: Omit<NearMutationOptions<IMarketBuyRoomResult, IMarketBuyRoomArgs>, 'contract'>) {
     return useGameMutationRaw<IMarketBuyRoomResult, IMarketBuyRoomArgs>(GameChangeMethods.market_buy_room, opts);
 }
 
@@ -408,7 +408,7 @@ export type INewDefaultMetaArgs = {
 
 export type INewDefaultMetaResult = void;
 
-export function useNewDefaultMetaMutation(opts: NearMutationOptions<INewDefaultMetaResult, INewDefaultMetaArgs>) {
+export function useNewDefaultMetaMutation(opts: Omit<NearMutationOptions<INewDefaultMetaResult, INewDefaultMetaArgs>, 'contract'>) {
     return useGameMutationRaw<INewDefaultMetaResult, INewDefaultMetaArgs>(GameChangeMethods.new_default_meta, opts);
 }
 
@@ -422,7 +422,7 @@ export type INftApproveArgs = {
 
 export type INftApproveResult = void | null;
 
-export function useNftApproveMutation(opts: NearMutationOptions<INftApproveResult, INftApproveArgs>) {
+export function useNftApproveMutation(opts: Omit<NearMutationOptions<INftApproveResult, INftApproveArgs>, 'contract'>) {
     return useGameMutationRaw<INftApproveResult, INftApproveArgs>(GameChangeMethods.nft_approve, opts);
 }
 
@@ -436,7 +436,7 @@ export type INftIsApprovedArgs = {
 
 export type INftIsApprovedResult = boolean;
 
-export function useNftIsApprovedQuery(opts: NearQueryOptions<INftIsApprovedResult, INftIsApprovedArgs>) {
+export function useNftIsApprovedQuery(opts: Omit<NearQueryOptions<INftIsApprovedResult, INftIsApprovedArgs>, 'contract'>) {
     return useGameQueryRaw<INftIsApprovedResult, INftIsApprovedArgs>(GameViewMethods.nft_is_approved, opts);
 }
 
@@ -448,7 +448,7 @@ export type INftMetadataArgs = {
 
 export type INftMetadataResult = NFTContractMetadata;
 
-export function useNftMetadataQuery(opts: NearQueryOptions<INftMetadataResult, INftMetadataArgs>) {
+export function useNftMetadataQuery(opts: Omit<NearQueryOptions<INftMetadataResult, INftMetadataArgs>, 'contract'>) {
     return useGameQueryRaw<INftMetadataResult, INftMetadataArgs>(GameViewMethods.nft_metadata, opts);
 }
 
@@ -462,7 +462,7 @@ export type INftPayoutArgs = {
 
 export type INftPayoutResult = Payout;
 
-export function useNftPayoutQuery(opts: NearQueryOptions<INftPayoutResult, INftPayoutArgs>) {
+export function useNftPayoutQuery(opts: Omit<NearQueryOptions<INftPayoutResult, INftPayoutArgs>, 'contract'>) {
     return useGameQueryRaw<INftPayoutResult, INftPayoutArgs>(GameViewMethods.nft_payout, opts);
 }
 
@@ -477,7 +477,7 @@ export type INftResolveTransferArgs = {
 
 export type INftResolveTransferResult = boolean;
 
-export function useNftResolveTransferMutation(opts: NearMutationOptions<INftResolveTransferResult, INftResolveTransferArgs>) {
+export function useNftResolveTransferMutation(opts: Omit<NearMutationOptions<INftResolveTransferResult, INftResolveTransferArgs>, 'contract'>) {
     return useGameMutationRaw<INftResolveTransferResult, INftResolveTransferArgs>(GameChangeMethods.nft_resolve_transfer, opts);
 }
 
@@ -490,7 +490,7 @@ export type INftRevokeArgs = {
 
 export type INftRevokeResult = void;
 
-export function useNftRevokeMutation(opts: NearMutationOptions<INftRevokeResult, INftRevokeArgs>) {
+export function useNftRevokeMutation(opts: Omit<NearMutationOptions<INftRevokeResult, INftRevokeArgs>, 'contract'>) {
     return useGameMutationRaw<INftRevokeResult, INftRevokeArgs>(GameChangeMethods.nft_revoke, opts);
 }
 
@@ -502,7 +502,7 @@ export type INftRevokeAllArgs = {
 
 export type INftRevokeAllResult = void;
 
-export function useNftRevokeAllMutation(opts: NearMutationOptions<INftRevokeAllResult, INftRevokeAllArgs>) {
+export function useNftRevokeAllMutation(opts: Omit<NearMutationOptions<INftRevokeAllResult, INftRevokeAllArgs>, 'contract'>) {
     return useGameMutationRaw<INftRevokeAllResult, INftRevokeAllArgs>(GameChangeMethods.nft_revoke_all, opts);
 }
 
@@ -514,7 +514,7 @@ export type INftSupplyForOwnerArgs = {
 
 export type INftSupplyForOwnerResult = U128;
 
-export function useNftSupplyForOwnerQuery(opts: NearQueryOptions<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>) {
+export function useNftSupplyForOwnerQuery(opts: Omit<NearQueryOptions<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>, 'contract'>) {
     return useGameQueryRaw<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>(GameViewMethods.nft_supply_for_owner, opts);
 }
 
@@ -526,7 +526,7 @@ export type INftTokenArgs = {
 
 export type INftTokenResult = Token | null;
 
-export function useNftTokenQuery(opts: NearQueryOptions<INftTokenResult, INftTokenArgs>) {
+export function useNftTokenQuery(opts: Omit<NearQueryOptions<INftTokenResult, INftTokenArgs>, 'contract'>) {
     return useGameQueryRaw<INftTokenResult, INftTokenArgs>(GameViewMethods.nft_token, opts);
 }
 
@@ -539,7 +539,7 @@ export type INftTokensArgs = {
 
 export type INftTokensResult = Token[];
 
-export function useNftTokensQuery(opts: NearQueryOptions<INftTokensResult, INftTokensArgs>) {
+export function useNftTokensQuery(opts: Omit<NearQueryOptions<INftTokensResult, INftTokensArgs>, 'contract'>) {
     return useGameQueryRaw<INftTokensResult, INftTokensArgs>(GameViewMethods.nft_tokens, opts);
 }
 
@@ -553,7 +553,7 @@ export type INftTokensForOwnerArgs = {
 
 export type INftTokensForOwnerResult = Token[];
 
-export function useNftTokensForOwnerQuery(opts: NearQueryOptions<INftTokensForOwnerResult, INftTokensForOwnerArgs>) {
+export function useNftTokensForOwnerQuery(opts: Omit<NearQueryOptions<INftTokensForOwnerResult, INftTokensForOwnerArgs>, 'contract'>) {
     return useGameQueryRaw<INftTokensForOwnerResult, INftTokensForOwnerArgs>(GameViewMethods.nft_tokens_for_owner, opts);
 }
 
@@ -565,7 +565,7 @@ export type INftTotalSupplyArgs = {
 
 export type INftTotalSupplyResult = U128;
 
-export function useNftTotalSupplyQuery(opts: NearQueryOptions<INftTotalSupplyResult, INftTotalSupplyArgs>) {
+export function useNftTotalSupplyQuery(opts: Omit<NearQueryOptions<INftTotalSupplyResult, INftTotalSupplyArgs>, 'contract'>) {
     return useGameQueryRaw<INftTotalSupplyResult, INftTotalSupplyArgs>(GameViewMethods.nft_total_supply, opts);
 }
 
@@ -580,7 +580,7 @@ export type INftTransferArgs = {
 
 export type INftTransferResult = void;
 
-export function useNftTransferMutation(opts: NearMutationOptions<INftTransferResult, INftTransferArgs>) {
+export function useNftTransferMutation(opts: Omit<NearMutationOptions<INftTransferResult, INftTransferArgs>, 'contract'>) {
     return useGameMutationRaw<INftTransferResult, INftTransferArgs>(GameChangeMethods.nft_transfer, opts);
 }
 
@@ -596,7 +596,7 @@ export type INftTransferCallArgs = {
 
 export type INftTransferCallResult = PromiseOrValueBoolean;
 
-export function useNftTransferCallMutation(opts: NearMutationOptions<INftTransferCallResult, INftTransferCallArgs>) {
+export function useNftTransferCallMutation(opts: Omit<NearMutationOptions<INftTransferCallResult, INftTransferCallArgs>, 'contract'>) {
     return useGameMutationRaw<INftTransferCallResult, INftTransferCallArgs>(GameChangeMethods.nft_transfer_call, opts);
 }
 
@@ -613,7 +613,7 @@ export type INftTransferPayoutArgs = {
 
 export type INftTransferPayoutResult = Payout;
 
-export function useNftTransferPayoutMutation(opts: NearMutationOptions<INftTransferPayoutResult, INftTransferPayoutArgs>) {
+export function useNftTransferPayoutMutation(opts: Omit<NearMutationOptions<INftTransferPayoutResult, INftTransferPayoutArgs>, 'contract'>) {
     return useGameMutationRaw<INftTransferPayoutResult, INftTransferPayoutArgs>(GameChangeMethods.nft_transfer_payout, opts);
 }
 
@@ -625,7 +625,7 @@ export type ISetIsPausedArgs = {
 
 export type ISetIsPausedResult = boolean;
 
-export function useSetIsPausedMutation(opts: NearMutationOptions<ISetIsPausedResult, ISetIsPausedArgs>) {
+export function useSetIsPausedMutation(opts: Omit<NearMutationOptions<ISetIsPausedResult, ISetIsPausedArgs>, 'contract'>) {
     return useGameMutationRaw<ISetIsPausedResult, ISetIsPausedArgs>(GameChangeMethods.set_is_paused, opts);
 }
 
@@ -637,7 +637,7 @@ export type IStorageBalanceBoundsArgs = {
 
 export type IStorageBalanceBoundsResult = StorageBalanceBounds;
 
-export function useStorageBalanceBoundsQuery(opts: NearQueryOptions<IStorageBalanceBoundsResult, IStorageBalanceBoundsArgs>) {
+export function useStorageBalanceBoundsQuery(opts: Omit<NearQueryOptions<IStorageBalanceBoundsResult, IStorageBalanceBoundsArgs>, 'contract'>) {
     return useGameQueryRaw<IStorageBalanceBoundsResult, IStorageBalanceBoundsArgs>(GameViewMethods.storage_balance_bounds, opts);
 }
 
@@ -649,7 +649,7 @@ export type IStorageBalanceOfArgs = {
 
 export type IStorageBalanceOfResult = StorageBalance | null;
 
-export function useStorageBalanceOfQuery(opts: NearQueryOptions<IStorageBalanceOfResult, IStorageBalanceOfArgs>) {
+export function useStorageBalanceOfQuery(opts: Omit<NearQueryOptions<IStorageBalanceOfResult, IStorageBalanceOfArgs>, 'contract'>) {
     return useGameQueryRaw<IStorageBalanceOfResult, IStorageBalanceOfArgs>(GameViewMethods.storage_balance_of, opts);
 }
 
@@ -662,7 +662,7 @@ export type IStorageDepositArgs = {
 
 export type IStorageDepositResult = StorageBalance;
 
-export function useStorageDepositMutation(opts: NearMutationOptions<IStorageDepositResult, IStorageDepositArgs>) {
+export function useStorageDepositMutation(opts: Omit<NearMutationOptions<IStorageDepositResult, IStorageDepositArgs>, 'contract'>) {
     return useGameMutationRaw<IStorageDepositResult, IStorageDepositArgs>(GameChangeMethods.storage_deposit, opts);
 }
 
@@ -674,7 +674,7 @@ export type IStorageUnregisterArgs = {
 
 export type IStorageUnregisterResult = boolean;
 
-export function useStorageUnregisterMutation(opts: NearMutationOptions<IStorageUnregisterResult, IStorageUnregisterArgs>) {
+export function useStorageUnregisterMutation(opts: Omit<NearMutationOptions<IStorageUnregisterResult, IStorageUnregisterArgs>, 'contract'>) {
     return useGameMutationRaw<IStorageUnregisterResult, IStorageUnregisterArgs>(GameChangeMethods.storage_unregister, opts);
 }
 
@@ -686,7 +686,7 @@ export type IStorageWithdrawArgs = {
 
 export type IStorageWithdrawResult = StorageBalance;
 
-export function useStorageWithdrawMutation(opts: NearMutationOptions<IStorageWithdrawResult, IStorageWithdrawArgs>) {
+export function useStorageWithdrawMutation(opts: Omit<NearMutationOptions<IStorageWithdrawResult, IStorageWithdrawArgs>, 'contract'>) {
     return useGameMutationRaw<IStorageWithdrawResult, IStorageWithdrawArgs>(GameChangeMethods.storage_withdraw, opts);
 }
 

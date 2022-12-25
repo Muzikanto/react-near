@@ -126,7 +126,7 @@ export type IAssertActionArgs = {
 
 export type IAssertActionResult = void;
 
-export function useAssertActionQuery(opts: NearQueryOptions<IAssertActionResult, IAssertActionArgs>) {
+export function useAssertActionQuery(opts: Omit<NearQueryOptions<IAssertActionResult, IAssertActionArgs>, 'contract'>) {
     return useNftQueryRaw<IAssertActionResult, IAssertActionArgs>(NftViewMethods.assert_action, opts);
 }
 
@@ -138,7 +138,7 @@ export type IAssertOwnerArgs = {
 
 export type IAssertOwnerResult = void;
 
-export function useAssertOwnerQuery(opts: NearQueryOptions<IAssertOwnerResult, IAssertOwnerArgs>) {
+export function useAssertOwnerQuery(opts: Omit<NearQueryOptions<IAssertOwnerResult, IAssertOwnerArgs>, 'contract'>) {
     return useNftQueryRaw<IAssertOwnerResult, IAssertOwnerArgs>(NftViewMethods.assert_owner, opts);
 }
 
@@ -150,7 +150,7 @@ export type IBlacklistAddArgs = {
 
 export type IBlacklistAddResult = boolean;
 
-export function useBlacklistAddMutation(opts: NearMutationOptions<IBlacklistAddResult, IBlacklistAddArgs>) {
+export function useBlacklistAddMutation(opts: Omit<NearMutationOptions<IBlacklistAddResult, IBlacklistAddArgs>, 'contract'>) {
     return useNftMutationRaw<IBlacklistAddResult, IBlacklistAddArgs>(NftChangeMethods.blacklist_add, opts);
 }
 
@@ -162,7 +162,7 @@ export type IBlacklistRemoveArgs = {
 
 export type IBlacklistRemoveResult = boolean;
 
-export function useBlacklistRemoveMutation(opts: NearMutationOptions<IBlacklistRemoveResult, IBlacklistRemoveArgs>) {
+export function useBlacklistRemoveMutation(opts: Omit<NearMutationOptions<IBlacklistRemoveResult, IBlacklistRemoveArgs>, 'contract'>) {
     return useNftMutationRaw<IBlacklistRemoveResult, IBlacklistRemoveArgs>(NftChangeMethods.blacklist_remove, opts);
 }
 
@@ -174,7 +174,7 @@ export type IIsBlacklistArgs = {
 
 export type IIsBlacklistResult = boolean;
 
-export function useIsBlacklistQuery(opts: NearQueryOptions<IIsBlacklistResult, IIsBlacklistArgs>) {
+export function useIsBlacklistQuery(opts: Omit<NearQueryOptions<IIsBlacklistResult, IIsBlacklistArgs>, 'contract'>) {
     return useNftQueryRaw<IIsBlacklistResult, IIsBlacklistArgs>(NftViewMethods.is_blacklist, opts);
 }
 
@@ -186,7 +186,7 @@ export type IIsPausedArgs = {
 
 export type IIsPausedResult = boolean;
 
-export function useIsPausedQuery(opts: NearQueryOptions<IIsPausedResult, IIsPausedArgs>) {
+export function useIsPausedQuery(opts: Omit<NearQueryOptions<IIsPausedResult, IIsPausedArgs>, 'contract'>) {
     return useNftQueryRaw<IIsPausedResult, IIsPausedArgs>(NftViewMethods.is_paused, opts);
 }
 
@@ -200,7 +200,7 @@ export type INftApproveArgs = {
 
 export type INftApproveResult = void | null;
 
-export function useNftApproveMutation(opts: NearMutationOptions<INftApproveResult, INftApproveArgs>) {
+export function useNftApproveMutation(opts: Omit<NearMutationOptions<INftApproveResult, INftApproveArgs>, 'contract'>) {
     return useNftMutationRaw<INftApproveResult, INftApproveArgs>(NftChangeMethods.nft_approve, opts);
 }
 
@@ -212,7 +212,7 @@ export type INftBurnArgs = {
 
 export type INftBurnResult = void;
 
-export function useNftBurnMutation(opts: NearMutationOptions<INftBurnResult, INftBurnArgs>) {
+export function useNftBurnMutation(opts: Omit<NearMutationOptions<INftBurnResult, INftBurnArgs>, 'contract'>) {
     return useNftMutationRaw<INftBurnResult, INftBurnArgs>(NftChangeMethods.nft_burn, opts);
 }
 
@@ -225,7 +225,7 @@ export type INftBurnerUpgradeArgs = {
 
 export type INftBurnerUpgradeResult = void;
 
-export function useNftBurnerUpgradeMutation(opts: NearMutationOptions<INftBurnerUpgradeResult, INftBurnerUpgradeArgs>) {
+export function useNftBurnerUpgradeMutation(opts: Omit<NearMutationOptions<INftBurnerUpgradeResult, INftBurnerUpgradeArgs>, 'contract'>) {
     return useNftMutationRaw<INftBurnerUpgradeResult, INftBurnerUpgradeArgs>(NftChangeMethods.nft_burner_upgrade, opts);
 }
 
@@ -237,7 +237,7 @@ export type INftBurnerUpgradePriceArgs = {
 
 export type INftBurnerUpgradePriceResult = integer | null;
 
-export function useNftBurnerUpgradePriceQuery(opts: NearQueryOptions<INftBurnerUpgradePriceResult, INftBurnerUpgradePriceArgs>) {
+export function useNftBurnerUpgradePriceQuery(opts: Omit<NearQueryOptions<INftBurnerUpgradePriceResult, INftBurnerUpgradePriceArgs>, 'contract'>) {
     return useNftQueryRaw<INftBurnerUpgradePriceResult, INftBurnerUpgradePriceArgs>(NftViewMethods.nft_burner_upgrade_price, opts);
 }
 
@@ -251,7 +251,7 @@ export type INftIsApprovedArgs = {
 
 export type INftIsApprovedResult = boolean;
 
-export function useNftIsApprovedQuery(opts: NearQueryOptions<INftIsApprovedResult, INftIsApprovedArgs>) {
+export function useNftIsApprovedQuery(opts: Omit<NearQueryOptions<INftIsApprovedResult, INftIsApprovedArgs>, 'contract'>) {
     return useNftQueryRaw<INftIsApprovedResult, INftIsApprovedArgs>(NftViewMethods.nft_is_approved, opts);
 }
 
@@ -263,7 +263,7 @@ export type INftIsBindToOwnerArgs = {
 
 export type INftIsBindToOwnerResult = boolean;
 
-export function useNftIsBindToOwnerQuery(opts: NearQueryOptions<INftIsBindToOwnerResult, INftIsBindToOwnerArgs>) {
+export function useNftIsBindToOwnerQuery(opts: Omit<NearQueryOptions<INftIsBindToOwnerResult, INftIsBindToOwnerArgs>, 'contract'>) {
     return useNftQueryRaw<INftIsBindToOwnerResult, INftIsBindToOwnerArgs>(NftViewMethods.nft_is_bind_to_owner, opts);
 }
 
@@ -275,7 +275,7 @@ export type INftMetadataArgs = {
 
 export type INftMetadataResult = NFTContractMetadata;
 
-export function useNftMetadataQuery(opts: NearQueryOptions<INftMetadataResult, INftMetadataArgs>) {
+export function useNftMetadataQuery(opts: Omit<NearQueryOptions<INftMetadataResult, INftMetadataArgs>, 'contract'>) {
     return useNftQueryRaw<INftMetadataResult, INftMetadataArgs>(NftViewMethods.nft_metadata, opts);
 }
 
@@ -296,7 +296,7 @@ export type INftMintArgs = {
 
 export type INftMintResult = Token;
 
-export function useNftMintMutation(opts: NearMutationOptions<INftMintResult, INftMintArgs>) {
+export function useNftMintMutation(opts: Omit<NearMutationOptions<INftMintResult, INftMintArgs>, 'contract'>) {
     return useNftMutationRaw<INftMintResult, INftMintArgs>(NftChangeMethods.nft_mint, opts);
 }
 
@@ -310,7 +310,7 @@ export type INftPayoutArgs = {
 
 export type INftPayoutResult = Payout;
 
-export function useNftPayoutQuery(opts: NearQueryOptions<INftPayoutResult, INftPayoutArgs>) {
+export function useNftPayoutQuery(opts: Omit<NearQueryOptions<INftPayoutResult, INftPayoutArgs>, 'contract'>) {
     return useNftQueryRaw<INftPayoutResult, INftPayoutArgs>(NftViewMethods.nft_payout, opts);
 }
 
@@ -323,7 +323,7 @@ export type INftRemoveBurnerUpgradePriceArgs = {
 
 export type INftRemoveBurnerUpgradePriceResult = void;
 
-export function useNftRemoveBurnerUpgradePriceMutation(opts: NearMutationOptions<INftRemoveBurnerUpgradePriceResult, INftRemoveBurnerUpgradePriceArgs>) {
+export function useNftRemoveBurnerUpgradePriceMutation(opts: Omit<NearMutationOptions<INftRemoveBurnerUpgradePriceResult, INftRemoveBurnerUpgradePriceArgs>, 'contract'>) {
     return useNftMutationRaw<INftRemoveBurnerUpgradePriceResult, INftRemoveBurnerUpgradePriceArgs>(NftChangeMethods.nft_remove_burner_upgrade_price, opts);
 }
 
@@ -336,7 +336,7 @@ export type INftRemoveUpgradePriceArgs = {
 
 export type INftRemoveUpgradePriceResult = void;
 
-export function useNftRemoveUpgradePriceMutation(opts: NearMutationOptions<INftRemoveUpgradePriceResult, INftRemoveUpgradePriceArgs>) {
+export function useNftRemoveUpgradePriceMutation(opts: Omit<NearMutationOptions<INftRemoveUpgradePriceResult, INftRemoveUpgradePriceArgs>, 'contract'>) {
     return useNftMutationRaw<INftRemoveUpgradePriceResult, INftRemoveUpgradePriceArgs>(NftChangeMethods.nft_remove_upgrade_price, opts);
 }
 
@@ -351,7 +351,7 @@ export type INftResolveTransferArgs = {
 
 export type INftResolveTransferResult = boolean;
 
-export function useNftResolveTransferMutation(opts: NearMutationOptions<INftResolveTransferResult, INftResolveTransferArgs>) {
+export function useNftResolveTransferMutation(opts: Omit<NearMutationOptions<INftResolveTransferResult, INftResolveTransferArgs>, 'contract'>) {
     return useNftMutationRaw<INftResolveTransferResult, INftResolveTransferArgs>(NftChangeMethods.nft_resolve_transfer, opts);
 }
 
@@ -363,7 +363,7 @@ export type INftRevealArgs = {
 
 export type INftRevealResult = void;
 
-export function useNftRevealMutation(opts: NearMutationOptions<INftRevealResult, INftRevealArgs>) {
+export function useNftRevealMutation(opts: Omit<NearMutationOptions<INftRevealResult, INftRevealArgs>, 'contract'>) {
     return useNftMutationRaw<INftRevealResult, INftRevealArgs>(NftChangeMethods.nft_reveal, opts);
 }
 
@@ -376,7 +376,7 @@ export type INftRevokeArgs = {
 
 export type INftRevokeResult = void;
 
-export function useNftRevokeMutation(opts: NearMutationOptions<INftRevokeResult, INftRevokeArgs>) {
+export function useNftRevokeMutation(opts: Omit<NearMutationOptions<INftRevokeResult, INftRevokeArgs>, 'contract'>) {
     return useNftMutationRaw<INftRevokeResult, INftRevokeArgs>(NftChangeMethods.nft_revoke, opts);
 }
 
@@ -388,7 +388,7 @@ export type INftRevokeAllArgs = {
 
 export type INftRevokeAllResult = void;
 
-export function useNftRevokeAllMutation(opts: NearMutationOptions<INftRevokeAllResult, INftRevokeAllArgs>) {
+export function useNftRevokeAllMutation(opts: Omit<NearMutationOptions<INftRevokeAllResult, INftRevokeAllArgs>, 'contract'>) {
     return useNftMutationRaw<INftRevokeAllResult, INftRevokeAllArgs>(NftChangeMethods.nft_revoke_all, opts);
 }
 
@@ -400,7 +400,7 @@ export type INftRoyaltyAccountArgs = {
 
 export type INftRoyaltyAccountResult = AccountId;
 
-export function useNftRoyaltyAccountQuery(opts: NearQueryOptions<INftRoyaltyAccountResult, INftRoyaltyAccountArgs>) {
+export function useNftRoyaltyAccountQuery(opts: Omit<NearQueryOptions<INftRoyaltyAccountResult, INftRoyaltyAccountArgs>, 'contract'>) {
     return useNftQueryRaw<INftRoyaltyAccountResult, INftRoyaltyAccountArgs>(NftViewMethods.nft_royalty_account, opts);
 }
 
@@ -412,7 +412,7 @@ export type INftRoyaltyValueArgs = {
 
 export type INftRoyaltyValueResult = integer;
 
-export function useNftRoyaltyValueQuery(opts: NearQueryOptions<INftRoyaltyValueResult, INftRoyaltyValueArgs>) {
+export function useNftRoyaltyValueQuery(opts: Omit<NearQueryOptions<INftRoyaltyValueResult, INftRoyaltyValueArgs>, 'contract'>) {
     return useNftQueryRaw<INftRoyaltyValueResult, INftRoyaltyValueArgs>(NftViewMethods.nft_royalty_value, opts);
 }
 
@@ -426,7 +426,7 @@ export type INftSetBurnerUpgradePriceArgs = {
 
 export type INftSetBurnerUpgradePriceResult = void;
 
-export function useNftSetBurnerUpgradePriceMutation(opts: NearMutationOptions<INftSetBurnerUpgradePriceResult, INftSetBurnerUpgradePriceArgs>) {
+export function useNftSetBurnerUpgradePriceMutation(opts: Omit<NearMutationOptions<INftSetBurnerUpgradePriceResult, INftSetBurnerUpgradePriceArgs>, 'contract'>) {
     return useNftMutationRaw<INftSetBurnerUpgradePriceResult, INftSetBurnerUpgradePriceArgs>(NftChangeMethods.nft_set_burner_upgrade_price, opts);
 }
 
@@ -441,7 +441,7 @@ export type INftSetUpgradePriceArgs = {
 
 export type INftSetUpgradePriceResult = void;
 
-export function useNftSetUpgradePriceMutation(opts: NearMutationOptions<INftSetUpgradePriceResult, INftSetUpgradePriceArgs>) {
+export function useNftSetUpgradePriceMutation(opts: Omit<NearMutationOptions<INftSetUpgradePriceResult, INftSetUpgradePriceArgs>, 'contract'>) {
     return useNftMutationRaw<INftSetUpgradePriceResult, INftSetUpgradePriceArgs>(NftChangeMethods.nft_set_upgrade_price, opts);
 }
 
@@ -453,7 +453,7 @@ export type INftSupplyForOwnerArgs = {
 
 export type INftSupplyForOwnerResult = U128;
 
-export function useNftSupplyForOwnerQuery(opts: NearQueryOptions<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>) {
+export function useNftSupplyForOwnerQuery(opts: Omit<NearQueryOptions<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>, 'contract'>) {
     return useNftQueryRaw<INftSupplyForOwnerResult, INftSupplyForOwnerArgs>(NftViewMethods.nft_supply_for_owner, opts);
 }
 
@@ -465,7 +465,7 @@ export type INftTokenArgs = {
 
 export type INftTokenResult = Token | null;
 
-export function useNftTokenQuery(opts: NearQueryOptions<INftTokenResult, INftTokenArgs>) {
+export function useNftTokenQuery(opts: Omit<NearQueryOptions<INftTokenResult, INftTokenArgs>, 'contract'>) {
     return useNftQueryRaw<INftTokenResult, INftTokenArgs>(NftViewMethods.nft_token, opts);
 }
 
@@ -478,7 +478,7 @@ export type INftTokensArgs = {
 
 export type INftTokensResult = Token[];
 
-export function useNftTokensQuery(opts: NearQueryOptions<INftTokensResult, INftTokensArgs>) {
+export function useNftTokensQuery(opts: Omit<NearQueryOptions<INftTokensResult, INftTokensArgs>, 'contract'>) {
     return useNftQueryRaw<INftTokensResult, INftTokensArgs>(NftViewMethods.nft_tokens, opts);
 }
 
@@ -490,7 +490,7 @@ export type INftTokensByIdsArgs = {
 
 export type INftTokensByIdsResult = Token[];
 
-export function useNftTokensByIdsQuery(opts: NearQueryOptions<INftTokensByIdsResult, INftTokensByIdsArgs>) {
+export function useNftTokensByIdsQuery(opts: Omit<NearQueryOptions<INftTokensByIdsResult, INftTokensByIdsArgs>, 'contract'>) {
     return useNftQueryRaw<INftTokensByIdsResult, INftTokensByIdsArgs>(NftViewMethods.nft_tokens_by_ids, opts);
 }
 
@@ -504,7 +504,7 @@ export type INftTokensForOwnerArgs = {
 
 export type INftTokensForOwnerResult = Token[];
 
-export function useNftTokensForOwnerQuery(opts: NearQueryOptions<INftTokensForOwnerResult, INftTokensForOwnerArgs>) {
+export function useNftTokensForOwnerQuery(opts: Omit<NearQueryOptions<INftTokensForOwnerResult, INftTokensForOwnerArgs>, 'contract'>) {
     return useNftQueryRaw<INftTokensForOwnerResult, INftTokensForOwnerArgs>(NftViewMethods.nft_tokens_for_owner, opts);
 }
 
@@ -516,7 +516,7 @@ export type INftTotalSupplyArgs = {
 
 export type INftTotalSupplyResult = U128;
 
-export function useNftTotalSupplyQuery(opts: NearQueryOptions<INftTotalSupplyResult, INftTotalSupplyArgs>) {
+export function useNftTotalSupplyQuery(opts: Omit<NearQueryOptions<INftTotalSupplyResult, INftTotalSupplyArgs>, 'contract'>) {
     return useNftQueryRaw<INftTotalSupplyResult, INftTotalSupplyArgs>(NftViewMethods.nft_total_supply, opts);
 }
 
@@ -531,7 +531,7 @@ export type INftTransferArgs = {
 
 export type INftTransferResult = void;
 
-export function useNftTransferMutation(opts: NearMutationOptions<INftTransferResult, INftTransferArgs>) {
+export function useNftTransferMutation(opts: Omit<NearMutationOptions<INftTransferResult, INftTransferArgs>, 'contract'>) {
     return useNftMutationRaw<INftTransferResult, INftTransferArgs>(NftChangeMethods.nft_transfer, opts);
 }
 
@@ -547,7 +547,7 @@ export type INftTransferCallArgs = {
 
 export type INftTransferCallResult = PromiseOrValueBoolean;
 
-export function useNftTransferCallMutation(opts: NearMutationOptions<INftTransferCallResult, INftTransferCallArgs>) {
+export function useNftTransferCallMutation(opts: Omit<NearMutationOptions<INftTransferCallResult, INftTransferCallArgs>, 'contract'>) {
     return useNftMutationRaw<INftTransferCallResult, INftTransferCallArgs>(NftChangeMethods.nft_transfer_call, opts);
 }
 
@@ -564,7 +564,7 @@ export type INftTransferPayoutArgs = {
 
 export type INftTransferPayoutResult = Payout;
 
-export function useNftTransferPayoutMutation(opts: NearMutationOptions<INftTransferPayoutResult, INftTransferPayoutArgs>) {
+export function useNftTransferPayoutMutation(opts: Omit<NearMutationOptions<INftTransferPayoutResult, INftTransferPayoutArgs>, 'contract'>) {
     return useNftMutationRaw<INftTransferPayoutResult, INftTransferPayoutArgs>(NftChangeMethods.nft_transfer_payout, opts);
 }
 
@@ -576,7 +576,7 @@ export type INftUpgradeArgs = {
 
 export type INftUpgradeResult = void;
 
-export function useNftUpgradeMutation(opts: NearMutationOptions<INftUpgradeResult, INftUpgradeArgs>) {
+export function useNftUpgradeMutation(opts: Omit<NearMutationOptions<INftUpgradeResult, INftUpgradeArgs>, 'contract'>) {
     return useNftMutationRaw<INftUpgradeResult, INftUpgradeArgs>(NftChangeMethods.nft_upgrade, opts);
 }
 
@@ -588,7 +588,7 @@ export type INftUpgradePriceArgs = {
 
 export type INftUpgradePriceResult = [AccountId, U128] | null;
 
-export function useNftUpgradePriceQuery(opts: NearQueryOptions<INftUpgradePriceResult, INftUpgradePriceArgs>) {
+export function useNftUpgradePriceQuery(opts: Omit<NearQueryOptions<INftUpgradePriceResult, INftUpgradePriceArgs>, 'contract'>) {
     return useNftQueryRaw<INftUpgradePriceResult, INftUpgradePriceArgs>(NftViewMethods.nft_upgrade_price, opts);
 }
 
@@ -600,7 +600,7 @@ export type ISetIsPausedArgs = {
 
 export type ISetIsPausedResult = boolean;
 
-export function useSetIsPausedMutation(opts: NearMutationOptions<ISetIsPausedResult, ISetIsPausedArgs>) {
+export function useSetIsPausedMutation(opts: Omit<NearMutationOptions<ISetIsPausedResult, ISetIsPausedArgs>, 'contract'>) {
     return useNftMutationRaw<ISetIsPausedResult, ISetIsPausedArgs>(NftChangeMethods.set_is_paused, opts);
 }
 
@@ -612,7 +612,7 @@ export type ISetRoyaltyAccountArgs = {
 
 export type ISetRoyaltyAccountResult = AccountId;
 
-export function useSetRoyaltyAccountMutation(opts: NearMutationOptions<ISetRoyaltyAccountResult, ISetRoyaltyAccountArgs>) {
+export function useSetRoyaltyAccountMutation(opts: Omit<NearMutationOptions<ISetRoyaltyAccountResult, ISetRoyaltyAccountArgs>, 'contract'>) {
     return useNftMutationRaw<ISetRoyaltyAccountResult, ISetRoyaltyAccountArgs>(NftChangeMethods.set_royalty_account, opts);
 }
 
@@ -624,7 +624,7 @@ export type ISetRoyaltyValueArgs = {
 
 export type ISetRoyaltyValueResult = void;
 
-export function useSetRoyaltyValueMutation(opts: NearMutationOptions<ISetRoyaltyValueResult, ISetRoyaltyValueArgs>) {
+export function useSetRoyaltyValueMutation(opts: Omit<NearMutationOptions<ISetRoyaltyValueResult, ISetRoyaltyValueArgs>, 'contract'>) {
     return useNftMutationRaw<ISetRoyaltyValueResult, ISetRoyaltyValueArgs>(NftChangeMethods.set_royalty_value, opts);
 }
 

@@ -82,7 +82,7 @@ export type IMarketAcceptOfferArgs = {
 
 export type IMarketAcceptOfferResult = void;
 
-export function useMarketAcceptOfferMutation(opts: NearMutationOptions<IMarketAcceptOfferResult, IMarketAcceptOfferArgs>) {
+export function useMarketAcceptOfferMutation(opts: Omit<NearMutationOptions<IMarketAcceptOfferResult, IMarketAcceptOfferArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketAcceptOfferResult, IMarketAcceptOfferArgs>(MarketChangeMethods.market_accept_offer, opts);
 }
 
@@ -98,7 +98,7 @@ export type IMarketAddBidArgs = {
 
 export type IMarketAddBidResult = void;
 
-export function useMarketAddBidMutation(opts: NearMutationOptions<IMarketAddBidResult, IMarketAddBidArgs>) {
+export function useMarketAddBidMutation(opts: Omit<NearMutationOptions<IMarketAddBidResult, IMarketAddBidArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketAddBidResult, IMarketAddBidArgs>(MarketChangeMethods.market_add_bid, opts);
 }
 
@@ -110,7 +110,7 @@ export type IMarketAddFtTokenArgs = {
 
 export type IMarketAddFtTokenResult = boolean;
 
-export function useMarketAddFtTokenMutation(opts: NearMutationOptions<IMarketAddFtTokenResult, IMarketAddFtTokenArgs>) {
+export function useMarketAddFtTokenMutation(opts: Omit<NearMutationOptions<IMarketAddFtTokenResult, IMarketAddFtTokenArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketAddFtTokenResult, IMarketAddFtTokenArgs>(MarketChangeMethods.market_add_ft_token, opts);
 }
 
@@ -123,7 +123,7 @@ export type IMarketOfferArgs = {
 
 export type IMarketOfferResult = void;
 
-export function useMarketOfferMutation(opts: NearMutationOptions<IMarketOfferResult, IMarketOfferArgs>) {
+export function useMarketOfferMutation(opts: Omit<NearMutationOptions<IMarketOfferResult, IMarketOfferArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketOfferResult, IMarketOfferArgs>(MarketChangeMethods.market_offer, opts);
 }
 
@@ -139,7 +139,7 @@ export type IMarketProcessPurchaseArgs = {
 
 export type IMarketProcessPurchaseResult = void;
 
-export function useMarketProcessPurchaseMutation(opts: NearMutationOptions<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>) {
+export function useMarketProcessPurchaseMutation(opts: Omit<NearMutationOptions<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketProcessPurchaseResult, IMarketProcessPurchaseArgs>(MarketChangeMethods.market_process_purchase, opts);
 }
 
@@ -152,7 +152,7 @@ export type IMarketRemoveSaleArgs = {
 
 export type IMarketRemoveSaleResult = void;
 
-export function useMarketRemoveSaleMutation(opts: NearMutationOptions<IMarketRemoveSaleResult, IMarketRemoveSaleArgs>) {
+export function useMarketRemoveSaleMutation(opts: Omit<NearMutationOptions<IMarketRemoveSaleResult, IMarketRemoveSaleArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketRemoveSaleResult, IMarketRemoveSaleArgs>(MarketChangeMethods.market_remove_sale, opts);
 }
 
@@ -167,7 +167,7 @@ export type IMarketResolvePurchaseArgs = {
 
 export type IMarketResolvePurchaseResult = U128;
 
-export function useMarketResolvePurchaseMutation(opts: NearMutationOptions<IMarketResolvePurchaseResult, IMarketResolvePurchaseArgs>) {
+export function useMarketResolvePurchaseMutation(opts: Omit<NearMutationOptions<IMarketResolvePurchaseResult, IMarketResolvePurchaseArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketResolvePurchaseResult, IMarketResolvePurchaseArgs>(MarketChangeMethods.market_resolve_purchase, opts);
 }
 
@@ -180,7 +180,7 @@ export type IMarketSaleArgs = {
 
 export type IMarketSaleResult = Sale | null;
 
-export function useMarketSaleQuery(opts: NearQueryOptions<IMarketSaleResult, IMarketSaleArgs>) {
+export function useMarketSaleQuery(opts: Omit<NearQueryOptions<IMarketSaleResult, IMarketSaleArgs>, 'contract'>) {
     return useMarketQueryRaw<IMarketSaleResult, IMarketSaleArgs>(MarketViewMethods.market_sale, opts);
 }
 
@@ -194,7 +194,7 @@ export type IMarketSalesByNftContractIdArgs = {
 
 export type IMarketSalesByNftContractIdResult = Sale[];
 
-export function useMarketSalesByNftContractIdQuery(opts: NearQueryOptions<IMarketSalesByNftContractIdResult, IMarketSalesByNftContractIdArgs>) {
+export function useMarketSalesByNftContractIdQuery(opts: Omit<NearQueryOptions<IMarketSalesByNftContractIdResult, IMarketSalesByNftContractIdArgs>, 'contract'>) {
     return useMarketQueryRaw<IMarketSalesByNftContractIdResult, IMarketSalesByNftContractIdArgs>(MarketViewMethods.market_sales_by_nft_contract_id, opts);
 }
 
@@ -208,7 +208,7 @@ export type IMarketSalesByOwnerIdArgs = {
 
 export type IMarketSalesByOwnerIdResult = Sale[];
 
-export function useMarketSalesByOwnerIdQuery(opts: NearQueryOptions<IMarketSalesByOwnerIdResult, IMarketSalesByOwnerIdArgs>) {
+export function useMarketSalesByOwnerIdQuery(opts: Omit<NearQueryOptions<IMarketSalesByOwnerIdResult, IMarketSalesByOwnerIdArgs>, 'contract'>) {
     return useMarketQueryRaw<IMarketSalesByOwnerIdResult, IMarketSalesByOwnerIdArgs>(MarketViewMethods.market_sales_by_owner_id, opts);
 }
 
@@ -220,7 +220,7 @@ export type IMarketSupplyByNftContractIdArgs = {
 
 export type IMarketSupplyByNftContractIdResult = U64;
 
-export function useMarketSupplyByNftContractIdQuery(opts: NearQueryOptions<IMarketSupplyByNftContractIdResult, IMarketSupplyByNftContractIdArgs>) {
+export function useMarketSupplyByNftContractIdQuery(opts: Omit<NearQueryOptions<IMarketSupplyByNftContractIdResult, IMarketSupplyByNftContractIdArgs>, 'contract'>) {
     return useMarketQueryRaw<IMarketSupplyByNftContractIdResult, IMarketSupplyByNftContractIdArgs>(MarketViewMethods.market_supply_by_nft_contract_id, opts);
 }
 
@@ -232,7 +232,7 @@ export type IMarketSupplyByOwnerIdArgs = {
 
 export type IMarketSupplyByOwnerIdResult = U64;
 
-export function useMarketSupplyByOwnerIdQuery(opts: NearQueryOptions<IMarketSupplyByOwnerIdResult, IMarketSupplyByOwnerIdArgs>) {
+export function useMarketSupplyByOwnerIdQuery(opts: Omit<NearQueryOptions<IMarketSupplyByOwnerIdResult, IMarketSupplyByOwnerIdArgs>, 'contract'>) {
     return useMarketQueryRaw<IMarketSupplyByOwnerIdResult, IMarketSupplyByOwnerIdArgs>(MarketViewMethods.market_supply_by_owner_id, opts);
 }
 
@@ -244,7 +244,7 @@ export type IMarketSupplySalesArgs = {
 
 export type IMarketSupplySalesResult = U64;
 
-export function useMarketSupplySalesQuery(opts: NearQueryOptions<IMarketSupplySalesResult, IMarketSupplySalesArgs>) {
+export function useMarketSupplySalesQuery(opts: Omit<NearQueryOptions<IMarketSupplySalesResult, IMarketSupplySalesArgs>, 'contract'>) {
     return useMarketQueryRaw<IMarketSupplySalesResult, IMarketSupplySalesArgs>(MarketViewMethods.market_supply_sales, opts);
 }
 
@@ -259,7 +259,7 @@ export type IMarketUpdatePriceArgs = {
 
 export type IMarketUpdatePriceResult = void;
 
-export function useMarketUpdatePriceMutation(opts: NearMutationOptions<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>) {
+export function useMarketUpdatePriceMutation(opts: Omit<NearMutationOptions<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>, 'contract'>) {
     return useMarketMutationRaw<IMarketUpdatePriceResult, IMarketUpdatePriceArgs>(MarketChangeMethods.market_update_price, opts);
 }
 
@@ -271,7 +271,7 @@ export type IReputationArgs = {
 
 export type IReputationResult = integer;
 
-export function useReputationQuery(opts: NearQueryOptions<IReputationResult, IReputationArgs>) {
+export function useReputationQuery(opts: Omit<NearQueryOptions<IReputationResult, IReputationArgs>, 'contract'>) {
     return useMarketQueryRaw<IReputationResult, IReputationArgs>(MarketViewMethods.reputation, opts);
 }
 
@@ -283,7 +283,7 @@ export type ISupportedFtTokenIdsArgs = {
 
 export type ISupportedFtTokenIdsResult = AccountId[];
 
-export function useSupportedFtTokenIdsQuery(opts: NearQueryOptions<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>) {
+export function useSupportedFtTokenIdsQuery(opts: Omit<NearQueryOptions<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>, 'contract'>) {
     return useMarketQueryRaw<ISupportedFtTokenIdsResult, ISupportedFtTokenIdsArgs>(MarketViewMethods.supported_ft_token_ids, opts);
 }
 
