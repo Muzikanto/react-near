@@ -80,7 +80,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 // page.tsx
 function Page() {
    const nearUser = useNearUser();
-   const ftContract = useFtContract();
 
    const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
       contract: 'mfight-ft.testnet',
@@ -89,6 +88,7 @@ function Page() {
       skip: !nearUser.isConnected,
    });
    const [transferCall] = useFtTransferCall({
+      contract: 'mfight-ft.testnet',
       gas: GAS_FOR_FT_TRANSFER_CALL,
    });
 
@@ -236,15 +236,15 @@ function Page() {
    const nearUser = useNearUser();
 
    const [ftTransferCall1, ftTransferCallCtx1] = useFtTransferCall({
-      contract: mfight-ft.testnet,
+      contract: 'mfight-ft.testnet',
       gas: GAS_FOR_FT_TRANSFER_CALL,
    });
    const [ftTransferCall2, ftTransferCallCtx2] = useFtTransferCall({
-      contract: mfight-ft.testnet,
+      contract: 'mfight-ft.testnet',
       gas: GAS_FOR_FT_TRANSFER_CALL,
    });
    const [mtBatchTransferCall, mtTransferCallCtx] = useMtBatchTransferCall({
-      contract: mfight-ft.testnet,
+      contract: 'mfight-ft.testnet',
       gas: GAS_FOR_MT_TRANSFER_CALL,
    });
 
@@ -330,7 +330,7 @@ function Page() {
       { receiver_id: string; amount: string }
    >('ft_transfer', {
       gas: NEAR_GAS, // gas for this method
-      contract: 'ftTransferCallCtx1', // contract of method
+      contract: 'mfight-ft.testnet',
       debug: true, // debug method, print info to console
       onError: (err) => console.log(err), // error handler
       onCompleted: (res) => console.log(res), // result handler
