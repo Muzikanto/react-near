@@ -41,7 +41,6 @@ Including ready for use typed methods in popular smart contract [Standards](http
 -  [api](#api)
    -  [NearProvider](#nearprovider) define near in app
    -  [NearEnvironmentProvider](#nearenvironmentprovider) switch env (TestNet, MainNet..)
-   -  [Config](#define-and-use-contracts) define contracts
    -  [useNearUser](#usenearuser) complex example
    -  [useNearUser](#batch-transactions) batch Transactions
    -  [useNearQuery](#usenearquery) use view methods
@@ -67,13 +66,6 @@ If you need to generate contract methods `npm i -D json-schema-to-typescript fzs
 // config.ts
 const FT_CONTRACT_NAME = 'mfight-ft.testnet';
 
-function useFtContract() {
-   return useNearContract<FtContract & StorageContract>(FT_CONTRACT_NAME, {
-      viewMethods: [...FT_METHODS.viewMethods, ...STORAGE_METHODS.viewMethods],
-      changeMethods: [...FT_METHODS.changeMethods, ...STORAGE_METHODS.changeMethods],
-   });
-}
-
 // app.tsx
 function MyApp({ Component, pageProps }: AppProps) {
    return (
@@ -91,7 +83,7 @@ function Page() {
    const ftContract = useFtContract();
 
    const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
-      contract: ftContract,
+      contract: 'mfight-ft.testnet',
       variables: { account_id: nearUser.address as string },
       poolInterval: 1000 * 60 * 5,
       skip: !nearUser.isConnected,
@@ -242,20 +234,17 @@ const POOL_CONTRACT_ID = 'two-tokens-receiver.testnet';
 
 function Page() {
    const nearUser = useNearUser();
-   const ftContract1 = useFtContract(FT_CONTRACT_ID_1);
-   const ftContract2 = useFtContract(FT_CONTRACT_ID_2);
-   const mtContract = useFtContract(MT_CONTRACT_ID);
 
    const [ftTransferCall1, ftTransferCallCtx1] = useFtTransferCall({
-      contract: ftContract1,
+      contract: mfight-ft.testnet,
       gas: GAS_FOR_FT_TRANSFER_CALL,
    });
    const [ftTransferCall2, ftTransferCallCtx2] = useFtTransferCall({
-      contract: ftContract2,
+      contract: mfight-ft.testnet,
       gas: GAS_FOR_FT_TRANSFER_CALL,
    });
    const [mtBatchTransferCall, mtTransferCallCtx] = useMtBatchTransferCall({
-      contract: mtContract,
+      contract: mfight-ft.testnet,
       gas: GAS_FOR_MT_TRANSFER_CALL,
    });
 
@@ -292,52 +281,6 @@ function Page() {
 }
 ```
 
-#### Define and use Contracts
-
-Adding contracts to the application
-
-```typescript jsx
-export const NFT_CONTRACT_NAME = 'mfight-nft.near';
-export const FT_CONTRACT_NAME = 'mfight-ft.near';
-
-function useFtContract() {
-   return useNearContract(FT_CONTRACT_NAME, {
-      viewMethods: ['ft_balance_of'],
-      changeMethods: ['ft_transfer'],
-   });
-}
-function useNftContract() {
-   return useNearContract(FT_CONTRACT_NAME, {
-      viewMethods: ['nft_tokens_for_owner', 'nft_metadata', 'nft_tokens'],
-      changeMethods: ['nft_transfer'],
-   });
-}
-
-// use
-
-function Page() {
-   const ftContract = useFtContract();
-
-   // use query hook
-   const { data: balance = '0' } = useFtBalanceOf({
-      contract: ftContract,
-      variables: {
-         account_id: 'account.near',
-      },
-   });
-   // or custom call
-   const getBalance = () => {
-      if (!ftContract) {
-         return 0;
-      }
-
-      return ftContract.ft_balance_of({ account_id: 'account.near' });
-   };
-
-   return <span>FT balance: {formatNearAmount(balance, 24)}</span>;
-}
-```
-
 #### useNearQuery
 
 Calling the view method from the contract
@@ -345,7 +288,6 @@ Calling the view method from the contract
 ```typescript jsx
 function Page() {
    const nearUser = useNearUser();
-   const ftContract = useFtContract();
 
    const {
       data: balance = '0', // method result
@@ -353,7 +295,7 @@ function Page() {
       error, // error, if exists
       refetch, // refresh state
    } = useNearQuery<string, { account_id: string }>('ft_balance_of', {
-      contract: ftContract, // contract of method
+      contract: 'mfight-ft.testnte', // contract of method
       variables: {
          account_id: 'account.near',
       }, // arguments of method
@@ -382,14 +324,13 @@ Calling the change method from the contract
 ```typescript jsx
 function Page() {
    const nearUser = useNearUser();
-   const ftContract = useFtContract();
 
    const [transfer, { loading, data }] = useNearMutation<
       string,
       { receiver_id: string; amount: string }
    >('ft_transfer', {
       gas: NEAR_GAS, // gas for this method
-      contract: ftContract, // contract of method
+      contract: 'ftTransferCallCtx1', // contract of method
       debug: true, // debug method, print info to console
       onError: (err) => console.log(err), // error handler
       onCompleted: (res) => console.log(res), // result handler
