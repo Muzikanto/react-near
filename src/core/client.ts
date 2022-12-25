@@ -1,6 +1,5 @@
 import { Contract } from 'near-api-js';
 import { NearQueryState } from '../hooks/query';
-import { useNearContext } from '../NearProvider';
 
 export function encodeRequest(
    contractId: string,
@@ -109,12 +108,5 @@ const createNearClient = (fromClient?: NearClient): NearClient => {
 
    return client;
 };
-
-export function useNearClient(): NearClient {
-   const { client } = useNearContext();
-
-   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-   return client;
-}
 
 export default createNearClient;

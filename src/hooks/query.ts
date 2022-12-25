@@ -1,12 +1,10 @@
 import React from 'react';
-import { NearContext } from '../NearProvider';
 import { encodeRequest, NearClient } from '../core/client';
-import { NearContract } from '../contract/useNearContract';
-import useNearContractProvided from '../contract/useNearContractProvided';
-import { Contract } from 'near-api-js';
+import { CodeResult } from 'near-api-js/lib/providers/provider';
+import useNear from './near';
 
 export type NearQueryOptions<Res = any, Req extends { [key: string]: any } = any> = {
-   contract?: string | NearContract;
+   contract: string;
    variables?: Req;
    mock?: (args: Req) => Promise<Res>;
    onError?: (err: Error) => void;
@@ -36,6 +34,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    methodName: string,
    opts: NearQueryOptions<Res, Req>,
 ) {
+   const { client, provider } = useNear();
    const [args, setArgs] = React.useState(opts.variables || {});
 
    React.useEffect(() => {
@@ -44,14 +43,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
    }, [opts.variables]);
 
-   const { client, account } = React.useContext(NearContext);
-   const contractProvided = useNearContractProvided();
-   const contractV = opts.contract || contractProvided;
-   const contractId = contractV
-      ? typeof contractV === 'string'
-         ? contractV
-         : contractV.contractId
-      : '';
+   const contractId = opts.contract;
 
    const requestId = React.useMemo(
       () => encodeRequest(contractId, methodName, args),
@@ -67,6 +59,10 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
    );
 
    const callMethod = (args?: Req, useCache: boolean = true) => {
+      if (!provider) {
+         return Promise.resolve(undefined);
+      }
+
       const nextRequestId = encodeRequest(contractId, methodName, args || opts.variables || {});
 
       if (nextRequestId !== requestId) {
@@ -102,28 +98,19 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             if (opts.mock) {
                res = await opts.mock(variables);
             } else {
-               if (account && typeof contractV === 'string') {
-                  res = await account.viewFunction(contractV, methodName, variables);
-               }
-               if (
-                  !res &&
-                  contractV &&
-                  contractV instanceof Contract &&
-                  methodName in (contractV as any)
-               ) {
-                  res = await (contractV as any)[methodName](variables);
-               }
-
-               if (
-                  !(account && typeof contractV === 'string') &&
-                  !(contractV && contractV instanceof Contract && methodName in (contractV as any))
-               ) {
-                  throw new Error(`Not found account ctx or contract method (${methodName})`);
-               }
+               res = await provider
+                  .query<CodeResult>({
+                     request_type: 'call_function',
+                     account_id: contractId,
+                     method_name: methodName,
+                     args_base64: btoa(JSON.stringify(variables)),
+                     finality: 'optimistic',
+                  })
+                  .then((res) => JSON.parse(Buffer.from(res.result).toString()));
             }
 
             if (opts.debug) {
-               console.log(`NEAR #${contractV}-${methodName}`, { ...args }, res);
+               console.log(`NEAR #${contractId}-${methodName}`, { ...args }, res);
             }
 
             if (opts.update) {
@@ -146,7 +133,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
             return resolve(res);
          } catch (e) {
             if (opts.debug) {
-               console.error(`NEAR #${contractV}-${methodName}`, { ...opts.variables }, e);
+               console.error(`NEAR #${contractId}-${methodName}`, { ...opts.variables }, e);
             }
 
             if (opts.onError) {
@@ -182,7 +169,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       return () => {
          unWatch();
       };
-   }, [client, opts.variables, opts.contract, methodName, state, contractV, requestId]);
+   }, [client, opts.variables, opts.contract, methodName, state, contractId, requestId]);
 
    // first fetch
    React.useEffect(() => {
@@ -192,33 +179,15 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
          setState(state);
       }
 
-      if (
-         !opts.skip &&
-         (opts.ssr === false ? typeof window !== 'undefined' : true) &&
-         (account || contractV instanceof Contract || opts.mock)
-      ) {
+      if (!opts.skip && (opts.ssr === false ? typeof window !== 'undefined' : true)) {
          callMethod()
             .then()
             .catch(() => {});
       }
-   }, [
-      methodName,
-      opts.skip,
-      opts.ssr,
-      opts.onError,
-      opts.variables,
-      account,
-      contractV,
-      requestId,
-   ]);
+   }, [methodName, opts.skip, opts.ssr, opts.onError, opts.variables, contractId, requestId]);
    // interval refetch
    React.useEffect(() => {
-      if (
-         typeof window !== 'undefined' &&
-         !opts.skip &&
-         opts.poolInterval &&
-         (account || contractV)
-      ) {
+      if (typeof window !== 'undefined' && !opts.skip && opts.poolInterval) {
          const internal = setInterval(() => {
             callMethod()
                .then()
@@ -231,7 +200,7 @@ function useNearQuery<Res = any, Req extends { [key: string]: any } = any>(
       }
 
       return () => {};
-   }, [methodName, opts.skip, opts.ssr, opts.onError, opts.variables, account, opts.contract]);
+   }, [methodName, opts.skip, opts.ssr, opts.onError, opts.variables, opts.contract]);
 
    if (typeof window === 'undefined') {
       if (opts.ssr && !opts.skip) {

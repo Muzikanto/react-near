@@ -1,4 +1,4 @@
-import { encodeRequest, NearClient } from './core/client';
+import { encodeRequest, NearClient } from '../core/client';
 
 export async function collectNearDataWithoutRender(nearClient: NearClient) {
    const SSR = nearClient.cache.SSR || {};

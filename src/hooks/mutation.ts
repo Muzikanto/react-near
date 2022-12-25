@@ -1,17 +1,16 @@
 import React from 'react';
 import { encodeRequest, NearClient } from '../core/client';
-import { NearContext } from '../NearProvider';
-import { NearContract } from '../contract/useNearContract';
-import useNearContractProvided from '../contract/useNearContractProvided';
-import { createNearTransaction } from '../core/user';
-import * as nearApi from 'near-api-js';
+import { useNear } from '..';
+import { NEAR_GAS } from '..';
+import { Optional } from '@near-wallet-selector/core/lib/utils.types';
+import { Transaction } from '@near-wallet-selector/core/lib/wallet/transactions.types';
 
 export type NearMutationOverrideOpts = {
    gas?: number;
    contractId?: string;
 };
 export type NearMutationOptions<Res = any, Req extends { [key: string]: any } = any> = {
-   contract?: string | NearContract;
+   contract?: string;
    mock?: (
       args: Req,
       attachedDeposit?: string,
@@ -40,12 +39,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
    methodName: string,
    opts: NearMutationOptions<Res, Req>,
 ) {
-   const { client, account, near, wallet } = React.useContext(NearContext);
-   const contractProvided = useNearContractProvided();
-   const contractV = opts.contract || contractProvided;
-   const contractId = React.useMemo(() => {
-      return contractV ? (typeof contractV === 'string' ? contractV : contractV.contractId) : '_';
-   }, [contractV]);
+   const { client, selector, accountId } = useNear();
 
    const [state, setState] = React.useState<{ data: Res | undefined; loading: boolean }>({
       loading: false,
@@ -57,27 +51,38 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
       attachedDeposit?: string,
       overrideOpts: NearMutationOverrideOpts = {},
    ): Promise<Res> => {
-      let localContractId = overrideOpts.contractId || contractId;
-      const requestId = encodeRequest(localContractId, methodName, args);
+      let contractId = overrideOpts.contractId || opts.contract;
+
+      if (!contractId) {
+         console.error('Require contract id');
+         return Promise.reject('Require contract id');
+      }
+
+      const requestId = encodeRequest(contractId, methodName, args);
 
       client.set(requestId, { data: null, loading: true, error: null }, 'ROOT_MUTATION');
 
-      if (account && !opts.skipRenders) {
+      if (accountId && !opts.skipRenders) {
          setState({ data: undefined, loading: true });
       }
 
       return new Promise(async (resolve: (res: Res) => void, reject) => {
          try {
+            if (!selector) {
+               throw new Error('No wallet selector instance');
+            }
+            const wallet = await selector.wallet();
+
             let res: any;
 
             if (opts.mock) {
                res = await opts.mock(args, attachedDeposit, overrideOpts);
             } else {
-               if (!account) {
+               if (!accountId) {
                   const err = new Error('Not found near account');
 
                   if (opts.debug) {
-                     console.error(`NEAR #${contractV}-${methodName}`, err);
+                     console.error(`NEAR #${contractId}-${methodName}`, err);
                   }
                   if (opts.onError) {
                      opts.onError(err);
@@ -86,19 +91,25 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                   return reject(err);
                }
 
-               res = await account.functionCall({
-                  contractId: localContractId,
-                  methodName,
-                  attachedDeposit: attachedDeposit,
-                  gas: overrideOpts.gas || opts.gas,
-                  args,
-                  walletCallbackUrl: opts.callbackUrl,
-                  walletMeta: opts.meta,
+               res = wallet.signAndSendTransaction({
+                  signerId: accountId!,
+                  receiverId: contractId,
+                  actions: [
+                     {
+                        type: 'FunctionCall',
+                        params: {
+                           methodName,
+                           args,
+                           gas: (overrideOpts.gas || opts.gas || NEAR_GAS).toString(),
+                           deposit: attachedDeposit as string,
+                        },
+                     },
+                  ],
                });
             }
 
             if (opts.debug) {
-               console.log(`NEAR #${localContractId}-${methodName}`, { ...args }, res);
+               console.log(`NEAR #${contractId}-${methodName}`, { ...args }, res);
             }
 
             if (opts.update) {
@@ -107,7 +118,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
                   variables: args,
                   attachedDeposit: attachedDeposit,
                   methodName,
-                  requestId: encodeRequest(contractId, methodName, args),
+                  requestId: encodeRequest(contractId as string, methodName, args),
                });
             }
 
@@ -124,7 +135,7 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             return resolve(res);
          } catch (e) {
             if (opts.debug) {
-               console.error(`NEAR #${localContractId}-${methodName}`, { ...args }, e);
+               console.error(`NEAR #${contractId}-${methodName}`, { ...args }, e);
             }
 
             if (opts.onError) {
@@ -150,31 +161,24 @@ function useNearMutation<Res = any, Req extends { [key: string]: any } = any>(
             nonceOffset?: number;
             contractId?: string;
          } = {},
-      ): Promise<nearApi.transactions.Transaction> => {
-         if (!near || !wallet) {
-            throw new Error('Not found near ctx');
-         }
-         if (!account) {
-            throw new Error('Near account does not connected');
-         }
-
-         return createNearTransaction(
-            near,
-            wallet,
-            account.accountId,
-            overrideOpts.contractId || contractId,
-            [
-               nearApi.transactions.functionCall(
-                  methodName,
-                  args,
-                  overrideOpts.gas || opts.gas,
-                  attachedDeposit,
-               ),
+      ): Optional<Transaction, 'signerId'> => {
+         return {
+            signerId: accountId as string,
+            receiverId: (overrideOpts.contractId || opts.contract) as string,
+            actions: [
+               {
+                  type: 'FunctionCall',
+                  params: {
+                     methodName: methodName,
+                     args: args,
+                     gas: (overrideOpts.gas || opts.gas || NEAR_GAS).toString(),
+                     deposit: attachedDeposit || '0',
+                  },
+               },
             ],
-            overrideOpts.nonceOffset || 1,
-         );
+         };
       },
-      [near, wallet, account, contractId, opts.gas],
+      [opts.contract, opts.gas],
    );
 
    return [

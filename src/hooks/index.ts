@@ -1,8 +1,17 @@
-import useNear from '../core/near';
-import useNearAccount from '../core/account';
-import useNearWallet from '../core/wallet';
-import useNearUser from '../core/user';
 import useNearMutation from './mutation';
 import useNearQuery from './query';
+import useNearStatus from './status';
+import useNearUser from './user';
+import useNearClient from './client';
+import useNear from './near';
+import useNearEnv from './env';
 
-export { useNear, useNearWallet, useNearUser, useNearAccount, useNearQuery, useNearMutation };
+export {
+   useNearStatus,
+   useNearClient,
+   useNearUser,
+   useNearQuery,
+   useNearMutation,
+   useNear,
+   useNearEnv,
+};

@@ -19,9 +19,9 @@ function getMethodDefault({
                               resultInterface,
                           }) {
     return [
-        `export function use${functionName}${isView ? 'Query' : 'Mutation'}(opts: Near${
+        `export function use${functionName}${isView ? 'Query' : 'Mutation'}(opts: Omit<Near${
             isView ? 'Query' : 'Mutation'
-        }Options<${resultInterface}, ${argsInterface}>) {`,
+        }Options<${resultInterface}, ${argsInterface}>, 'contract'>) {`,
         `    return use${contractName}${
             isView ? 'QueryRaw' : 'MutationRaw'
         }<${resultInterface}, ${argsInterface}>(${contractName}${
@@ -34,44 +34,34 @@ function getMethodDefault({
 function getContractDefault({ contractName, viewMethods, changeMethods, codegenName }) {
     return [
         `export function use${contractName}ContractId() {`,
-        `  const nearEnv = useNearEnvironment();`,
+        `  const nearEnv = useNearEnv();`,
         '',
         `  return nearEnv.value === NearEnvironment.MainNet ? ${codegenName}_MAINNET : ${codegenName}_TESTNET;`,
         `}`,
         '',
-        `export function use${contractName}Contract() {`,
-        `  const contractId = use${contractName}ContractId();`,
-        '',
-        '  return (',
-        `    useNearContract<I${contractName}Contract>(contractId, {`,
-        `      viewMethods: [\n${viewMethods.join('\n')}\n      ],`,
-        `      changeMethods: [\n${changeMethods.join('\n')}\n      ],`,
-        '    }',
-        '  ));',
-        '}',
     ].join('\n');
 }
 
 function getCoreCodeDefault({ contractName }) {
     return `export function use${contractName}QueryRaw<Res = any, Req extends { [key: string]: any } = any>(
   methodName: ${contractName}ViewMethods,
-  opts: NearQueryOptions<Res, Req> = {}
+  opts: Omit<NearQueryOptions<Res, Req>, 'contract'> = {}
 ) {
-  const contract = use${contractName}Contract();
+  const contract = use${contractName}ContractId();
   return useNearQuery(methodName, { contract, ...opts });
 }
 export function use${contractName}MutationRaw<Res = any, Req extends { [key: string]: any } = any>(
   methodName: ${contractName}ChangeMethods,
-  opts: NearMutationOptions<Res, Req> = {}
+  opts: Omit<NearMutationOptions<Res, Req>, 'contract'> = {}
 ) {
-  const contract = use${contractName}Contract();
+  const contract = use${contractName}ContractId();
   return useNearMutation(methodName, { contract, ...opts });
 }`;
 }
 
 function getStartCodeDefault({ contractName }) {
     return [
-        `import { useNearQuery, useNearMutation, useNearContract, useNearEnvironment, NearEnvironment } from "react-near";`,
+        `import { useNearQuery, useNearMutation, useNearEnv, NearEnvironment } from "react-near";`,
         'import { NearQueryOptions } from "react-near/hooks/query";',
         'import { NearMutationOptions } from "react-near/hooks/mutation";',
     ].join('\n');

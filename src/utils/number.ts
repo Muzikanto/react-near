@@ -1,4 +1,4 @@
-import { formatNearPrice, parseNearAmount } from './utils';
+import { formatNearPrice, parseNearAmount } from './index';
 
 export class YoctoPrice {
    protected value: number;

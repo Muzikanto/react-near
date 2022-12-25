@@ -1,7 +1,7 @@
 import React from 'react';
-import { NearEnvironment, NearEnvironmentProvider, NearProvider } from './index';
-import { NearEnvironmentProviderProps } from './environment';
-import { NearProviderProps } from './NearProvider';
+import { NearEnvironment, NearEnvironmentProvider, NearProvider } from '../index';
+import { NearEnvironmentProviderProps } from '../core/env';
+import { NearProviderProps } from '../core/near';
 
 function withNear<T = any>(
    AppComponent: React.FC<React.PropsWithChildren<T>> & { getInitialProps?: any },
@@ -14,7 +14,7 @@ function withNear<T = any>(
       defaultEnvironment?: NearEnvironment;
       providerProps?: Omit<
          NearProviderProps,
-         'defaultEnvironment' | 'defaultClient' | 'defaultState' | 'authContractId'
+         'defaultEnvironment' | 'defaultClient' | 'defaultState' | 'authContractId' | 'children'
       >;
       environmentProps?: NearEnvironmentProviderProps;
       authContractId: string;

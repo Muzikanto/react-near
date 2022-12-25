@@ -1,7 +1,3 @@
-import { NearViewMethod } from '../../types';
-import { ParasMarketDataArgs, ParasMarketDataResult } from './useParasMarketData';
-import { NearContract } from '../../contract/useNearContract';
-
 export type ParasBid = {
    bidder_id: string;
    price: string;
@@ -37,7 +33,3 @@ export type ParasCollectionStats = {
    volume_usd?: number;
    _id?: string;
 };
-
-export type ParasContract = NearContract<{
-   get_market_data: NearViewMethod<ParasMarketDataArgs, ParasMarketDataResult>;
-}>;

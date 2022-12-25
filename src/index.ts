@@ -1,13 +1,18 @@
 import {
-   useNearWallet,
-   useNear,
    useNearUser,
-   useNearAccount,
    useNearMutation,
    useNearQuery,
+   useNearStatus,
+   useNearClient,
+   useNear,
+   useNearEnv,
 } from './hooks';
-import NearProvider, { NearContext, makeNearProviderState } from './NearProvider';
-import getNearConfig, { NEAR_GAS } from './config';
+
+import { NearProvider, NearContext } from './core/near';
+import NearEnvironmentProvider, { NearEnvironmentContext } from './core/env';
+import createNearClient, { encodeRequest } from './core/client';
+
+import { NEAR_GAS } from './utils/config';
 import {
    getNearError,
    formatNearAddress,
@@ -16,51 +21,38 @@ import {
    isValidNearAddress,
    parseNearDate,
 } from './utils';
-import NearEnvironmentProvider, { NearEnvironmentContext, useNearEnvironment } from './environment';
-import { NearEnvironment } from './config';
-import NearContractProvider from './contract/NearContractProvider';
-import useNearContract from './contract/useNearContract';
-import { collectNearData, collectNearDataWithoutRender } from './collectNearInfo';
-import createNearClient, { useNearClient, encodeRequest } from './core/client';
-import { YoctoPrice } from './number';
+import { NearEnvironment } from './utils/config';
+import { YoctoPrice } from './utils/number';
 
 export {
    useNear,
-   useNearWallet,
    useNearUser,
-   useNearAccount,
+   useNearStatus,
+   useNearClient,
+   useNearQuery,
+   useNearMutation,
+   useNearEnv,
    //
    NEAR_GAS,
    //
    NearProvider,
    NearContext,
-   makeNearProviderState,
    //
    NearEnvironment,
-   getNearConfig,
    getNearError,
    formatNearAddress,
    formatNearPrice,
    parseNearAmount,
    isValidNearAddress,
    parseNearDate,
-   //
-   useNearQuery,
-   useNearMutation,
+
    //
    NearEnvironmentContext,
-   useNearEnvironment,
    NearEnvironmentProvider,
-   //
-   NearContractProvider,
-   useNearContract,
-   //
-   collectNearData,
-   collectNearDataWithoutRender,
    //
    createNearClient,
    encodeRequest,
-   useNearClient,
+
    //
    YoctoPrice,
 };

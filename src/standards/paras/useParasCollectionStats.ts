@@ -1,7 +1,7 @@
 import useNearQuery, { NearQueryOptions } from '../../hooks/query';
-import { useNearEnvironment } from '../../environment';
-import { NearEnvironment } from '../../config';
+import { NearEnvironment } from '../../utils/config';
 import { ParasCollectionStats } from './types';
+import useNearEnv from '../../hooks/env';
 import { PARAS_API_MAINNET_URL, PARAS_API_TESTNET_URL } from './config';
 
 export type ParasCollectionStatsArgs = {
@@ -15,7 +15,7 @@ function useParasCollectionStats(
       'mock' | 'contract'
    >,
 ) {
-   const nearEnv = useNearEnvironment();
+   const nearEnv = useNearEnv();
 
    return useNearQuery('collection-stats', {
       ...opts,

@@ -42,7 +42,6 @@ Including ready for use typed methods in popular smart contract [Standards](http
    -  [NearProvider](#nearprovider) define near in app
    -  [NearEnvironmentProvider](#nearenvironmentprovider) switch env (TestNet, MainNet..)
    -  [Config](#define-and-use-contracts) define contracts
-   -  [ssr rendering](#ssr)
    -  [useNearUser](#usenearuser) complex example
    -  [useNearUser](#batch-transactions) batch Transactions
    -  [useNearQuery](#usenearquery) use view methods
@@ -171,15 +170,14 @@ function MyApp({ Component, pageProps }: AppProps) {
    );
 }
 function Page() {
-   const near = useNear(); // nearApi.Near
-   const wallet = useNearWallet(); // nearApi.WalletConnection
-   const account = useNearAccount(); // nearApi.Account
+   const near = useNear();
    const nearUser = useNearUser();
+   const nearAccount = useNearAccount(nearUser.address);
 
    return (
       <>
          <span>User Address: {account.address}</span>
-         <span>Balance: {account.balance} NEAR</span>
+         <span>Balance: {nearAccount?.balance} NEAR</span>
       </>
    );
 }
@@ -199,7 +197,7 @@ function MyApp({ Component, pageProps }: AppProps) {
    );
 }
 function Page() {
-   const nearEnv = useNearEnvironment();
+   const nearEnv = useNearEnv();
 
    const handleChangeEnv = () => nearEnv.update(NearEnvironment.TestNet);
 
@@ -222,14 +220,11 @@ function Page() {
 
    return (
       <>
-         <button onClick={() => nearUser.connect('Title')}>Connect wallet</button>
+         <button onClick={() => nearUser.connect()}>Connect wallet</button>
          <button onClick={() => nearUser.disconnect()}>Disconnect wallet</button>
 
          <span>Is Connected: {nearUser.isConnected}</span>
          <span>Address: {nearUser.address}</span>
-         <span>Balance: {nearUser.balance}</span>
-
-         <button onClick={() => nearUser.refreshBalance()}>Refresh balance</button>
       </>
    );
 }
@@ -268,31 +263,25 @@ function Page() {
       const amount1 = parseNearAmount('1') as string;
       const amount2 = parseNearAmount('1') as string;
 
-      return nearUser.signTransactions([
-         await ftTransferCallCtx1.createTransaction(
+      return nearUser.signAndSendTransactions({
+         transactions: [
             {
-               receiver_id: MT_CONTRACT_ID,
-               amount: amount1,
+               signerId: nearUser.address as string,
+               receiverId: MT_CONTRACT_ID,
+               actions: [
+                  {
+                     type: 'FunctionCall',
+                     params: {
+                        methodName: 'ft_transfer',
+                        args: btoa(JSON.stringify({ receiver_id: 'xx', amount: '1' })),
+                        gas: 'xxx',
+                        deposit: '1',
+                     },
+                  },
+               ],
             },
-            parseNearAmount('0.01') as string,
-         ),
-         await ftTransferCallCtx2.createTransaction(
-            {
-               receiver_id: MT_CONTRACT_ID,
-               amount: amount2,
-            },
-            parseNearAmount('0.01') as string,
-         ),
-         await mtTransferCallCtx.createTransaction(
-            {
-               amounts: [amount1, amount2],
-               token_ids: [FT_CONTRACT_ID_1, FT_CONTRACT_ID_2],
-               receiver_id: POOL_CONTRACT_ID,
-               msg: JSON.stringify({}),
-            },
-            parseNearAmount('0.01') as string,
-         ),
-      ]);
+         ],
+      });
    };
 
    return (
@@ -346,82 +335,6 @@ function Page() {
    };
 
    return <span>FT balance: {formatNearAmount(balance, 24)}</span>;
-}
-```
-
-#### Ssr
-
-Run queries on nextjs server side (experimental)
-
-```typescript jsx
-// app.tsx
-type MyAppProps = AppProps & { nearClient?: NearClient; nearState?: NearProviderState };
-
-const MyApp: React.FC<MyAppProps> = function ({
-   Component,
-   pageProps,
-   nearClient,
-   nearState,
-}: MyAppProps) {
-   return (
-      <NearProvider
-         defaultClient={nearClient}
-         defaultState={nearState}
-         authContractId='my-contract.testnet'
-      >
-         <Component {...pageProps} />
-      </NearProvider>
-   );
-};
-
-MyApp.getInitialProps = async ({
-   Component,
-   ctx,
-}: AppContext): Promise<AppInitialProps & { nearClient?: NearClient }> => {
-   const pageProps = Component.getInitialProps ? await Component.getInitialProps(ctx) : {};
-
-   // create cache client
-   const nearState = await makeNearProviderState({ environment: NearEnvironment.TestNet });
-   const nearClient = createNearClient();
-
-   // init contract
-   const ftAccount = await nearState.near.account(FT_CONTRACT_NAME);
-   const ftContract = new nearApi.Contract(ftAccount, FT_CONTRACT_NAME, FT_CONTRACT_METHODS);
-
-   // save contract to cache
-   const contractKey = encodeRequest(FT_CONTRACT_NAME);
-   nearClient.cache.setContract(contractKey, ftContract);
-
-   const props = {
-      nearState,
-      nearClient,
-      nearState,
-      pageProps,
-   };
-
-   // render for collect methods
-   const { AppTree } = ctx;
-   await collectNearData(nearClient, <AppTree {...props} />); // or use collectNearDataWithoutRender
-
-   return props;
-};
-
-// page.tsx
-
-function Page() {
-   const ftContract = useFtContract();
-   const {
-      data: ftBalance = '0',
-      refetch: refetchFtBalance,
-      loading,
-      error,
-   } = useFtBalanceOf({
-      contract: ftContract,
-      variables: { account_id: 'muzikant.testnet' },
-      ssr: true,
-   });
-
-   return <span>Balance: {ftBalance}</span>;
 }
 ```
 

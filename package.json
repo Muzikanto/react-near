@@ -1,6 +1,6 @@
 {
    "name": "react-near",
-   "version": "5.7.1",
+   "version": "6.0.2",
    "description": "",
    "main": "index.js",
    "typings": "./index.d.ts",
@@ -47,6 +47,11 @@
       "react": "^18.2.0"
    },
    "dependencies": {
+      "@near-wallet-selector/core": "^7.4.0",
+      "@near-wallet-selector/default-wallets": "^7.4.0",
+      "@near-wallet-selector/modal-ui": "^7.4.0",
+      "@near-wallet-selector/my-near-wallet": "^7.4.0",
+      "@near-wallet-selector/near-wallet": "^7.4.0",
       "cookie": "^0.5.0"
    },
    "devDependencies": {

@@ -1,28 +1,28 @@
 import React from 'react';
 import { NextPage } from 'next';
-import { useNftContract, useFtContract } from './_app';
+import { NFT_CONTRACT_NAME, FT_CONTRACT_NAME } from './_app';
 import {
    formatNearPrice,
    NEAR_GAS,
    parseNearAmount,
-   useNearEnvironment,
+   useNearEnv,
    useNearQuery,
    useNearUser,
 } from '../../src';
 import { NftContractMetadata } from '../../src/standards/nft/types';
 import { useFtBalanceOf, useFtTransfer, useNftTokens } from '../../src/standards';
+import { useNearAccount } from '../../src/hooks/account';
 
 const Page: NextPage = function () {
-   const nftContract = useNftContract();
-   const ftContract = useFtContract();
    const nearUser = useNearUser();
-   const nearEnv = useNearEnvironment();
+   const nearEnv = useNearEnv();
+   const nearAccount = useNearAccount(nearUser.address);
 
    // NFT
    const { data: metadata, loading: loadingMeta } = useNearQuery<NftContractMetadata, {}>(
       'nft_metadata',
       {
-         contract: nftContract,
+         contract: NFT_CONTRACT_NAME,
          variables: {},
       },
    );
@@ -32,21 +32,20 @@ const Page: NextPage = function () {
       loading: loadingCollection,
       refetch: refetchCollection,
    } = useNftTokens({
-      contract: nftContract,
+      contract: NFT_CONTRACT_NAME,
       variables: { limit: 5, from_index: '0' },
       poolInterval: 1000 * 60 * 5,
    });
    const { data: ftBalance = '0', refetch: refetchFtBalance } = useFtBalanceOf({
-      contract: ftContract,
-      variables: { account_id: nearUser.address as string },
+      contract: FT_CONTRACT_NAME,
+      variables: { account_id: 'muzikant.testnet' as string },
       poolInterval: 1000 * 60 * 5,
-      ssr: true,
-      skip: !nearUser.isConnected,
+      ssr: false,
    });
 
    const [amountToTransfer, setAmountToTransfer] = React.useState(1);
    const [ftTransfer] = useFtTransfer({
-      contract: ftContract,
+      contract: FT_CONTRACT_NAME,
       gas: NEAR_GAS,
    });
 
@@ -66,7 +65,7 @@ const Page: NextPage = function () {
 
          {!nearUser.isConnected ? (
             <div>
-               <button onClick={() => nearUser.connect('NEAR Example title')}>connect</button>
+               <button onClick={() => nearUser.connect()}>connect</button>
             </div>
          ) : (
             <div>
@@ -74,7 +73,7 @@ const Page: NextPage = function () {
                   <p>User</p>
 
                   <p>Address: {nearUser.address}</p>
-                  <p>{nearUser.balance} NEAR</p>
+                  <p>{nearAccount?.balance || '-'} NEAR</p>
                   <p>{formatNearPrice(ftBalance).toFixed(2)} MFIGT</p>
                   <p>env: {nearEnv.value}</p>
                   <button onClick={() => nearUser.disconnect()}>disconnect</button>
